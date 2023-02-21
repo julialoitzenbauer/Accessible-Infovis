@@ -1,0 +1,7 @@
+:host ::ng-deep .scatterCircle {
+    fill: #69b3a2;
+}
+
+:host ::ng-deep .scatterCircleCurrent {
+    fill: red;
+}

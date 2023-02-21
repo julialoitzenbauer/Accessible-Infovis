@@ -76,9 +76,9 @@ export class ScatterComponent implements OnInit {
       .data(this.cleanData)
       .enter()
       .append("text")
-      .text((d: any) => d.label)
-      .attr("x", (d: any) => x(d.xValue))
-      .attr("y", (d: any) => y(d.yValue))
+      .text((d: CleanData) => d.label)
+      .attr("x", (d: CleanData) => x(d.xValue))
+      .attr("y", (d: CleanData) => y(d.yValue))
       .attr("fill", "white")
   }
 
@@ -89,22 +89,16 @@ export class ScatterComponent implements OnInit {
       .data(this.cleanData)
       .enter()
       .append("circle")
-      .attr('id', (d: any) => "DOT_" + d.ID)
-      .attr("cx", (d: any) => x(d.xValue))
-      .attr("cy", (d: any) => y(d.yValue))
+      .attr('id', (d: CleanData) => "DOT_" + d.ID)
+      .attr("cx", (d: CleanData) => x(d.xValue))
+      .attr("cy", (d: CleanData) => y(d.yValue))
       .attr("r", 7)
-      .attr("tabindex", "-1")
+      .attr("class", "scatterCircle")
       .style("opacity", .5)
-      .style("fill", "#69b3a2")
-      .on("keydown", this.dotKeyDown.bind(this))
-      .on("focus", function(this: any) {
-        const curr = d3.select(this);
-        curr.style("fill", "red");
-      })
-      .on("blur", function(this: any) {
-        const curr = d3.select(this);
-        curr.style("fill", "#69b3a2");
-      });
+      .attr("tabindex", "-1")
+      .attr("aria-label", (d: CleanData) => d.label)
+      .attr("aria-description", (d: CleanData) => this.xAxisKey + ": " + d.xValue + ", " + this.yAxisKey + ": " + d.yValue)
+      .on("keydown", this.dotKeyDown.bind(this));
   }
 
   private createCleanData(): void {
@@ -160,8 +154,9 @@ export class ScatterComponent implements OnInit {
       if (this.focusedDot != null) {
         this.blurDot(this.focusedDot);
       }
-      node.setAttribute("tabindex", "0");
       node.focus();
+      node.setAttribute("tabindex", "0");
+      node.setAttribute("class", "scatterCircleCurrent");
       this.focusedDot = idx;
     }
   }
@@ -172,6 +167,7 @@ export class ScatterComponent implements OnInit {
     if (node) {
       node.setAttribute("tabindex", "-1");
       node.blur();
+      node.setAttribute("class", "scatterCircle");
     }
   }
 
