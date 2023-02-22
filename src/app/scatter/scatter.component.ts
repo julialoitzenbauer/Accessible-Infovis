@@ -31,6 +31,7 @@ export class ScatterComponent implements OnInit {
   private width = 750 - (this.margin * 2);
   private height = 400 - (this.margin * 2);
   private cleanDescription?: string;
+  private minX?: number;
   private maxX: number = 0;
   private maxY: number = 0;
 
@@ -67,16 +68,19 @@ export class ScatterComponent implements OnInit {
   private drawPlot(): void {
     if (!this.svg || !this.cleanData) return;
     // Add X axis
+    if (this.minX == null) this.minX = 0;
+    const threshold = (this.maxX - this.minX) * 0.1;
     const x = d3.scaleLinear()
-      .domain([2009, 2017])
+      .domain([Math.floor(this.minX - threshold), Math.ceil(this.maxX + threshold)])
       .range([0, this.width]);
     this.svg.append("g")
       .attr("transform", "translate(0," + this.height + ")")
       .call(d3.axisBottom(x).tickFormat(d3.format("d")));
 
     // Add Y axis
+    console.log(Math.floor(this.maxY + 0.2 * this.maxY));
     const y = d3.scaleLinear()
-      .domain([0, 200000])
+      .domain([0, Math.floor(this.maxY + 0.2 * this.maxY)])
       .range([this.height, 0]);
     this.svg.append("g")
       .call(d3.axisLeft(y));
@@ -123,6 +127,7 @@ export class ScatterComponent implements OnInit {
         ID: -1,
       });
       if (d[this.xAxisKey] as number > this.maxX) this.maxX = d[this.xAxisKey] as number;
+      if (this.minX == null || d[this.xAxisKey] as number < this.minX) this.minX = d[this.xAxisKey] as number;
       if (d[this.yAxisKey] as number > this.maxY) this.maxY = d[this.yAxisKey] as number;
     }
     cd = cd.sort((a: Record<string, number | string>, b: Record<string, number | string>) => {
