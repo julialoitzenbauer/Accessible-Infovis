@@ -22,14 +22,17 @@ export class ScatterComponent implements OnInit {
   title!: string;
   @Input()
   description?: string;
+  @Input()
+  margin: number = 50;
+  @Input()
+  width: number = 650 - (this.margin * 2);
+  @Input()
+  height: number = 400 - (this.margin * 2);
 
   private cleanData?: Array<CleanData>;
   private svg?: D3Selection;
   private dots?: D3Selection;
   private focusedDot?: number | null;
-  private margin = 50;
-  private width = 750 - (this.margin * 2);
-  private height = 400 - (this.margin * 2);
   private cleanDescription?: string;
   private minX?: number;
   private maxX: number = 0;
@@ -59,7 +62,7 @@ export class ScatterComponent implements OnInit {
       .attr("tabindex", "0")
       .attr("id", "SVG")
       .attr('aria-label', 'Scatterplot: ' + this.title)
-      .attr('aria-desription', this.cleanDescription || null)
+      .attr('aria-description', this.cleanDescription || null)
       .on("keydown", this.svgKeyDown.bind(this))
       .append("g")
       .attr("transform", "translate(" + this.margin + "," + this.margin + ")");
@@ -78,7 +81,6 @@ export class ScatterComponent implements OnInit {
       .call(d3.axisBottom(x).tickFormat(d3.format("d")));
 
     // Add Y axis
-    console.log(Math.floor(this.maxY + 0.2 * this.maxY));
     const y = d3.scaleLinear()
       .domain([0, Math.floor(this.maxY + 0.2 * this.maxY)])
       .range([this.height, 0]);
@@ -95,7 +97,26 @@ export class ScatterComponent implements OnInit {
       .text((d: CleanData) => d.label)
       .attr("x", (d: CleanData) => x(d.xValue))
       .attr("y", (d: CleanData) => y(d.yValue))
-      .attr("fill", "white")
+      .attr("fill", "white");
+
+    this.addAxisLabels();
+  }
+
+  private addAxisLabels(): void {
+    if (this.svg) {
+      this.svg.append("text")
+        .text(this.xAxisKey)
+        .attr("x", this.width - this.margin)
+        .attr("y", this.height + 30)
+        .attr("fill", "gray")
+        .attr("font-size", "12px");
+      this.svg.append("text")
+        .text(this.yAxisKey)
+        .attr("x", 10)
+        .attr("y", 12)
+        .attr("fill", "gray")
+        .attr("font-size", "12px");
+    }
   }
 
   private addDots(x: D3ScaleLinear, y: D3ScaleLinear): void {
