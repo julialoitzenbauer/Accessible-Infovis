@@ -16,14 +16,13 @@ export class ScatterComponent implements OnInit {
   xAxisKey!: string;
   @Input()
   yAxisKey!: string;
+  @Input()
+  data!: Array<Record<string, number | string>>;
+  @Input()
+  title!: string;
+  @Input()
+  description?: string;
 
-  private data: Array<Record<string, number | string>> = [
-    { Framework: "Vue", Stars: 166443, Released: 2014 },
-    { Framework: "React", Stars: 150793, Released: 2013 },
-    { Framework: "Angular", Stars: 62342, Released: 2016 },
-    { Framework: "Backbone", Stars: 27647, Released: 2010 },
-    { Framework: "Ember", Stars: 21471, Released: 2011 },
-  ];
   private cleanData?: Array<CleanData>;
   private svg?: D3Selection;
   private dots?: D3Selection;
@@ -31,13 +30,24 @@ export class ScatterComponent implements OnInit {
   private margin = 50;
   private width = 750 - (this.margin * 2);
   private height = 400 - (this.margin * 2);
+  private cleanDescription?: string;
+  private maxX: number = 0;
+  private maxY: number = 0;
 
   constructor() { }
 
   ngOnInit(): void {
-    this.createCleanData();
+    this.initAria();
     this.createSvg();
     this.drawPlot();
+  }
+
+  private initAria(): void {
+    this.cleanData = this.createCleanData();
+    this.cleanDescription = this.description || '';
+    if (this.cleanDescription) this.cleanDescription += ', ';
+    this.cleanDescription += this.xAxisKey + ' (x-Axis) has a span from 0 to ' + this.maxX;
+    this.cleanDescription += ', ' + this.yAxisKey + ' (y-Axis) has a span from 0 to ' + this.maxY;
   }
 
   private createSvg(): void {
@@ -47,6 +57,8 @@ export class ScatterComponent implements OnInit {
       .attr("height", this.height + (this.margin * 2))
       .attr("tabindex", "0")
       .attr("id", "SVG")
+      .attr('aria-label', 'Scatterplot: ' + this.title)
+      .attr('aria-desription', this.cleanDescription || null)
       .on("keydown", this.svgKeyDown.bind(this))
       .append("g")
       .attr("transform", "translate(" + this.margin + "," + this.margin + ")");
@@ -101,17 +113,19 @@ export class ScatterComponent implements OnInit {
       .on("keydown", this.dotKeyDown.bind(this));
   }
 
-  private createCleanData(): void {
-    this.cleanData = [];
+  private createCleanData(): Array<CleanData> {
+    let cd: Array<CleanData> = [];
     for (const d of this.data) {
-      this.cleanData.push({
+      cd.push({
         label: d[this.labelKey] as string,
         xValue: d[this.xAxisKey] as number,
         yValue: d[this.yAxisKey] as number,
         ID: -1,
       });
+      if (d[this.xAxisKey] as number > this.maxX) this.maxX = d[this.xAxisKey] as number;
+      if (d[this.yAxisKey] as number > this.maxY) this.maxY = d[this.yAxisKey] as number;
     }
-    this.cleanData = this.cleanData.sort((a: Record<string, number | string>, b: Record<string, number | string>) => {
+    cd = cd.sort((a: Record<string, number | string>, b: Record<string, number | string>) => {
       if (a["xValue"] < b["xValue"]) {
         return -1;
       } else if (a["xValue"] > b["xValue"]) {
@@ -122,9 +136,10 @@ export class ScatterComponent implements OnInit {
       }
       return -1;
     });
-    for (let idx = 0; idx < this.cleanData.length; ++idx) {
-      this.cleanData[idx]['ID'] = idx;
+    for (let idx = 0; idx < cd.length; ++idx) {
+      cd[idx]['ID'] = idx;
     }
+    return cd;
   }
 
   private dotKeyDown(evt: KeyboardEvent): void {
