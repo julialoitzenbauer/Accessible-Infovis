@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import * as d3 from 'd3';
 import { D3Selection, D3ScaleLinear } from 'src/types';
+import { DataIterable } from './DataIterable';
 import { CleanData } from './scatterTypes';
 
 @Component({
@@ -29,7 +30,7 @@ export class ScatterComponent implements OnInit {
   @Input()
   height: number = 400 - (this.margin * 2);
 
-  private cleanData?: Array<CleanData>;
+  private cleanData?: Record<number, Array<CleanData>>;
   private svg?: D3Selection;
   private dots?: D3Selection;
   private focusedDot?: number | null;
@@ -89,9 +90,10 @@ export class ScatterComponent implements OnInit {
 
     // Add dots
     this.addDots(x, y);
+    const dataIterable = new DataIterable(this.cleanData);
     // Add labels
     this.dots?.selectAll("text")
-      .data(this.cleanData)
+      .data(dataIterable)
       .enter()
       .append("text")
       .text((d: CleanData) => d.label)
@@ -121,9 +123,10 @@ export class ScatterComponent implements OnInit {
 
   private addDots(x: D3ScaleLinear, y: D3ScaleLinear): void {
     if (!this.svg || !this.cleanData) return;
+    const dataIterable = new DataIterable(this.cleanData);
     this.dots = this.svg.append('g');
     this.dots.selectAll("dot")
-      .data(this.cleanData)
+      .data(dataIterable)
       .enter()
       .append("circle")
       .attr('id', (d: CleanData) => "DOT_" + d.ID)
@@ -138,33 +141,38 @@ export class ScatterComponent implements OnInit {
       .on("keydown", this.dotKeyDown.bind(this));
   }
 
-  private createCleanData(): Array<CleanData> {
-    let cd: Array<CleanData> = [];
+  private createCleanData(): Record<number, Array<CleanData>> {
+    let cd: Record<number, Array<CleanData>> = {};
     for (const d of this.data) {
-      cd.push({
+      const xValue = d[this.xAxisKey] as number;
+      const obj = {
         label: d[this.labelKey] as string,
-        xValue: d[this.xAxisKey] as number,
+        xValue: xValue,
         yValue: d[this.yAxisKey] as number,
         ID: -1,
-      });
-      if (d[this.xAxisKey] as number > this.maxX) this.maxX = d[this.xAxisKey] as number;
-      if (this.minX == null || d[this.xAxisKey] as number < this.minX) this.minX = d[this.xAxisKey] as number;
-      if (d[this.yAxisKey] as number > this.maxY) this.maxY = d[this.yAxisKey] as number;
-    }
-    cd = cd.sort((a: Record<string, number | string>, b: Record<string, number | string>) => {
-      if (a["xValue"] < b["xValue"]) {
-        return -1;
-      } else if (a["xValue"] > b["xValue"]) {
-        return 1;
+      };
+      if (this.minX == null || obj.xValue < this.minX) this.minX = obj.xValue;
+      if (obj.xValue > this.maxX) this.maxX = obj.xValue;
+      if (obj.yValue > this.maxY) this.maxY = obj.yValue;
+      if (!cd[xValue]) {
+        cd[xValue] = [obj];
       } else {
-        if (a["yValue"] < b["yValue"]) return -1;
-        if (a["yValue"] > b["yValue"]) return 1;
+        let insertIndex = -1;
+        for (let index = 0; index < cd[xValue].length; ++index){
+          if (cd[xValue][index].yValue >= obj.yValue) {
+            insertIndex = index;
+            break;
+          }
+        }
+        if (insertIndex === -1) {
+          cd[xValue].push(obj);
+        } else {
+          cd[xValue].splice(insertIndex, 0, obj);
+        }
       }
-      return -1;
-    });
-    for (let idx = 0; idx < cd.length; ++idx) {
-      cd[idx]['ID'] = idx;
+
     }
+    console.log(cd);
     return cd;
   }
 
@@ -183,7 +191,7 @@ export class ScatterComponent implements OnInit {
       } else if (evt.key === 'Home') {
         this.focusDot(0);
       } else if (evt.key === 'End' && this.cleanData) {
-        this.focusDot(this.cleanData.length - 1);
+        //this.focusDot(this.cleanData.length - 1);
       }
     }
   }
