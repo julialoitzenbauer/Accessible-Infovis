@@ -1,7 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import * as d3 from 'd3';
 import { D3Selection, D3ScaleLinear } from 'src/types';
-import { CleanData } from './scatterTypes';
+import { DataIterable } from './DataIterable';
+import { CleanData, DataPoint } from './scatterTypes';
 
 @Component({
   selector: 'app-scatter',
@@ -29,14 +30,15 @@ export class ScatterComponent implements OnInit {
   @Input()
   height: number = 400 - (this.margin * 2);
 
-  private cleanData?: Array<CleanData>;
+  private cleanData?: Record<number, Array<CleanData>>;
   private svg?: D3Selection;
   private dots?: D3Selection;
-  private focusedDot?: number | null;
+  private focusedDot?: string | null;
   private cleanDescription?: string;
   private minX?: number;
   private maxX: number = 0;
   private maxY: number = 0;
+  private keys: Array<number> = [];
 
   constructor() { }
 
@@ -44,6 +46,12 @@ export class ScatterComponent implements OnInit {
     this.initAria();
     this.createSvg();
     this.drawPlot();
+    if (this.cleanData) {
+      const dataIterable = new DataIterable(this.cleanData);
+      for (const d of dataIterable) {
+        console.log(d.label);
+      }
+    }
   }
 
   private initAria(): void {
@@ -89,9 +97,10 @@ export class ScatterComponent implements OnInit {
 
     // Add dots
     this.addDots(x, y);
+    const dataIterable = new DataIterable(this.cleanData);
     // Add labels
     this.dots?.selectAll("text")
-      .data(this.cleanData)
+      .data(dataIterable)
       .enter()
       .append("text")
       .text((d: CleanData) => d.label)
@@ -121,9 +130,10 @@ export class ScatterComponent implements OnInit {
 
   private addDots(x: D3ScaleLinear, y: D3ScaleLinear): void {
     if (!this.svg || !this.cleanData) return;
+    const dataIterable = new DataIterable(this.cleanData);
     this.dots = this.svg.append('g');
     this.dots.selectAll("dot")
-      .data(this.cleanData)
+      .data(dataIterable)
       .enter()
       .append("circle")
       .attr('id', (d: CleanData) => "DOT_" + d.ID)
@@ -138,58 +148,128 @@ export class ScatterComponent implements OnInit {
       .on("keydown", this.dotKeyDown.bind(this));
   }
 
-  private createCleanData(): Array<CleanData> {
-    let cd: Array<CleanData> = [];
+  private createCleanData(): Record<number, Array<CleanData>> {
+    let cd: Record<number, Array<CleanData>> = {};
     for (const d of this.data) {
-      cd.push({
+      const xValue = d[this.xAxisKey] as number;
+      const obj = {
         label: d[this.labelKey] as string,
-        xValue: d[this.xAxisKey] as number,
+        xValue: xValue,
         yValue: d[this.yAxisKey] as number,
-        ID: -1,
-      });
-      if (d[this.xAxisKey] as number > this.maxX) this.maxX = d[this.xAxisKey] as number;
-      if (this.minX == null || d[this.xAxisKey] as number < this.minX) this.minX = d[this.xAxisKey] as number;
-      if (d[this.yAxisKey] as number > this.maxY) this.maxY = d[this.yAxisKey] as number;
-    }
-    cd = cd.sort((a: Record<string, number | string>, b: Record<string, number | string>) => {
-      if (a["xValue"] < b["xValue"]) {
-        return -1;
-      } else if (a["xValue"] > b["xValue"]) {
-        return 1;
+        ID: '',
+      };
+      if (this.minX == null || obj.xValue < this.minX) this.minX = obj.xValue;
+      if (obj.xValue > this.maxX) this.maxX = obj.xValue;
+      if (obj.yValue > this.maxY) this.maxY = obj.yValue;
+      if (!cd[xValue]) {
+        cd[xValue] = [obj];
       } else {
-        if (a["yValue"] < b["yValue"]) return -1;
-        if (a["yValue"] > b["yValue"]) return 1;
+        let insertIndex = -1;
+        for (let index = 0; index < cd[xValue].length; ++index){
+          if (cd[xValue][index].yValue >= obj.yValue) {
+            insertIndex = index;
+            break;
+          }
+        }
+        if (insertIndex === -1) {
+          cd[xValue].push(obj);
+        } else {
+          cd[xValue].splice(insertIndex, 0, obj);
+        }
       }
-      return -1;
-    });
-    for (let idx = 0; idx < cd.length; ++idx) {
-      cd[idx]['ID'] = idx;
+
+    }
+    this.keys = Object.keys(cd).map(Number);
+    for (const key of this.keys) {
+      const entry = cd[key];
+      for (let idx = 0; idx < entry.length; ++ idx) {
+        entry[idx].ID = key + '_' + idx;
+      }
     }
     return cd;
   }
 
   private dotKeyDown(evt: KeyboardEvent): void {
     const targetElement = evt.target as HTMLElement;
-    if (targetElement) {
-      const currIdx = parseInt(targetElement.id.substring(("DOT_").length));
-      if (evt.key === 'ArrowRight') {
-        this.focusDot(currIdx + 1);
-      } else if (evt.key === 'ArrowLeft') {
-        this.focusDot(currIdx - 1);
-      } else if (evt.key === 'Escape') {
-        this.focusSvg(true);
-      } else if (evt.key === 'ArrowUp') {
-        this.focusSvg();
-      } else if (evt.key === 'Home') {
-        this.focusDot(0);
-      } else if (evt.key === 'End' && this.cleanData) {
-        this.focusDot(this.cleanData.length - 1);
+    if (targetElement && this.cleanData) {
+      const dataPoint = this.getDataPointById(targetElement.id);
+      let newDataPoint: DataPoint | null = null;
+      if (dataPoint) {
+        if (evt.key === 'ArrowRight' || evt.key === 'ArrowLeft') {
+          newDataPoint = this.horizontalNav(dataPoint, evt.key === 'ArrowLeft');
+        } else if (evt.key === 'Escape') {
+          this.focusSvg(true);
+        } else if (evt.key === 'ArrowUp' || evt.key === 'ArrowDown') {
+          newDataPoint = this.verticalNav(dataPoint, evt.key === 'ArrowUp');
+        } else if (evt.key === 'Home') {
+          newDataPoint = { key: this.keys[0], idx: 0 };
+        } else if (evt.key === 'End') {
+          const newKey = this.keys[this.keys.length - 1];
+          newDataPoint = { key: newKey, idx: this.cleanData[newKey].length - 1 };
+        }
+      }
+      if (newDataPoint) {
+        this.focusDot(newDataPoint.key + '_' + newDataPoint.idx);
       }
     }
   }
 
-  private focusDot(idx: number) {
-    const selection = d3.select("#DOT_" + idx);
+  private getDataPointById(id: string): DataPoint | null {
+    const dataId = id.substring(id.indexOf('_') + 1);
+    if (dataId) {
+      const key = parseInt(dataId.substring(0, dataId.indexOf('_')));
+      const idx = parseInt(dataId.substring(dataId.indexOf('_') + 1));
+      if (key != null && idx != null && !isNaN(key) && !isNaN(idx)) {
+        return {
+          key,
+          idx,
+        };
+      }
+    }
+    return null;
+  }
+
+  private horizontalNav(currDataPoint: DataPoint, toLeft: boolean): DataPoint | null {
+    const currKeyIdx = this.keys.indexOf(currDataPoint.key);
+    if (currKeyIdx !== -1 && this.cleanData) {
+      const newKeyIdx = toLeft ? currKeyIdx - 1 : currKeyIdx + 1;
+      if (newKeyIdx >= 0 && newKeyIdx < this.keys.length) {
+        const newKey = this.keys[newKeyIdx];
+        let nearestItemIdx = -1;
+        let nearesOffset = undefined;
+        const currDataPointValue = this.cleanData[currDataPoint.key][currDataPoint.idx].yValue;
+        for (let idx = 0; idx < this.cleanData[newKey].length; ++idx) {
+          let offset = this.cleanData[newKey][idx].yValue - currDataPointValue;
+          if (offset < 0) offset = offset * -1;
+          if (nearesOffset == null || offset < nearesOffset) {
+            nearesOffset = offset;
+            nearestItemIdx = idx;
+          }
+        }
+        return {
+          key: newKey,
+          idx: nearestItemIdx,
+        }
+      }
+    }
+    return null;
+  }
+
+  private verticalNav(currDataPoint: DataPoint, up: boolean): DataPoint | null {
+    if (this.cleanData) {
+      const newDataIdx = up ? currDataPoint.idx + 1 : currDataPoint.idx - 1;
+      if (newDataIdx >= 0 && newDataIdx < this.cleanData[currDataPoint.key].length) {
+        return {
+          key: currDataPoint.key,
+          idx: newDataIdx,
+        };
+      }
+    }
+    return null;
+  }
+
+  private focusDot(id: string) {
+    const selection = d3.select("#DOT_" + id);
     const node = selection.node() as HTMLElement | null;
     if (node) {
       if (this.focusedDot != null) {
@@ -198,12 +278,12 @@ export class ScatterComponent implements OnInit {
       node.focus();
       node.setAttribute("tabindex", "0");
       node.setAttribute("class", "scatterCircleCurrent");
-      this.focusedDot = idx;
+      this.focusedDot = id;
     }
   }
 
-  private blurDot(idx: number) {
-    const selection = d3.select("#DOT_" + idx);
+  private blurDot(id: string) {
+    const selection = d3.select("#DOT_" + id);
     const node = selection.node() as HTMLElement | null;
     if (node) {
       node.setAttribute("tabindex", "-1");
@@ -214,7 +294,11 @@ export class ScatterComponent implements OnInit {
 
   private svgKeyDown(evt: KeyboardEvent): void {
     if (evt.key === 'ArrowDown') {
-      this.focusDot(this.focusedDot || 0);
+      if (this.focusedDot) {
+        this.focusDot(this.focusedDot);
+      } else if (this.keys.length) {
+        this.focusDot(this.keys[0] + '_0');
+      }
     }
   }
 
