@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { bigData } from './bigData';
 
 @Component({
   selector: 'app-root',
@@ -16,4 +17,6 @@ export class AppComponent {
     { Framework: "Backbone", Stars: 27647, Released: 2010 },
     { Framework: "Ember", Stars: 21471, Released: 2011 },
   ];
+
+  bigData = bigData;
 }

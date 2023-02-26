@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import * as d3 from 'd3';
 import { D3Selection, D3ScaleLinear } from 'src/types';
 import { DataIterable } from './DataIterable';
+import { IDGenerator } from './IDGenerator';
 import { CleanData, DataPoint } from './scatterTypes';
 
 @Component({
@@ -29,6 +30,10 @@ export class ScatterComponent implements OnInit {
   width: number = 650 - (this.margin * 2);
   @Input()
   height: number = 400 - (this.margin * 2);
+  @Input()
+  showLabel: boolean = true;
+  @Input()
+  radius: number = 7;
 
   private cleanData?: Record<number, Array<CleanData>>;
   private svg?: D3Selection;
@@ -39,19 +44,24 @@ export class ScatterComponent implements OnInit {
   private maxX: number = 0;
   private maxY: number = 0;
   private keys: Array<number> = [];
+  scatterId: string;
 
-  constructor() { }
+  constructor() {
+    this.scatterId = IDGenerator.getId();
+  }
 
   ngOnInit(): void {
-    this.initAria();
-    this.createSvg();
-    this.drawPlot();
-    if (this.cleanData) {
-      const dataIterable = new DataIterable(this.cleanData);
-      for (const d of dataIterable) {
-        console.log(d.label);
+    setTimeout(() => {
+      this.initAria();
+      this.createSvg();
+      this.drawPlot();
+      if (this.cleanData) {
+        const dataIterable = new DataIterable(this.cleanData);
+        for (const d of dataIterable) {
+          console.log(d.label);
+        }
       }
-    }
+    });
   }
 
   private initAria(): void {
@@ -63,7 +73,7 @@ export class ScatterComponent implements OnInit {
   }
 
   private createSvg(): void {
-    this.svg = d3.select("figure#scatter")
+    this.svg = d3.select("figure#" + this.scatterId)
       .append("svg")
       .attr("width", this.width + (this.margin * 2))
       .attr("height", this.height + (this.margin * 2))
@@ -97,17 +107,6 @@ export class ScatterComponent implements OnInit {
 
     // Add dots
     this.addDots(x, y);
-    const dataIterable = new DataIterable(this.cleanData);
-    // Add labels
-    this.dots?.selectAll("text")
-      .data(dataIterable)
-      .enter()
-      .append("text")
-      .text((d: CleanData) => d.label)
-      .attr("x", (d: CleanData) => x(d.xValue))
-      .attr("y", (d: CleanData) => y(d.yValue))
-      .attr("fill", "white");
-
     this.addAxisLabels();
   }
 
@@ -130,7 +129,7 @@ export class ScatterComponent implements OnInit {
 
   private addDots(x: D3ScaleLinear, y: D3ScaleLinear): void {
     if (!this.svg || !this.cleanData) return;
-    const dataIterable = new DataIterable(this.cleanData);
+    let dataIterable = new DataIterable(this.cleanData);
     this.dots = this.svg.append('g');
     this.dots.selectAll("dot")
       .data(dataIterable)
@@ -139,23 +138,34 @@ export class ScatterComponent implements OnInit {
       .attr('id', (d: CleanData) => "DOT_" + d.ID)
       .attr("cx", (d: CleanData) => x(d.xValue))
       .attr("cy", (d: CleanData) => y(d.yValue))
-      .attr("r", 7)
+      .attr("r", this.radius)
       .attr("class", "scatterCircle")
       .style("opacity", .5)
       .attr("tabindex", "-1")
       .attr("aria-label", (d: CleanData) => d.label)
       .attr("aria-description", (d: CleanData) => this.xAxisKey + ": " + d.xValue + ", " + this.yAxisKey + ": " + d.yValue)
       .on("keydown", this.dotKeyDown.bind(this));
+    if (this.showLabel) {
+      dataIterable = new DataIterable(this.cleanData);
+      this.dots.selectAll("text")
+        .data(dataIterable)
+        .enter()
+        .append("text")
+        .text((d: CleanData) => d.label)
+        .attr("x", (d: CleanData) => x(d.xValue))
+        .attr("y", (d: CleanData) => y(d.yValue))
+        .attr("fill", "white");
+    }
   }
 
   private createCleanData(): Record<number, Array<CleanData>> {
     let cd: Record<number, Array<CleanData>> = {};
     for (const d of this.data) {
-      const xValue = d[this.xAxisKey] as number;
+      const xValue = parseFloat(d[this.xAxisKey] as string);
       const obj = {
         label: d[this.labelKey] as string,
         xValue: xValue,
-        yValue: d[this.yAxisKey] as number,
+        yValue: parseFloat(d[this.yAxisKey] as string),
         ID: '',
       };
       if (this.minX == null || obj.xValue < this.minX) this.minX = obj.xValue;
@@ -177,8 +187,8 @@ export class ScatterComponent implements OnInit {
           cd[xValue].splice(insertIndex, 0, obj);
         }
       }
-
     }
+    cd = this.sortData(cd);
     this.keys = Object.keys(cd).map(Number);
     for (const key of this.keys) {
       const entry = cd[key];
@@ -187,6 +197,18 @@ export class ScatterComponent implements OnInit {
       }
     }
     return cd;
+  }
+
+  private sortData(d: Record<number, Array<CleanData>>): Record<number, Array<CleanData>> {
+    const ordered = Object.keys(d).sort().reduce(
+      (obj: Record<number, Array<CleanData>>, key: string) => {
+        const numericKey = parseFloat(key);
+        obj[numericKey] = d[numericKey];
+        return obj;
+      },
+      {}
+    );
+    return ordered;
   }
 
   private dotKeyDown(evt: KeyboardEvent): void {
@@ -212,13 +234,14 @@ export class ScatterComponent implements OnInit {
         this.focusDot(newDataPoint.key + '_' + newDataPoint.idx);
       }
     }
+    evt.preventDefault();
   }
 
   private getDataPointById(id: string): DataPoint | null {
     const dataId = id.substring(id.indexOf('_') + 1);
     if (dataId) {
-      const key = parseInt(dataId.substring(0, dataId.indexOf('_')));
-      const idx = parseInt(dataId.substring(dataId.indexOf('_') + 1));
+      const key = parseFloat(dataId.substring(0, dataId.indexOf('_')));
+      const idx = parseFloat(dataId.substring(dataId.indexOf('_') + 1));
       if (key != null && idx != null && !isNaN(key) && !isNaN(idx)) {
         return {
           key,
@@ -269,7 +292,7 @@ export class ScatterComponent implements OnInit {
   }
 
   private focusDot(id: string) {
-    const selection = d3.select("#DOT_" + id);
+    const selection = d3.select('#DOT_' + id.replaceAll('.', '\\.'));
     const node = selection.node() as HTMLElement | null;
     if (node) {
       if (this.focusedDot != null) {
@@ -283,7 +306,7 @@ export class ScatterComponent implements OnInit {
   }
 
   private blurDot(id: string) {
-    const selection = d3.select("#DOT_" + id);
+    const selection = d3.select('#DOT_' + id.replaceAll('.', '\\.'));
     const node = selection.node() as HTMLElement | null;
     if (node) {
       node.setAttribute("tabindex", "-1");
