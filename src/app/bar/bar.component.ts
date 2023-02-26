@@ -1,5 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import * as d3 from 'd3';
+import { D3Selection } from 'src/types';
+import { CleanData } from './barTypes';
+import { IDGenerator } from './IDGenerator';
 
 @Component({
   selector: 'app-bar',
@@ -9,39 +12,56 @@ import * as d3 from 'd3';
 
 export class BarComponent implements OnInit {
 
-  private data = [
-    { "Framework": "Vue", "Stars": "166443", "Released": "2014" },
-    { "Framework": "React", "Stars": "150793", "Released": "2013" },
-    { "Framework": "Angular", "Stars": "62342", "Released": "2016" },
-    { "Framework": "Backbone", "Stars": "27647", "Released": "2010" },
-    { "Framework": "Ember", "Stars": "21471", "Released": "2011" },
-  ];
-  private svg: any;
-  private margin = 50;
-  private width = 750 - (this.margin * 2);
-  private height = 400 - (this.margin * 2);
+  @Input()
+  data: Array<Record<string, string | number>> = [];
+  @Input()
+  yAxisKey: string = '';
+  @Input()
+  labelKey: string = '';
+  @Input()
+  margin: number = 50;
+  @Input()
+  width: number = 750 - (this.margin * 2);
+  @Input()
+  height: number = 400 - (this.margin * 2);
+  @Input()
+  title: string = 'Bar Chart';
 
-  constructor() { }
+  private cleanData: Array<CleanData> = [];
+  private svg?: D3Selection;
+  private maxY: number = -1;
+  private focusedBar?: string;
+  barId: string;
+
+  constructor() {
+    this.barId = IDGenerator.getId();
+  }
 
   ngOnInit(): void {
-    this.createSvg();
-    this.drawBars(this.data);
+    setTimeout(() => {
+      this.createCleanData();
+      this.createSvg();
+      this.drawBars();
+    }, 0);
   }
 
   private createSvg(): void {
-    this.svg = d3.select("figure#bar")
+    this.svg = d3.select("figure#" + this.barId)
       .append("svg")
       .attr("width", this.width + (this.margin * 2))
       .attr("height", this.height + (this.margin * 2))
       .append("g")
-      .attr("transform", "translate(" + this.margin + "," + this.margin + ")");
+      .attr("transform", "translate(" + this.margin + "," + this.margin + ")")
+      .attr("tabindex", "0")
+      .on("keydown", this.svgKeyDown.bind(this));
   }
 
-  private drawBars(data: any[]): void {
+  private drawBars(): void {
+    if (!this.svg) return;
     // Create the X-axis band scale
     const x = d3.scaleBand()
       .range([0, this.width])
-      .domain(data.map(d => d.Framework))
+      .domain(this.cleanData.map(d => d.label))
       .padding(0.2);
 
     // Draw the X-axis on the DOM
@@ -54,7 +74,7 @@ export class BarComponent implements OnInit {
 
     // Create the Y-axis band scale
     const y = d3.scaleLinear()
-      .domain([0, 200000])
+      .domain([0, Math.floor(this.maxY + 0.2 * this.maxY)])
       .range([this.height, 0]);
 
     // Draw the Y-axis on the DOM
@@ -63,14 +83,103 @@ export class BarComponent implements OnInit {
 
     // Create and fill the bars
     this.svg.selectAll("bars")
-      .data(data)
+      .data(this.cleanData)
       .enter()
       .append("rect")
-      .attr("x", (d: any) => x(d.Framework))
-      .attr("y", (d: any) => y(d.Stars))
+      .attr("x", (d: CleanData) => x(d.label) || 0)
+      .attr("y", (d: CleanData) => y(d.yValue))
       .attr("width", x.bandwidth())
-      .attr("height", (d: any) => this.height - y(d.Stars))
-      .attr("fill", "#d04a35");
+      .attr("height", (d: CleanData) => this.height - y(d.yValue))
+      .attr("class", "bar")
+      .attr("tabindex", "-1")
+      .attr("id", (d: CleanData) => d.ID)
+      .attr("aria-label", (d: CleanData) => d.label)
+      .attr("aria-description", (d: CleanData) => this.yAxisKey + ': ' + d.yValue)
+      .on("keydown", this.barKeyDown.bind(this));
+  }
+
+  private createCleanData(): void {
+    this.cleanData = [];
+    for (const d of this.data) {
+      const obj = {
+        yValue: d[this.yAxisKey] as number,
+        label: d[this.labelKey] as string,
+        ID: d[this.labelKey] + '_' + d[this.yAxisKey]
+      };
+      if (obj.yValue > this.maxY) this.maxY = obj.yValue;
+      this.cleanData.push(obj);
+    }
+  }
+
+  private focusBar(id: string) {
+    const selection = d3.select('[id="' + id.replaceAll('.', '\\.') + '"]');
+    const node = selection.node() as HTMLElement | null;
+    if (node) {
+      if (this.focusedBar != null) {
+        this.blurBar(this.focusedBar);
+      }
+      node.focus();
+      node.setAttribute("tabindex", "0");
+      node.setAttribute("class", "barCurrent");
+      this.focusedBar = id;
+    }
+  }
+
+  private blurBar(id: string) {
+    const selection = d3.select('[id="' + id.replaceAll('.', '\\.') + '"]');
+    const node = selection.node() as HTMLElement | null;
+    if (node) {
+      node.setAttribute("tabindex", "-1");
+      node.blur();
+      node.setAttribute("class", "bar");
+    }
+  }
+
+  private barKeyDown(evt: KeyboardEvent): void {
+    switch (evt.key) {
+      case 'ArrowRight':
+      case 'ArrowLeft':
+        this.horizontalNav(evt.key === 'ArrowLeft');
+        break;
+      case 'End':
+        this.focusBar(this.cleanData[this.cleanData.length - 1].ID);
+        break;
+      case 'Home':
+        this.focusBar(this.cleanData[0].ID);
+        break;
+    }
+    evt.preventDefault();
+  }
+
+  private horizontalNav(toLeft: boolean): void {
+    const currIdx = this.getCurrBarIdx();
+    if (currIdx !== -1) {
+      const newIdx = toLeft ? currIdx - 1 : currIdx + 1;
+      if (newIdx >= 0 && newIdx < this.cleanData.length) {
+        this.focusBar(this.cleanData[newIdx].ID);
+      }
+    }
+  }
+
+  private getCurrBarIdx(): number {
+    if (this.focusedBar) {
+      for (let idx = 0; idx < this.cleanData.length; ++idx) {
+        if (this.cleanData[idx].ID === this.focusedBar) {
+          return idx;
+        }
+      }
+    }
+    return -1;
+  }
+
+  private svgKeyDown(evt: KeyboardEvent): void {
+    if (evt.key === 'ArrowDown') {
+      if (this.focusedBar) {
+        this.focusBar(this.focusedBar);
+      } else {
+        this.focusBar(this.cleanData[0].ID);
+      }
+    }
   }
 
 }

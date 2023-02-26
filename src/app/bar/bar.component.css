@@ -1,0 +1,7 @@
+:host ::ng-deep .bar {
+    fill: cyan;
+}
+
+:host ::ng-deep .barCurrent {
+    fill: red;
+}
