@@ -34,6 +34,8 @@ export class ScatterComponent implements OnInit {
   showLabel: boolean = true;
   @Input()
   radius: number = 7;
+  @Input()
+  formatXAxisToInt: boolean = false;
 
   private cleanData?: Record<number, Array<CleanData>>;
   private svg?: D3Selection;
@@ -92,11 +94,17 @@ export class ScatterComponent implements OnInit {
     if (this.minX == null) this.minX = 0;
     const threshold = (this.maxX - this.minX) * 0.1;
     const x = d3.scaleLinear()
-      .domain([Math.floor(this.minX - threshold), Math.ceil(this.maxX + threshold)])
+      .domain([Math.floor(this.minX - threshold), Math.floor(this.maxX + threshold)])
       .range([0, this.width]);
-    this.svg.append("g")
-      .attr("transform", "translate(0," + this.height + ")")
-      .call(d3.axisBottom(x).tickFormat(d3.format("d")));
+    if (this.formatXAxisToInt) {
+      this.svg.append("g")
+        .attr("transform", "translate(0," + this.height + ")")
+        .call(d3.axisBottom(x).tickFormat(d3.format("d")));
+    } else {
+      this.svg.append("g")
+        .attr("transform", "translate(0," + this.height + ")")
+        .call(d3.axisBottom(x));
+    }
 
     // Add Y axis
     const y = d3.scaleLinear()
