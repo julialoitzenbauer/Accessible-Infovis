@@ -30,6 +30,8 @@ export class BarComponent implements OnInit {
   private cleanData: Array<CleanData> = [];
   private svg?: D3Selection;
   private maxY: number = -1;
+  private maxId?: string;
+  private minId?: string;
   private focusedBar?: string;
   barId: string;
 
@@ -48,12 +50,13 @@ export class BarComponent implements OnInit {
   private createSvg(): void {
     this.svg = d3.select("figure#" + this.barId)
       .append("svg")
+      .on("keydown", this.svgKeyDown.bind(this))
+      .attr("id", "SVG_" + this.barId)
+      .attr("tabindex", "0")
       .attr("width", this.width + (this.margin * 2))
       .attr("height", this.height + (this.margin * 2))
       .append("g")
-      .attr("transform", "translate(" + this.margin + "," + this.margin + ")")
-      .attr("tabindex", "0")
-      .on("keydown", this.svgKeyDown.bind(this));
+      .attr("transform", "translate(" + this.margin + "," + this.margin + ")");
   }
 
   private drawBars(): void {
@@ -100,6 +103,8 @@ export class BarComponent implements OnInit {
 
   private createCleanData(): void {
     this.cleanData = [];
+    let minValue: number | undefined;
+    let maxValue: number | undefined;
     for (const d of this.data) {
       const obj = {
         yValue: d[this.yAxisKey] as number,
@@ -107,6 +112,14 @@ export class BarComponent implements OnInit {
         ID: d[this.labelKey] + '_' + d[this.yAxisKey]
       };
       if (obj.yValue > this.maxY) this.maxY = obj.yValue;
+      if (minValue == null || obj.yValue < minValue) {
+        minValue = obj.yValue;
+        this.minId = obj.ID;
+      }
+      if (maxValue == null || obj.yValue > maxValue) {
+        maxValue = obj.yValue;
+        this.maxId = obj.ID;
+      }
       this.cleanData.push(obj);
     }
   }
@@ -147,6 +160,19 @@ export class BarComponent implements OnInit {
       case 'Home':
         this.focusBar(this.cleanData[0].ID);
         break;
+      case 'ArrowDown':
+        if (evt.altKey && this.minId) {
+          this.focusBar(this.minId);
+        }
+        break;
+      case 'ArrowUp':
+        if (evt.altKey && this.maxId) {
+          this.focusBar(this.maxId);
+        }
+        break;
+      case 'Escape':
+        this.focusSvg(true);
+        break;
     }
     evt.preventDefault();
   }
@@ -178,6 +204,20 @@ export class BarComponent implements OnInit {
         this.focusBar(this.focusedBar);
       } else {
         this.focusBar(this.cleanData[0].ID);
+      }
+    }
+  }
+
+  private focusSvg(blurCurrDot?: boolean): void {
+    if (this.svg) {
+      if (blurCurrDot && this.focusedBar != null) {
+        this.blurBar(this.focusedBar);
+      }
+      this.svg.node()?.parentElement?.focus();
+      const selection = d3.select('[id="SVG_' + this.barId + '"]');
+      const node = selection.node() as HTMLElement | null;
+      if (node) {
+        node.focus();
       }
     }
   }

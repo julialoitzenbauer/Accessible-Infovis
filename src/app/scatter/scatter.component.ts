@@ -57,12 +57,6 @@ export class ScatterComponent implements OnInit {
       this.initAria();
       this.createSvg();
       this.drawPlot();
-      if (this.cleanData) {
-        const dataIterable = new DataIterable(this.cleanData);
-        for (const d of dataIterable) {
-          console.log(d.label);
-        }
-      }
     });
   }
 
@@ -77,13 +71,14 @@ export class ScatterComponent implements OnInit {
   private createSvg(): void {
     this.svg = d3.select("figure#" + this.scatterId)
       .append("svg")
+      .attr("id", "SVG_" + this.scatterId)
+      .on("keydown", this.svgKeyDown.bind(this))
       .attr("width", this.width + (this.margin * 2))
       .attr("height", this.height + (this.margin * 2))
       .attr("tabindex", "0")
       .attr("id", "SVG")
       .attr('aria-label', 'Scatterplot: ' + this.title)
       .attr('aria-description', this.cleanDescription || null)
-      .on("keydown", this.svgKeyDown.bind(this))
       .append("g")
       .attr("transform", "translate(" + this.margin + "," + this.margin + ")");
   }
@@ -339,7 +334,7 @@ export class ScatterComponent implements OnInit {
         this.blurDot(this.focusedDot);
       }
       this.svg.node()?.parentElement?.focus();
-      const selection = d3.select("SVG");
+      const selection = d3.select('[id="SVG_' + this.scatterId + '"]');
       const node = selection.node() as HTMLElement | null;
       if (node) {
         node.focus();
