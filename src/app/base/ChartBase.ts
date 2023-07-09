@@ -42,12 +42,35 @@ export abstract class ChartBase<T> implements OnInit {
      */
     protected abstract initAria(): void;
 
+    /**
+     * Blurs the element with the given id
+     * @param id id of the element which should be blurred
+     */
     protected blurElement(id: string) {
-        const selection = d3.select('#ELEMENT_' + id.replaceAll('.', '\\.'));
+        const selection = d3.select('[id="' + id.replaceAll('.', '\\.')+ '"]');
         const node = selection.node() as HTMLElement | null;
         if (node) {
           node.setAttribute("tabindex", "-1");
           node.blur();
+          node.setAttribute("class", "element");
         }
     }
+
+    /**
+     * Focuses the svg
+     * @param blurCurrElement indicates if the current element should be blured
+     */
+    protected focusSvg(blurCurrElement?: boolean): void {
+        if (this.svg) {
+          if (blurCurrElement && this.focusedElement != null) {
+            this.blurElement(this.focusedElement);
+          }
+          this.svg.node()?.parentElement?.focus();
+          const selection = d3.select('[id="SVG_' + this.figureId + '"]');
+          const node = selection.node() as HTMLElement | null;
+          if (node) {
+            node.focus();
+          }
+        }
+      }
 }

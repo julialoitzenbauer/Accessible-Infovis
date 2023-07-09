@@ -119,7 +119,7 @@ export class ScatterComponent extends ChartBase<CleanData> {
       .data(dataIterable)
       .enter()
       .append("circle")
-      .attr('id', (d: CleanDataItem) => "ELEMENT_" + d.ID)
+      .attr('id', (d: CleanDataItem) => d.ID)
       .attr("cx", (d: CleanDataItem) => x(d.xValue))
       .attr("cy", (d: CleanDataItem) => y(d.yValue))
       .attr("r", this.radius)
@@ -241,13 +241,12 @@ export class ScatterComponent extends ChartBase<CleanData> {
       }
       if (newDataPoint) {
         this.focusDot(newDataPoint.key + '_' + newDataPoint.idx);
+        evt.preventDefault();
       }
     }
-    evt.preventDefault();
   }
 
-  private getDataPointById(id: string): DataPoint | null {
-    const dataId = id.substring(id.indexOf('_') + 1);
+  private getDataPointById(dataId: string): DataPoint | null {
     if (dataId) {
       const key = parseFloat(dataId.substring(0, dataId.indexOf('_')));
       const idx = parseFloat(dataId.substring(dataId.indexOf('_') + 1));
@@ -301,24 +300,15 @@ export class ScatterComponent extends ChartBase<CleanData> {
   }
 
   private focusDot(id: string) {
-    const selection = d3.select('#ELEMENT_' + id.replaceAll('.', '\\.'));
+    const selection = d3.select('[id="' + id.replaceAll('.', '\\.')+ '"]');
     const node = selection.node() as HTMLElement | null;
     if (node) {
       if (this.focusedElement != null) {
-        this.blurDot(this.focusedElement);
+        this.blurElement(this.focusedElement);
       }
       node.focus();
       node.setAttribute("tabindex", "0");
       this.focusedElement = id;
-    }
-  }
-
-  private blurDot(id: string) {
-    const selection = d3.select('#ELEMENT_' + id.replaceAll('.', '\\.'));
-    const node = selection.node() as HTMLElement | null;
-    if (node) {
-      node.setAttribute("tabindex", "-1");
-      node.blur();
     }
   }
 
@@ -330,20 +320,6 @@ export class ScatterComponent extends ChartBase<CleanData> {
         this.focusDot(this.keys[0] + '_0');
       }
       evt.preventDefault();
-    }
-  }
-
-  private focusSvg(blurCurrDot?: boolean): void {
-    if (this.svg) {
-      if (blurCurrDot && this.focusedElement != null) {
-        this.blurDot(this.focusedElement);
-      }
-      this.svg.node()?.parentElement?.focus();
-      const selection = d3.select('[id="SVG_' + this.figureId + '"]');
-      const node = selection.node() as HTMLElement | null;
-      if (node) {
-        node.focus();
-      }
     }
   }
 

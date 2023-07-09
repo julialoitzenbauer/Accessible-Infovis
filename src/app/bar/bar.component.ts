@@ -86,7 +86,7 @@ export class BarComponent extends ChartBase<CleanData> {
       .attr("y", (d: CleanDataItem) => y(d.yValue))
       .attr("width", x.bandwidth())
       .attr("height", (d: CleanDataItem) => this.height - y(d.yValue))
-      .attr("class", "bar")
+      .attr("class", "element")
       .attr("tabindex", "-1")
       .attr("id", (d: CleanDataItem) => d.ID)
       .attr("aria-label", (d: CleanDataItem) => d.label)
@@ -141,22 +141,12 @@ export class BarComponent extends ChartBase<CleanData> {
     const node = selection.node() as HTMLElement | null;
     if (node) {
       if (this.focusedElement != null) {
-        this.blurBar(this.focusedElement);
+        this.blurElement(this.focusedElement);
       }
       node.focus();
       node.setAttribute("tabindex", "0");
-      node.setAttribute("class", "barCurrent");
+      node.setAttribute("class", "currentElement");
       this.focusedElement = id;
-    }
-  }
-
-  private blurBar(id: string) {
-    const selection = d3.select('[id="' + id.replaceAll('.', '\\.') + '"]');
-    const node = selection.node() as HTMLElement | null;
-    if (node) {
-      node.setAttribute("tabindex", "-1");
-      node.blur();
-      node.setAttribute("class", "bar");
     }
   }
 
@@ -220,18 +210,5 @@ export class BarComponent extends ChartBase<CleanData> {
     }
   }
 
-  private focusSvg(blurCurrDot?: boolean): void {
-    if (this.svg) {
-      if (blurCurrDot && this.focusedElement != null) {
-        this.blurBar(this.focusedElement);
-      }
-      this.svg.node()?.parentElement?.focus();
-      const selection = d3.select('[id="SVG_' + this.figureId + '"]');
-      const node = selection.node() as HTMLElement | null;
-      if (node) {
-        node.focus();
-      }
-    }
-  }
 
 }

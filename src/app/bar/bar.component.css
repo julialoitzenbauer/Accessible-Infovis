@@ -1,7 +1,7 @@
-:host ::ng-deep .bar {
+:host ::ng-deep .element {
     fill: cyan;
 }
 
-:host ::ng-deep .barCurrent {
+:host ::ng-deep .currentElement {
     fill: red;
 }
