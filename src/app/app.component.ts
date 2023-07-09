@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { bigData } from './bigData';
+import { foodPrices } from './foodPrices';
 
 @Component({
   selector: 'app-root',
@@ -19,4 +20,5 @@ export class AppComponent {
   ];
 
   bigData = bigData;
+  foodData = foodPrices.filter((v) => v.Year === 2021);
 }

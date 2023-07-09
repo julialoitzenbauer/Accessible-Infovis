@@ -1,7 +1,8 @@
-:host ::ng-deep .scatterCircle {
+:host ::ng-deep circle {
     fill: cyan;
 }
 
-:host ::ng-deep .scatterCircleCurrent {
+:host ::ng-deep circle:focus {
     fill: red;
+    outline: 1px solid cyan;
 }

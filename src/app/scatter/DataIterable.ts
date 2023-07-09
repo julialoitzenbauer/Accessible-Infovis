@@ -1,18 +1,18 @@
-import { CleanData } from "./scatterTypes";
+import { CleanData, CleanDataItem } from "./scatterTypes";
 
 type NextType = {
     done: boolean;
-    value: CleanData;
+    value: CleanDataItem;
 };
 
-export class DataIterable implements Iterable<CleanData> {
-    private data: Record<number, Array<CleanData>>;
+export class DataIterable implements Iterable<CleanDataItem> {
+    private data: CleanData;
     private currRecordIdx: number = 0;
     private keys: Array<number>;
     private currDataIdx: number = -1;
     private done: boolean = false;
 
-    constructor(d: Record<number, Array<CleanData>>) {
+    constructor(d: CleanData) {
         this.data  = d;
         this.keys = Object.keys(this.data).map(Number);
     }

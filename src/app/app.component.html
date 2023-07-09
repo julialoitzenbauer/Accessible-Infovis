@@ -10,5 +10,6 @@
 -->
 <app-scatter [labelKey]="'Framework'" [xAxisKey]="'Released'" [yAxisKey]="'Stars'" [data]="data" [title]="'Frameworks, and their Stars compared to their release date'" [formatXAxisToInt]="true"></app-scatter>
 <app-scatter [labelKey]="'name'" [xAxisKey]="'danceability'" [yAxisKey]="'energy'" [data]="bigData" [title]="'Spotify Data - Danceability vs. Energy'" [showLabel]="false" [radius]="4"></app-scatter>
+<app-scatter [labelKey]="'Entity'" [xAxisKey]="'consumer_expenditure'" [yAxisKey]="'expenditure_food_dollars'" [data]="foodData" [title]="'Annual food expendidure vs. total consumer expenditure, 2021'" [showLabel]="false" [showLabelOnHover]="true" [radius]="4"></app-scatter>
 
-<app-bar [data]="data" [yAxisKey]="'Stars'" [labelKey]="'Framework'"></app-bar>
+<app-bar [data]="data" [xAxisKey]="'Frameworks'" [yAxisKey]="'Stars'" [labelKey]="'Framework'" [title]="'Frameworks and their Stars'"></app-bar>
