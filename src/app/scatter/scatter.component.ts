@@ -5,6 +5,7 @@ import { ChartBase } from '../base/ChartBase';
 import { DataIterable } from './DataIterable';
 import { IDGenerator } from '../base/IDGenerator';
 import { CleanData, CleanDataItem, DataPoint } from './scatterTypes';
+import { Branch, TreeData, TreeNode } from './TreeData';
 
 @Component({
   selector: 'app-scatter',
@@ -27,6 +28,9 @@ export class ScatterComponent extends ChartBase<CleanData> {
   private maxX: number = 0;
   private maxY: number = 0;
   private keys: Array<number> = [];
+  private treeData?: TreeData;
+  private currentNode?: HTMLElement | null;
+  private keyNavTimeOut?: number;
 
   constructor() {
     super();
@@ -43,6 +47,8 @@ export class ScatterComponent extends ChartBase<CleanData> {
 
   protected initAria(): void {
     this.cleanData = this.createCleanData();
+    this.treeData = new TreeData(this.cleanData);
+    this.buildTreeNav();
     this.cleanDescription = this.description || '';
     if (this.cleanDescription) this.cleanDescription += ', ';
     this.cleanDescription += this.xAxisKey + ' (x-Axis) has a span from 0 to ' + this.maxX;
@@ -50,6 +56,7 @@ export class ScatterComponent extends ChartBase<CleanData> {
   }
 
   private createSvg(): void {
+    let description = this.treeData?.getRoot().getDescription() || this.cleanDescription || null;
     this.svg = d3.select("figure#" + this.figureId)
       .append("svg")
       .attr("id", "SVG_" + this.figureId)
@@ -59,7 +66,7 @@ export class ScatterComponent extends ChartBase<CleanData> {
       .attr("tabindex", "0")
       .attr("id", "SVG")
       .attr('aria-label', 'Scatterplot: ' + this.title)
-      .attr('aria-description', this.cleanDescription || null)
+      .attr('aria-description', description || null)
       .append("g")
       .attr("transform", "translate(" + this.margin + "," + this.margin + ")");
   }
@@ -260,6 +267,38 @@ export class ScatterComponent extends ChartBase<CleanData> {
     return null;
   }
 
+  private createNode(node: TreeNode): HTMLElement {
+      const nodeElem = document.createElement('div');
+      nodeElem.setAttribute('aria-label', node.getDescription());
+      nodeElem.setAttribute('tabindex', '-1');
+      nodeElem.setAttribute('class', 'TreeNode');
+      const leftData = (node as Branch).getLeftTreeNode?.();
+      const rightData = (node as Branch).getRightTreeNode?.();
+      const children = (node as Branch).getChildren?.();
+      if (leftData) {
+        const leftNode = this.createNode(leftData);
+        nodeElem.appendChild(leftNode);
+      }
+      if (rightData) {
+        const rightNode = this.createNode(rightData);
+        nodeElem.appendChild(rightNode);
+      }
+      if (children?.length) {
+        for (const child of children) {
+          const childNode = this.createNode(child);
+          nodeElem.appendChild(childNode);
+        }
+      }
+      return nodeElem;
+  }
+
+  private buildTreeNav(): void {
+    const navContainer = d3.select('[id="' + this.figureId.replaceAll('.', '\\.')+ '_NAV"]')?.node();
+    if (navContainer && this.treeData) {
+      (navContainer as HTMLElement).appendChild(this.createNode(this.treeData.getRoot()));
+    }
+  }
+
   private horizontalNav(currDataPoint: DataPoint, toLeft: boolean): DataPoint | null {
     const currKeyIdx = this.keys.indexOf(currDataPoint.key);
     if (currKeyIdx !== -1 && this.cleanData) {
@@ -312,14 +351,95 @@ export class ScatterComponent extends ChartBase<CleanData> {
     }
   }
 
-  private svgKeyDown(evt: KeyboardEvent): void {
-    if (evt.key === 'ArrowDown') {
-      if (this.focusedElement) {
-        this.focusDot(this.focusedElement);
-      } else if (this.keys.length) {
-        this.focusDot(this.keys[0] + '_0');
+  private setNewCurrentNode(node?: HTMLElement | null): void {
+    if (node) {
+      if (this.currentNode) {
+        this.currentNode.setAttribute('tabindex', '-1');
+        this.currentNode.setAttribute('class', 'TreeNode');
+        this.currentNode.removeEventListener('keydown', this.navListener.bind(this));
+      }
+      if (node.classList.contains('TreeNode')) {
+        this.currentNode = node;
+        node.setAttribute('tabindex', '0');
+        node.setAttribute('class', 'TreeNode Current');
+        node.addEventListener('keydown', this.navListener.bind(this));
+      } else {
+        this.currentNode = null;
+      }
+      node.focus();
+    }
+  }
+
+  private getSibling(currIdx: number, left?: boolean, siblings?: Array<HTMLElement>): HTMLElement | null {
+    if (siblings?.length) {
+      let newIdx = left ? currIdx - 1 : currIdx + 1;
+      if (newIdx >= 0 && newIdx < siblings.length) {
+        return siblings[newIdx];
+      }
+    }
+    return null;
+  }
+
+  private navListener(evt: KeyboardEvent) {
+    if (this.keyNavTimeOut) {
+      clearTimeout(this.keyNavTimeOut);
+    }
+    this.keyNavTimeOut = window.setTimeout(() => {
+      if (!this.currentNode && evt.target) {
+        this.currentNode = evt.target as HTMLElement;
+      }
+      if (this.currentNode) {
+        let siblings: Array<HTMLElement> = [];
+        let siblingElements = this.currentNode.parentElement?.childNodes;
+        let currIdx = -1;
+        if (siblingElements?.length) {
+          console.log(siblingElements);
+          for (let siblingIdx = 0; siblingIdx < siblingElements.length; ++siblingIdx) {
+            if ((siblingElements[siblingIdx] as HTMLElement).classList?.contains('TreeNode')) {
+              siblings.push(siblingElements[siblingIdx] as HTMLElement);
+            }
+          }
+          for (let idx = 0; idx < siblings.length; ++idx) {
+            if (siblings[idx].classList.contains('Current')) {
+              currIdx = idx;
+              break;
+            }
+          }
+        }
+        let newNode: HTMLElement | null = null;
+        if (evt.key === 'ArrowUp' || (evt.key === 'Tab' && evt.shiftKey)) {
+          newNode = this.currentNode.parentElement as HTMLElement | null;
+        } else if (evt.key === 'ArrowLeft') {
+          newNode = this.getSibling(currIdx, true, siblings);
+        } else if (evt.key === 'ArrowRight') {
+          newNode = this.getSibling(currIdx, false, siblings);
+        } else if (evt.key === 'Tab' && !evt.shiftKey) {
+          const children = this.currentNode.querySelectorAll('.TreeNode');
+          if (children.length) {
+            newNode = children[0] as HTMLElement;
+          }
+        }
+        if (newNode) {
+          this.setNewCurrentNode(newNode);
+        }
       }
       evt.preventDefault();
+    }, 0);
+  }
+
+  private svgKeyDown(evt: KeyboardEvent): void {
+    if (evt.key === 'Enter') {
+      const navContainer = d3.select('[id="' + this.figureId.replaceAll('.', '\\.')+ '_NAV"]')?.node();
+      if (navContainer) {
+        const rootNode = (navContainer as HTMLElement).querySelector('.TreeNode') as HTMLElement | null;
+        if (rootNode) {
+          this.currentNode = rootNode;
+          rootNode.setAttribute('tabindex', '0');
+          rootNode.setAttribute('class', 'TreeNode Current');
+          rootNode.addEventListener('keydown', this.navListener.bind(this));
+          rootNode.focus();
+        }
+      }
     }
   }
 
