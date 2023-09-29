@@ -1,5 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import * as d3 from 'd3';
+import * as Tone from 'tone';
 import { D3Selection, D3ScaleLinear } from 'src/types';
 import { DataIterable } from './DataIterable';
 import { IDGenerator } from './IDGenerator';
@@ -37,6 +38,10 @@ export class ScatterComponent implements OnInit {
   @Input()
   formatXAxisToInt: boolean = false;
 
+  @ViewChild('menuList') menuList: ElementRef<HTMLElement> | undefined;
+  @ViewChild('menuButton') menuButton: ElementRef<HTMLElement> | undefined;
+  @ViewChild('liveRegion') liveRegion: ElementRef<HTMLElement> | undefined;
+
   private cleanData?: Record<number, Array<CleanData>>;
   private svg?: D3Selection;
   private dots?: D3Selection;
@@ -47,9 +52,13 @@ export class ScatterComponent implements OnInit {
   private maxY: number = 0;
   private keys: Array<number> = [];
   scatterId: string;
+  menuIsOpen: boolean;
+  menuId: string;
 
   constructor() {
     this.scatterId = IDGenerator.getId();
+    this.menuIsOpen = false;
+    this.menuId = this.scatterId + '_MENU';
   }
 
   ngOnInit(): void {
@@ -58,6 +67,74 @@ export class ScatterComponent implements OnInit {
       this.createSvg();
       this.drawPlot();
     });
+  }
+
+  menuKeyDown(evt: KeyboardEvent): void {
+    console.log(evt.key);
+    if (evt.key === 'Enter' || evt.key === ' ' || evt.key === 'ArrowDown' || evt.key === 'ArrowUp') {
+      this.menuIsOpen = !this.menuIsOpen;
+      setTimeout(() => {
+        if (this.menuList?.nativeElement) {
+          const menuItems = this.menuList.nativeElement.querySelectorAll('li');
+          const itemIdx = evt.key === 'ArrowUp' ? menuItems.length - 1 : 0;
+          menuItems[itemIdx].tabIndex = 0;
+          menuItems[itemIdx].focus();
+        }
+      }, 0);
+      evt.preventDefault();
+    } else if (evt.key === 'Escape') {
+      this.focusSvg(true);
+    }
+  }
+
+  menuItemKeyDown(evt: KeyboardEvent): void {
+    const target = evt.target as HTMLElement | null;
+    if (target) {
+      if (evt.key === 'ArrowDown' || evt.key === 'ArrowUp') {
+        let next = evt.key === 'ArrowDown' ?
+          target.nextElementSibling as HTMLElement | null :
+          target.previousElementSibling as HTMLElement | null;
+        if (evt.key === 'ArrowUp' && !next) {
+          next = this.menuList?.nativeElement.lastChild as HTMLElement | null;
+        }
+        if (evt.key === 'ArrowDown' && !next) {
+          next = this.menuList?.nativeElement.firstChild as HTMLElement | null;
+        }
+        if (next) {
+          target.tabIndex = -1;
+          next.tabIndex = 0;
+          next.focus();
+        }
+      } else if (evt.key === 'Escape') {
+        if (this.menuButton?.nativeElement) {
+          this.menuButton.nativeElement.focus();
+          this.menuIsOpen = false;
+        }
+      } else if (evt.key === 'Enter' || evt.key === ' ') {
+        this.triggerMenuItem(evt);
+      }
+      evt.preventDefault();
+    }
+  }
+
+  private triggerMenuItem(evt: KeyboardEvent): void {
+    const target = evt.target as HTMLElement | null;
+    if (target) {
+      switch(target.id) {
+        case 'MenuItemNavigate':
+          if (this.keys.length) {
+            this.focusDot(this.keys[0] + '_0');
+          }
+          break;
+        case 'MenuItemSummary':
+          if (this.liveRegion?.nativeElement) {
+            this.liveRegion.nativeElement.innerHTML = '';
+            const descriptionTag = document.createElement('p');
+            descriptionTag.innerText = this.cleanDescription || '';
+            this.liveRegion.nativeElement.appendChild(descriptionTag);
+          }
+      }
+    }
   }
 
   private initAria(): void {
@@ -223,7 +300,21 @@ export class ScatterComponent implements OnInit {
         if (evt.key === 'ArrowRight' || evt.key === 'ArrowLeft') {
           newDataPoint = this.horizontalNav(dataPoint, evt.key === 'ArrowLeft');
         } else if (evt.key === 'Escape') {
-          this.focusSvg(true);
+          if (this.focusedDot) {
+            this.blurDot(this.focusedDot)
+          }
+          if (this.menuList?.nativeElement) {
+            const menuItems = this.menuList.nativeElement.querySelectorAll('li');
+            for (let idx = 0; idx < menuItems.length; ++idx) {
+              const item = menuItems[idx] as HTMLElement;
+              if (item.id === 'MenuItemNavigate') {
+                item.tabIndex = 0;
+                item.focus();
+              } else {
+                item.removeAttribute('tabindex');
+              }
+            }
+          }
         } else if (evt.key === 'ArrowUp' || evt.key === 'ArrowDown') {
           newDataPoint = this.verticalNav(dataPoint, evt.key === 'ArrowUp');
         } else if (evt.key === 'Home') {
@@ -319,17 +410,19 @@ export class ScatterComponent implements OnInit {
   }
 
   private svgKeyDown(evt: KeyboardEvent): void {
-    if (evt.key === 'ArrowDown') {
-      if (this.focusedDot) {
-        this.focusDot(this.focusedDot);
-      } else if (this.keys.length) {
-        this.focusDot(this.keys[0] + '_0');
+    if (evt.key === 'Enter') {
+      if (this.menuButton?.nativeElement) {
+        this.menuButton.nativeElement.tabIndex = 0;
+        this.menuButton.nativeElement.focus();
       }
     }
   }
 
   private focusSvg(blurCurrDot?: boolean): void {
     if (this.svg) {
+      if (this.menuButton?.nativeElement) {
+        this.menuButton.nativeElement.tabIndex = -1;
+      }
       if (blurCurrDot && this.focusedDot != null) {
         this.blurDot(this.focusedDot);
       }

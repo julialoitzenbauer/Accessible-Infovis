@@ -5,3 +5,8 @@
 :host ::ng-deep .scatterCircleCurrent {
     fill: red;
 }
+
+[role="log"] {
+    position: absolute;
+    left: -999999px;
+}

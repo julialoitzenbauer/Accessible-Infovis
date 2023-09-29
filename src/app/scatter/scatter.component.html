@@ -1,2 +1,26 @@
 <h2>{{ title }}</h2>
-<figure [id]="scatterId" id=""></figure>
+<figure [id]="scatterId" id="">
+    <button
+        [id]="menuId + '_BUTTON'"
+        tabindex="-1"
+        type="menu"
+        aria-haspopup="true"
+        [attr.aria-controls]="menuId"
+        [attr.aria-expanded]="menuIsOpen"
+        (keydown)="menuKeyDown($event)"
+        #menuButton>
+        Visualisierungs-Interaktionen
+    </button>
+    <div role="log" aria-live="assertive" aria-relevant="all" #liveRegion>
+    </div>
+    <ul *ngIf="menuIsOpen"
+        [id]="menuId"
+        role="menu"
+        [attr.aria-labelledby]="menuId + '_BUTTON'"
+        #menuList>
+        <li id="MenuItemNavigate" role="menuitem" (keydown)="menuItemKeyDown($event)">Serielles Navigieren durch Daten</li>
+        <li id="MenuItemSummary" role="menuitem" (keydown)="menuItemKeyDown($event)">Zusammenfassung</li>
+        <li id="MenuItemSearch" role="menuitem" (keydown)="menuItemKeyDown($event)">Suchen</li>
+        <li id="MenuItemSonification" role="menuitem" (keydown)="menuItemKeyDown($event)">Sonification</li>
+    </ul>
+</figure>
