@@ -39,8 +39,10 @@ export class ScatterComponent implements OnInit {
   formatXAxisToInt: boolean = false;
 
   @ViewChild('menuList') menuList: ElementRef<HTMLElement> | undefined;
+  @ViewChild('searchMenuList') searchMenuList: ElementRef<HTMLElement> | undefined;
   @ViewChild('menuButton') menuButton: ElementRef<HTMLElement> | undefined;
   @ViewChild('liveRegion') liveRegion: ElementRef<HTMLElement> | undefined;
+  @ViewChild('searchMenuButton') searchMenuButton: ElementRef<HTMLElement> | undefined;
 
   private cleanData?: Record<number, Array<CleanData>>;
   private svg?: D3Selection;
@@ -53,11 +55,13 @@ export class ScatterComponent implements OnInit {
   private keys: Array<number> = [];
   scatterId: string;
   menuIsOpen: boolean;
+  searchMenuIsOpen: boolean;
   menuId: string;
 
   constructor() {
     this.scatterId = IDGenerator.getId();
     this.menuIsOpen = false;
+    this.searchMenuIsOpen = false;
     this.menuId = this.scatterId + '_MENU';
   }
 
@@ -70,50 +74,90 @@ export class ScatterComponent implements OnInit {
   }
 
   menuKeyDown(evt: KeyboardEvent): void {
-    console.log(evt.key);
     if (evt.key === 'Enter' || evt.key === ' ' || evt.key === 'ArrowDown' || evt.key === 'ArrowUp') {
       this.menuIsOpen = !this.menuIsOpen;
-      setTimeout(() => {
-        if (this.menuList?.nativeElement) {
-          const menuItems = this.menuList.nativeElement.querySelectorAll('li');
-          const itemIdx = evt.key === 'ArrowUp' ? menuItems.length - 1 : 0;
-          menuItems[itemIdx].tabIndex = 0;
-          menuItems[itemIdx].focus();
-        }
-      }, 0);
-      evt.preventDefault();
+      this.enterMenuList(false, evt);
     } else if (evt.key === 'Escape') {
       this.focusSvg(true);
     }
+    evt.preventDefault();
   }
 
-  menuItemKeyDown(evt: KeyboardEvent): void {
+  menuItemKeyDown(evt: KeyboardEvent, targetIdx: number): void {
+    if (evt.key === 'ArrowDown' || evt.key === 'ArrowUp') {
+      this.navInMenuList(false, evt);
+    } else if (evt.key === 'Escape') {
+      if (this.menuButton?.nativeElement) {
+        this.menuButton.nativeElement.focus();
+        this.menuIsOpen = false;
+      }
+    } else if (evt.key === 'Enter' || evt.key === ' ') {
+      this.triggerMenuItem(evt);
+    } else if (this.isMenuLetterNavigation(evt)) {
+      this.focusNextMenuItemByLetter(false, evt.key, targetIdx);
+    }
+    evt.preventDefault();
+  }
+
+  searchMenuKeyDown(evt: KeyboardEvent, targetIdx: number): void {
+    if (evt.key === 'Enter' || evt.key === ' ') {
+      this.searchMenuIsOpen = !this.searchMenuIsOpen;
+      this.enterMenuList(true, evt);
+    } else if (evt.key === 'ArrowUp' || evt.key === 'ArrowDown' || evt.key === 'Escape') {
+      this.menuItemKeyDown(evt, targetIdx);
+    } else if (this.isMenuLetterNavigation(evt)) {
+      this.focusNextMenuItemByLetter(false, evt.key, targetIdx);
+    }
+    evt.preventDefault();
+  }
+
+  searchMenuItemKeyDown(evt: KeyboardEvent, targetIdx: number): void {
+    if (evt.key === 'ArrowDown' || evt.key === 'ArrowUp') {
+      this.navInMenuList(true, evt);
+    } else if (evt.key === 'Escape') {
+      if (this.searchMenuButton?.nativeElement) {
+        this.searchMenuButton.nativeElement.focus();
+        this.searchMenuIsOpen = false;
+      }
+    } else if (this.isMenuLetterNavigation(evt)) {
+      this.focusNextMenuItemByLetter(true, evt.key, targetIdx);
+    }
+    evt.stopPropagation();
+    evt.preventDefault();
+  }
+
+  private enterMenuList(isSearchMenu: boolean, evt: KeyboardEvent): void {
+    setTimeout(() => {
+      const list = isSearchMenu ? this.searchMenuList : this.menuList;
+      if (list?.nativeElement) {
+        const menuItems = list.nativeElement.querySelectorAll('li');
+        const itemIdx = evt.key === 'ArrowUp' ? menuItems.length - 1 : 0;
+        menuItems[itemIdx].tabIndex = 0;
+        menuItems[itemIdx].focus();
+      }
+    }, 0);
+  }
+
+  private navInMenuList(isSearchMenu: boolean, evt: KeyboardEvent): void {
     const target = evt.target as HTMLElement | null;
+    const list = isSearchMenu ? this.searchMenuList : this.menuList;
     if (target) {
       if (evt.key === 'ArrowDown' || evt.key === 'ArrowUp') {
         let next = evt.key === 'ArrowDown' ?
           target.nextElementSibling as HTMLElement | null :
           target.previousElementSibling as HTMLElement | null;
         if (evt.key === 'ArrowUp' && !next) {
-          next = this.menuList?.nativeElement.lastChild as HTMLElement | null;
+          next = list?.nativeElement.lastChild as HTMLElement | null;
         }
         if (evt.key === 'ArrowDown' && !next) {
-          next = this.menuList?.nativeElement.firstChild as HTMLElement | null;
+          next = list?.nativeElement.firstChild as HTMLElement | null;
         }
         if (next) {
           target.tabIndex = -1;
           next.tabIndex = 0;
           next.focus();
         }
-      } else if (evt.key === 'Escape') {
-        if (this.menuButton?.nativeElement) {
-          this.menuButton.nativeElement.focus();
-          this.menuIsOpen = false;
-        }
-      } else if (evt.key === 'Enter' || evt.key === ' ') {
-        this.triggerMenuItem(evt);
       }
-      evt.preventDefault();
     }
   }
 
@@ -133,6 +177,31 @@ export class ScatterComponent implements OnInit {
             descriptionTag.innerText = this.cleanDescription || '';
             this.liveRegion.nativeElement.appendChild(descriptionTag);
           }
+          break;
+      }
+    }
+  }
+
+  private focusNextMenuItemByLetter(isSearchMenu: boolean, letter: string, targetIdx: number): void {
+    const list = isSearchMenu ? this.searchMenuList : this.menuList;
+    if (list?.nativeElement) {
+      const listElements = list.nativeElement.querySelectorAll('li');
+      let currIdx = targetIdx + 1;
+      if (currIdx > listElements.length - 1) currIdx = 0;
+      let found = false;
+      while (currIdx !== targetIdx && !found) {
+        const listElem = listElements[currIdx];
+        if (listElem.textContent?.toLowerCase()?.startsWith(letter)) {
+          found = true;
+          break;
+        }
+        currIdx += 1;
+        if (currIdx > listElements.length - 1) currIdx = 0;
+      }
+      if (found) {
+        listElements[targetIdx].removeAttribute('tabindex');
+        listElements[currIdx].setAttribute('tabindex', '0');
+        listElements[currIdx].focus();
       }
     }
   }
@@ -143,6 +212,11 @@ export class ScatterComponent implements OnInit {
     if (this.cleanDescription) this.cleanDescription += ', ';
     this.cleanDescription += this.xAxisKey + ' (x-Axis) has a span from 0 to ' + this.maxX;
     this.cleanDescription += ', ' + this.yAxisKey + ' (y-Axis) has a span from 0 to ' + this.maxY;
+  }
+
+  private isMenuLetterNavigation(evt: KeyboardEvent): boolean {
+    const regex = /[a-zA-Z]/;
+    return evt.key.length === 1 && regex.test(evt.key);
   }
 
   private createSvg(): void {
