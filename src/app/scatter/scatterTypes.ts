@@ -3,6 +3,7 @@ export type CleanData = {
     xValue: number,
     yValue: number,
     ID: string;
+    hidden?: boolean;
 };
 
 export type DataPoint = {

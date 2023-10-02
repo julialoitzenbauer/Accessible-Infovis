@@ -6,6 +6,12 @@ import { DataIterable } from './DataIterable';
 import { IDGenerator } from './IDGenerator';
 import { CleanData, DataPoint } from './scatterTypes';
 
+export enum SEARCH_MENUS {
+  X,
+  Y,
+  LABEL,
+}
+
 @Component({
   selector: 'app-scatter',
   templateUrl: './scatter.component.html',
@@ -38,11 +44,13 @@ export class ScatterComponent implements OnInit {
   @Input()
   formatXAxisToInt: boolean = false;
 
+  @ViewChild('figureElement') figureElement: ElementRef<HTMLElement> | undefined;
   @ViewChild('menuList') menuList: ElementRef<HTMLElement> | undefined;
   @ViewChild('searchMenuList') searchMenuList: ElementRef<HTMLElement> | undefined;
   @ViewChild('menuButton') menuButton: ElementRef<HTMLElement> | undefined;
   @ViewChild('liveRegion') liveRegion: ElementRef<HTMLElement> | undefined;
   @ViewChild('searchMenuButton') searchMenuButton: ElementRef<HTMLElement> | undefined;
+  @ViewChild('searchFieldInput') searchFieldInput: ElementRef<HTMLInputElement> | undefined;
 
   private cleanData?: Record<number, Array<CleanData>>;
   private svg?: D3Selection;
@@ -57,12 +65,18 @@ export class ScatterComponent implements OnInit {
   menuIsOpen: boolean;
   searchMenuIsOpen: boolean;
   menuId: string;
+  showSearchform: boolean;
+  selectedSearchMenu: SEARCH_MENUS | null;
+  searchMenuPlaceholder: string;
 
   constructor() {
     this.scatterId = IDGenerator.getId();
     this.menuIsOpen = false;
     this.searchMenuIsOpen = false;
     this.menuId = this.scatterId + '_MENU';
+    this.showSearchform = false;
+    this.selectedSearchMenu = null;
+    this.searchMenuPlaceholder = '';
   }
 
   ngOnInit(): void {
@@ -121,9 +135,106 @@ export class ScatterComponent implements OnInit {
       }
     } else if (this.isMenuLetterNavigation(evt)) {
       this.focusNextMenuItemByLetter(true, evt.key, targetIdx);
+    } else if (evt.key === 'Enter' || evt.key === ' ') {
+      switch(targetIdx) {
+        case 0:
+          this.selectedSearchMenu = SEARCH_MENUS.X;
+          this.searchMenuPlaceholder = 'Suchen nach x-Achsen Wert';
+          break;
+        case 1:
+          this.selectedSearchMenu = SEARCH_MENUS.Y;
+          this.searchMenuPlaceholder = 'Suchen nach y-Achsen Wert';
+          break;
+        case 2:
+          this.selectedSearchMenu = SEARCH_MENUS.LABEL;
+          this.searchMenuPlaceholder = 'Suchen nach Label';
+          break;
+        default:
+          this.selectedSearchMenu = null;
+          this.searchMenuPlaceholder = '';
+          break;
+      }
+      if (this.selectedSearchMenu != null) {
+        this.triggerSearchMenuItem();
+      }
     }
     evt.stopPropagation();
     evt.preventDefault();
+  }
+
+  searchFieldInputKeyDown(evt: KeyboardEvent): void {
+    if (evt.key === 'Tab' && evt.shiftKey) {
+      evt.preventDefault();
+    } else if (evt.key === 'Escape') {
+      this.closeSearchMenu();
+    }
+  }
+
+  searchFieldButtonKeyDown(evt: KeyboardEvent): void {
+    if (evt.key === 'Escape') {
+      this.closeSearchMenu();
+    }
+  }
+
+  triggerSearch(evt: Event): void {
+    if (this.searchFieldInput?.nativeElement && this.cleanData) {
+      let searchValue: string | number = this.searchFieldInput.nativeElement.value;
+      const foundDataPoints: Record<number, Array<CleanData>> = {};
+      if (this.selectedSearchMenu !== SEARCH_MENUS.LABEL) {
+        searchValue = parseFloat(searchValue);
+      }
+      const keys = Object.keys(this.cleanData);
+      for (const key of keys) {
+        const numericKey = parseFloat(key);
+        const keyData = this.cleanData[numericKey];
+        let filteredData: Array<CleanData> = [];
+        if (this.selectedSearchMenu === SEARCH_MENUS.X) {
+          filteredData = keyData.filter((x: CleanData) => x.xValue === searchValue);
+        } else if (this.selectedSearchMenu === SEARCH_MENUS.Y) {
+          filteredData = keyData.filter((x: CleanData) => x.yValue === searchValue);
+        } else if (this.selectedSearchMenu === SEARCH_MENUS.LABEL) {
+          filteredData = keyData.filter((x: CleanData) => x.label.toLowerCase().startsWith((searchValue as string).toLowerCase()));
+        }
+        if (filteredData.length) {
+          foundDataPoints[numericKey] = filteredData;
+        }
+      }
+      this.cleanData = foundDataPoints;
+      this.keys = Object.keys(this.cleanData).map(Number);
+    }
+    if (this.figureElement?.nativeElement) this.figureElement.nativeElement.innerHTML = '';
+    this.createSvg();
+    this.drawPlot();
+    console.log(this.cleanData);
+    this.focusDot(this.keys[0] +  '_0')
+    evt.preventDefault();
+  }
+
+  private closeSearchMenu(): void {
+    this.showSearchform = false;
+      this.searchMenuPlaceholder = '';
+      if (this.searchMenuList?.nativeElement) {
+        const searchListItems = this.searchMenuList.nativeElement.querySelectorAll('li');
+        let currSelectedSearchListItem;
+        switch(this.selectedSearchMenu) {
+          case SEARCH_MENUS.X:
+            currSelectedSearchListItem = searchListItems[0];
+            break;
+          case SEARCH_MENUS.Y:
+            currSelectedSearchListItem = searchListItems[1];
+            break;
+          case SEARCH_MENUS.LABEL:
+            currSelectedSearchListItem = searchListItems[2];
+            break;
+        }
+        if (currSelectedSearchListItem) {
+          currSelectedSearchListItem.focus();
+        }
+      }
+      this.cleanData = this.createCleanData();
+      if (this.figureElement?.nativeElement) this.figureElement.nativeElement.innerHTML = '';
+      this.createSvg();
+      this.drawPlot();
   }
 
   private enterMenuList(isSearchMenu: boolean, evt: KeyboardEvent): void {
@@ -180,6 +291,15 @@ export class ScatterComponent implements OnInit {
           break;
       }
     }
+  }
+
+  private triggerSearchMenuItem(): void {
+    this.showSearchform = true;
+    setTimeout(() => {
+      if (this.searchFieldInput?.nativeElement) {
+        this.searchFieldInput.nativeElement.focus();
+      }
+    }, 0);
   }
 
   private focusNextMenuItemByLetter(isSearchMenu: boolean, letter: string, targetIdx: number): void {
@@ -298,6 +418,7 @@ export class ScatterComponent implements OnInit {
       .attr("tabindex", "-1")
       .attr("aria-label", (d: CleanData) => d.label)
       .attr("aria-description", (d: CleanData) => this.xAxisKey + ": " + d.xValue + ", " + this.yAxisKey + ": " + d.yValue)
+      .attr("display", (d: CleanData) => d.hidden ? "none" : "block")
       .on("keydown", this.dotKeyDown.bind(this));
     if (this.showLabel) {
       dataIterable = new DataIterable(this.cleanData);
@@ -308,6 +429,7 @@ export class ScatterComponent implements OnInit {
         .text((d: CleanData) => d.label)
         .attr("x", (d: CleanData) => x(d.xValue))
         .attr("y", (d: CleanData) => y(d.yValue))
+        .attr("display", (d: CleanData) => d.hidden ? "none" : "block")
         .attr("fill", "white");
     }
   }
@@ -377,7 +499,9 @@ export class ScatterComponent implements OnInit {
           if (this.focusedDot) {
             this.blurDot(this.focusedDot)
           }
-          if (this.menuList?.nativeElement) {
+          if (this.searchFieldInput?.nativeElement) {
+            this.searchFieldInput.nativeElement.focus();
+          } else if (this.menuList?.nativeElement) {
             const menuItems = this.menuList.nativeElement.querySelectorAll('li');
             for (let idx = 0; idx < menuItems.length; ++idx) {
               const item = menuItems[idx] as HTMLElement;
