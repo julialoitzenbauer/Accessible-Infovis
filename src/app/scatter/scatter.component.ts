@@ -177,6 +177,8 @@ export class ScatterComponent implements OnInit {
   }
 
   triggerSearch(evt: Event): void {
+    let numberOfDataPoints = 0;
+    this.cleanData = this.createCleanData();
     if (this.searchFieldInput?.nativeElement && this.cleanData) {
       let searchValue: string | number = this.searchFieldInput.nativeElement.value;
       const foundDataPoints: Record<number, Array<CleanData>> = {};
@@ -197,16 +199,31 @@ export class ScatterComponent implements OnInit {
         }
         if (filteredData.length) {
           foundDataPoints[numericKey] = filteredData;
+          numberOfDataPoints += filteredData.length;
         }
       }
-      this.cleanData = foundDataPoints;
-      this.keys = Object.keys(this.cleanData).map(Number);
+      this.keys = Object.keys(foundDataPoints).map(Number);
+      this.cleanData = this.keys.length ? foundDataPoints : undefined;
+      console.log(this.keys);
     }
     if (this.figureElement?.nativeElement) this.figureElement.nativeElement.innerHTML = '';
     this.createSvg();
     this.drawPlot();
-    console.log(this.cleanData);
-    this.focusDot(this.keys[0] +  '_0')
+    if (numberOfDataPoints > 0) {
+      this.focusDot(this.keys[0] +  '_0');
+    }
+    if (this.liveRegion?.nativeElement) {
+      this.liveRegion.nativeElement.innerHTML = '';
+      const descriptionTag = document.createElement('p');
+      if (numberOfDataPoints === 1) {
+        descriptionTag.innerHTML = 'Ein Datenpunkt gefunden. Dieser Datenpunkt wurde fokussiert.';
+      } else if (numberOfDataPoints > 1) {
+        descriptionTag.innerHTML = `${numberOfDataPoints} Datenpunkte gefunden. Der erste Datenpunkt wurde fokussiert`;
+      } else {
+        descriptionTag.innerHTML = 'Kein Datenpunkt gefunden';
+      }
+      this.liveRegion.nativeElement.appendChild(descriptionTag);
+    }
     evt.preventDefault();
   }
 
@@ -355,7 +372,7 @@ export class ScatterComponent implements OnInit {
   }
 
   private drawPlot(): void {
-    if (!this.svg || !this.cleanData) return;
+    if (!this.svg) return;
     // Add X axis
     if (this.minX == null) this.minX = 0;
     const threshold = (this.maxX - this.minX) * 0.1;
