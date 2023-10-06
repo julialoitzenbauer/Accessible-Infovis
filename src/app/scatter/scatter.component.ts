@@ -5,6 +5,7 @@ import { D3Selection, D3ScaleLinear } from 'src/types';
 import { DataIterable } from './DataIterable';
 import { IDGenerator } from './IDGenerator';
 import { CleanData, DataPoint } from './scatterTypes';
+import { MAX_MIDI_NOTE, MIDI_NOTES, MIN_MIDI_NOTE } from '../sonification/midiNotes';
 
 export enum SEARCH_MENUS {
   X,
@@ -60,6 +61,7 @@ export class ScatterComponent implements OnInit {
   private minX?: number;
   private maxX: number = 0;
   private maxY: number = 0;
+  private minY?: number;
   private keys: Array<number> = [];
   scatterId: string;
   menuIsOpen: boolean;
@@ -306,8 +308,60 @@ export class ScatterComponent implements OnInit {
             this.liveRegion.nativeElement.appendChild(descriptionTag);
           }
           break;
+        case 'MenuItemSonification':
+          this.startSonification();
+          break;
       }
     }
+  }
+
+  private async startSonification(): Promise<void> {
+    if (this.cleanData && this.minX != null) {
+      const notes: Record<number, Array<string>> = {};
+      const xAxisSpan = this.maxX - this.minX;
+      for (const key of this.keys) {
+        const cd = this.cleanData[key];
+        const dataNotes: Array<string> = [];
+        for (const d of cd) {
+          dataNotes.push(this.calcSoniNote(d.yValue));
+        }
+        const xAxisAbsoluteValue = key - this.minX;
+        const xAxisRatio: number = xAxisAbsoluteValue / xAxisSpan;
+        const playTime = 5 * xAxisRatio;
+        notes[playTime] = dataNotes;
+      }
+
+      const synth = new Tone.PolySynth(Tone.Synth).toDestination();
+      const noteKeys = Object.keys(notes).map(Number);
+      noteKeys.sort((a: number, b: number) => a - b);
+      console.log(noteKeys);
+      for (let idx = 0; idx < noteKeys.length; ++idx) {
+        const dataNotes = notes[noteKeys[idx]];
+        let delay = Tone.now();
+        delay += noteKeys[idx];
+        synth.triggerAttackRelease(dataNotes, '8n', delay);
+      }
+    }
+  }
+
+  private async waitFor(delay: number) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve('foo');
+      }, delay);
+    });
+  }
+
+  private calcSoniNote(value: number): string {
+    let note = '';
+    if (this.minY != null) {
+      let noteVal = Math.round(MIN_MIDI_NOTE + ((value - this.minY) / (this.maxY - this.minY)) * (MAX_MIDI_NOTE - MIN_MIDI_NOTE));
+      if (noteVal < MIN_MIDI_NOTE) noteVal = MIN_MIDI_NOTE;
+      if (noteVal > MAX_MIDI_NOTE) noteVal = MAX_MIDI_NOTE;
+      const midiNote = MIDI_NOTES.filter((mn) => mn.midi === noteVal);
+      if (midiNote.length) note = midiNote[0].note;
+    }
+    return note;
   }
 
   private triggerSearchMenuItem(): void {
@@ -463,6 +517,7 @@ export class ScatterComponent implements OnInit {
       };
       if (this.minX == null || obj.xValue < this.minX) this.minX = obj.xValue;
       if (obj.xValue > this.maxX) this.maxX = obj.xValue;
+      if (this.minY == null || obj.yValue < this.minY) this.minY = obj.yValue;
       if (obj.yValue > this.maxY) this.maxY = obj.yValue;
       if (!cd[xValue]) {
         cd[xValue] = [obj];

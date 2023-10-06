@@ -27,6 +27,7 @@
         </ul>
     </li>
     <li id="MenuItemSonification" role="menuitem" (keydown)="menuItemKeyDown($event, 3)">Sonification</li>
+    <li id="MenuItemMarks" role="menuitem" (keydown)="menuItemKeyDown($event, 4)">Markierungen</li>
 </ul>
 <form *ngIf="showSearchform" (submit)="triggerSearch($event)">
     <label class="search-label" for="search">{{ searchMenuPlaceholder }}</label>
