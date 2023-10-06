@@ -9,13 +9,13 @@ import { bigData } from './bigData';
 export class AppComponent {
   title = 'angular-d3';
   data = [
-    { Framework: "Vue", Stars: 166443, Released: 2014 },
-    { Framework: "Test", Stars: 6443, Released: 2014 },
-    { Framework: "Test 2", Stars: 15443, Released: 2014 },
-    { Framework: "React", Stars: 150793, Released: 2013 },
-    { Framework: "Angular", Stars: 62342, Released: 2016 },
-    { Framework: "Backbone", Stars: 27647, Released: 2010 },
-    { Framework: "Ember", Stars: 21471, Released: 2011 },
+    { System: "Vue", Sterne: 166443, Erscheinungsdatum: 2014 },
+    { System: "Test", Sterne: 6443, Erscheinungsdatum: 2014 },
+    { System: "Test 2", Sterne: 15443, Erscheinungsdatum: 2014 },
+    { System: "React", Sterne: 150793, Erscheinungsdatum: 2013 },
+    { System: "Angular", Sterne: 62342, Erscheinungsdatum: 2016 },
+    { System: "Backbone", Sterne: 27647, Erscheinungsdatum: 2010 },
+    { System: "Ember", Sterne: 21471, Erscheinungsdatum: 2011 },
   ];
 
   bigData = bigData;

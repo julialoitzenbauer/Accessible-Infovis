@@ -8,7 +8,7 @@
   <app-bar></app-bar>
   <app-pie></app-pie>
 -->
-<app-scatter [labelKey]="'Framework'" [xAxisKey]="'Released'" [yAxisKey]="'Stars'" [data]="data" [title]="'Frameworks, and their Stars compared to their release date'" [formatXAxisToInt]="true"></app-scatter>
+<app-scatter [labelKey]="'System'" [xAxisKey]="'Erscheinungsdatum'" [yAxisKey]="'Sterne'" [data]="data" [title]="'Systeme und ihre Sterne im Vergleich zu ihrem Erscheinungsdatum'" [formatXAxisToInt]="true"></app-scatter>
 <app-scatter [labelKey]="'name'" [xAxisKey]="'danceability'" [yAxisKey]="'energy'" [data]="bigData" [title]="'Spotify Data - Danceability vs. Energy'" [showLabel]="false" [radius]="4"></app-scatter>
 
-<app-bar [data]="data" [yAxisKey]="'Stars'" [labelKey]="'Framework'"></app-bar>
+<app-bar [data]="data" [yAxisKey]="'Sterne'" [labelKey]="'System'"></app-bar>

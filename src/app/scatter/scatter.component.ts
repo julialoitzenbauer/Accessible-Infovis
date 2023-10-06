@@ -182,10 +182,32 @@ export class ScatterComponent implements OnInit {
     let numberOfDataPoints = 0;
     this.cleanData = this.createCleanData();
     if (this.searchFieldInput?.nativeElement && this.cleanData) {
-      let searchValue: string | number = this.searchFieldInput.nativeElement.value;
+      let searchInput: string = this.searchFieldInput.nativeElement.value;
+      let searchValue: number | undefined;
       const foundDataPoints: Record<number, Array<CleanData>> = {};
+      // -1 = smaller than, 0 = equals, 1 = greater than
+      let searchType = 0;
       if (this.selectedSearchMenu !== SEARCH_MENUS.LABEL) {
-        searchValue = parseFloat(searchValue);
+        if (searchInput.startsWith('>')) {
+          searchType = 1;
+          searchValue = parseFloat(searchInput.substring(1).trim());
+        } else if (searchInput.startsWith('<')) {
+          searchType = -1;
+          searchValue = parseFloat(searchInput.substring(1).trim());
+        } else {
+          searchValue = parseFloat(searchInput);
+        }
+        if (searchValue == null || isNaN(searchValue)) {
+          console.log('ERROR');
+          if (this.liveRegion?.nativeElement) {
+            this.liveRegion.nativeElement.innerHTML = '';
+            const pTag = document.createElement('p');
+            pTag.innerHTML = 'Ungültige Sucheingabe. Bitte versuchen Sie es erneut.';
+            this.liveRegion.nativeElement.appendChild(pTag);
+          }
+          evt.preventDefault();
+          return;
+        }
       }
       const keys = Object.keys(this.cleanData);
       for (const key of keys) {
@@ -193,11 +215,19 @@ export class ScatterComponent implements OnInit {
         const keyData = this.cleanData[numericKey];
         let filteredData: Array<CleanData> = [];
         if (this.selectedSearchMenu === SEARCH_MENUS.X) {
-          filteredData = keyData.filter((x: CleanData) => x.xValue === searchValue);
+          filteredData = keyData.filter((x: CleanData) => {
+            if (searchType === -1) return x.xValue < (searchValue as number);
+            if (searchType === 1) return x.xValue > (searchValue as number);
+            else return x.xValue === searchValue;
+          });
         } else if (this.selectedSearchMenu === SEARCH_MENUS.Y) {
-          filteredData = keyData.filter((x: CleanData) => x.yValue === searchValue);
+          filteredData = keyData.filter((x: CleanData) => {
+            if (searchType === -1) return x.yValue < (searchValue as number);
+            if (searchType === 1) return x.yValue > (searchValue as number);
+            else return x.yValue === searchValue;
+          });
         } else if (this.selectedSearchMenu === SEARCH_MENUS.LABEL) {
-          filteredData = keyData.filter((x: CleanData) => x.label.toLowerCase().startsWith((searchValue as string).toLowerCase()));
+          filteredData = keyData.filter((x: CleanData) => x.label.toLowerCase().startsWith((searchInput).toLowerCase()));
         }
         if (filteredData.length) {
           foundDataPoints[numericKey] = filteredData;
@@ -206,7 +236,6 @@ export class ScatterComponent implements OnInit {
       }
       this.keys = Object.keys(foundDataPoints).map(Number);
       this.cleanData = this.keys.length ? foundDataPoints : undefined;
-      console.log(this.keys);
     }
     if (this.figureElement?.nativeElement) this.figureElement.nativeElement.innerHTML = '';
     this.createSvg();
@@ -334,7 +363,6 @@ export class ScatterComponent implements OnInit {
       const synth = new Tone.PolySynth(Tone.Synth).toDestination();
       const noteKeys = Object.keys(notes).map(Number);
       noteKeys.sort((a: number, b: number) => a - b);
-      console.log(noteKeys);
       for (let idx = 0; idx < noteKeys.length; ++idx) {
         const dataNotes = notes[noteKeys[idx]];
         let delay = Tone.now();
