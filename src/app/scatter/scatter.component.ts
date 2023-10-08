@@ -13,6 +13,12 @@ export enum SEARCH_MENUS {
   LABEL,
 }
 
+export enum MENU_TYPES {
+  BASE_MENU,
+  MARK_MENU,
+  SEARCH_MENU,
+}
+
 @Component({
   selector: 'app-scatter',
   templateUrl: './scatter.component.html',
@@ -48,10 +54,14 @@ export class ScatterComponent implements OnInit {
   @ViewChild('figureElement') figureElement: ElementRef<HTMLElement> | undefined;
   @ViewChild('menuList') menuList: ElementRef<HTMLElement> | undefined;
   @ViewChild('searchMenuList') searchMenuList: ElementRef<HTMLElement> | undefined;
+  @ViewChild('markMenuList') markMenuList: ElementRef<HTMLElement> | undefined;
   @ViewChild('menuButton') menuButton: ElementRef<HTMLElement> | undefined;
   @ViewChild('liveRegion') liveRegion: ElementRef<HTMLElement> | undefined;
   @ViewChild('searchMenuButton') searchMenuButton: ElementRef<HTMLElement> | undefined;
   @ViewChild('searchFieldInput') searchFieldInput: ElementRef<HTMLInputElement> | undefined;
+  @ViewChild('markMenuButton') markMenuButton: ElementRef<HTMLElement> | undefined;
+  @ViewChild('deleteMarksButton') deleteMarksButton: ElementRef<HTMLElement> | undefined;
+  @ViewChild('cancelDeleteMarksButton') cancelDeleteMarksButton: ElementRef<HTMLElement> | undefined;
 
   private cleanData?: Record<number, Array<CleanData>>;
   private markedData: Record<number, Array<CleanData>> = {};
@@ -67,8 +77,10 @@ export class ScatterComponent implements OnInit {
   scatterId: string;
   menuIsOpen: boolean;
   searchMenuIsOpen: boolean;
+  markMenuIsOpen: boolean;
   menuId: string;
   showSearchform: boolean;
+  showDeleteMarksForm: boolean;
   selectedSearchMenu: SEARCH_MENUS | null;
   searchMenuPlaceholder: string;
 
@@ -76,10 +88,12 @@ export class ScatterComponent implements OnInit {
     this.scatterId = IDGenerator.getId();
     this.menuIsOpen = false;
     this.searchMenuIsOpen = false;
+    this.markMenuIsOpen = false;
     this.menuId = this.scatterId + '_MENU';
     this.showSearchform = false;
     this.selectedSearchMenu = null;
     this.searchMenuPlaceholder = '';
+    this.showDeleteMarksForm = false;
   }
 
   ngOnInit(): void {
@@ -93,7 +107,7 @@ export class ScatterComponent implements OnInit {
   menuKeyDown(evt: KeyboardEvent): void {
     if (evt.key === 'Enter' || evt.key === ' ' || evt.key === 'ArrowDown' || evt.key === 'ArrowUp') {
       this.menuIsOpen = !this.menuIsOpen;
-      this.enterMenuList(false, evt);
+      this.enterMenuList(MENU_TYPES.BASE_MENU, evt);
     } else if (evt.key === 'Escape') {
       this.focusSvg(true);
     }
@@ -102,7 +116,7 @@ export class ScatterComponent implements OnInit {
 
   menuItemKeyDown(evt: KeyboardEvent, targetIdx: number): void {
     if (evt.key === 'ArrowDown' || evt.key === 'ArrowUp') {
-      this.navInMenuList(false, evt);
+      this.navInMenuList(MENU_TYPES.BASE_MENU, evt);
     } else if (evt.key === 'Escape') {
       if (this.menuButton?.nativeElement) {
         this.menuButton.nativeElement.focus();
@@ -111,7 +125,7 @@ export class ScatterComponent implements OnInit {
     } else if (evt.key === 'Enter' || evt.key === ' ') {
       this.triggerMenuItem(evt);
     } else if (this.isMenuLetterNavigation(evt)) {
-      this.focusNextMenuItemByLetter(false, evt.key, targetIdx);
+      this.focusNextMenuItemByLetter(MENU_TYPES.BASE_MENU, evt.key, targetIdx);
     }
     evt.preventDefault();
   }
@@ -119,25 +133,37 @@ export class ScatterComponent implements OnInit {
   searchMenuKeyDown(evt: KeyboardEvent, targetIdx: number): void {
     if (evt.key === 'Enter' || evt.key === ' ') {
       this.searchMenuIsOpen = !this.searchMenuIsOpen;
-      this.enterMenuList(true, evt);
+      this.enterMenuList(MENU_TYPES.SEARCH_MENU, evt);
     } else if (evt.key === 'ArrowUp' || evt.key === 'ArrowDown' || evt.key === 'Escape') {
       this.menuItemKeyDown(evt, targetIdx);
     } else if (this.isMenuLetterNavigation(evt)) {
-      this.focusNextMenuItemByLetter(false, evt.key, targetIdx);
+      this.focusNextMenuItemByLetter(MENU_TYPES.BASE_MENU, evt.key, targetIdx);
+    }
+    evt.preventDefault();
+  }
+
+  markMenuKeyDown(evt: KeyboardEvent, targetIdx: number): void {
+    if (evt.key === 'Enter' || evt.key === ' ') {
+      this.markMenuIsOpen = true;
+      this.enterMenuList(MENU_TYPES.MARK_MENU, evt);
+    } else if (evt.key === 'ArrowUp' || evt.key === 'ArrowDown' || evt.key === 'Escape') {
+      this.menuItemKeyDown(evt, targetIdx);
+    } else if (this.isMenuLetterNavigation(evt)) {
+      this.focusNextMenuItemByLetter(MENU_TYPES.BASE_MENU, evt.key, targetIdx);
     }
     evt.preventDefault();
   }
 
   searchMenuItemKeyDown(evt: KeyboardEvent, targetIdx: number): void {
     if (evt.key === 'ArrowDown' || evt.key === 'ArrowUp') {
-      this.navInMenuList(true, evt);
+      this.navInMenuList(MENU_TYPES.SEARCH_MENU, evt);
     } else if (evt.key === 'Escape') {
       if (this.searchMenuButton?.nativeElement) {
         this.searchMenuButton.nativeElement.focus();
         this.searchMenuIsOpen = false;
       }
     } else if (this.isMenuLetterNavigation(evt)) {
-      this.focusNextMenuItemByLetter(true, evt.key, targetIdx);
+      this.focusNextMenuItemByLetter(MENU_TYPES.SEARCH_MENU, evt.key, targetIdx);
     } else if (evt.key === 'Enter' || evt.key === ' ') {
       switch(targetIdx) {
         case 0:
@@ -162,6 +188,66 @@ export class ScatterComponent implements OnInit {
       }
     }
     evt.stopPropagation();
+    evt.preventDefault();
+  }
+
+  markMenuItemKeyDown(evt: KeyboardEvent, targetIdx: number) {
+    if (evt.key === 'ArrowDown' || evt.key === 'ArrowUp') {
+      this.navInMenuList(MENU_TYPES.MARK_MENU, evt);
+    } else if (evt.key === 'Escape') {
+      if (this.markMenuButton?.nativeElement) {
+        this.markMenuButton.nativeElement.focus();
+        this.markMenuIsOpen = false;
+      }
+    } else if (evt.key === 'Enter' || evt.key === ' ') {
+      switch(targetIdx) {
+        case 0:
+          this.showDeleteMarksForm = true;
+          setTimeout(() => {
+            if (this.deleteMarksButton?.nativeElement) {
+              this.deleteMarksButton.nativeElement.focus();
+            }
+          }, 0);
+          break;
+      }
+    } else if (this.isMenuLetterNavigation(evt)) {
+      this.focusNextMenuItemByLetter(MENU_TYPES.MARK_MENU, evt.key, targetIdx);
+    }
+    evt.preventDefault();
+  }
+
+  markFormButtonKeyDown(evt: KeyboardEvent) {
+    let target;
+    if (evt.target === this.deleteMarksButton?.nativeElement) {
+      target = 'DELETE';
+    } else if (evt.target === this.cancelDeleteMarksButton?.nativeElement) {
+      target = 'CANCEL';
+    }
+    if (target) {
+      console.log(evt.key);
+      if (evt.key === 'ArrowLeft' || (evt.key === 'Tab' && evt.shiftKey) && target === 'CANCEL') {
+        if (this.deleteMarksButton?.nativeElement) {
+          this.deleteMarksButton.nativeElement.focus();
+        }
+      } else if (evt.key === 'ArrowRight' || (evt.key === 'Tab' && !evt.shiftKey) && target === 'DELETE') {
+        if (this.cancelDeleteMarksButton?.nativeElement) {
+          this.cancelDeleteMarksButton.nativeElement.focus();
+        }
+      } else if (evt.key === 'Escape' || ((evt.key === 'Enter' || evt.key === ' ') && target === 'CANCEL')) {
+        this.closeDeleteMarksForm();
+      } else if ((evt.key === 'Enter' || evt.key === ' ') && target === 'DELETE') {
+        this.markedData = {};
+        const dots = this.svg?.selectAll('circle')?.nodes();
+        if (dots?.length) {
+          for (const dot of dots) {
+            if (dot) {
+              (dot as HTMLElement).classList.remove('marked');
+            }
+          }
+        }
+        this.closeDeleteMarksForm();
+      }
+    }
     evt.preventDefault();
   }
 
@@ -259,6 +345,16 @@ export class ScatterComponent implements OnInit {
     evt.preventDefault();
   }
 
+  private closeDeleteMarksForm(): void {
+    this.showDeleteMarksForm = false;
+    if (this.markMenuList?.nativeElement) {
+      const items = this.markMenuList.nativeElement.querySelectorAll('li');
+      if (items?.length) {
+        items[0].focus();
+      }
+    }
+  }
+
   private closeSearchMenu(): void {
     this.showSearchform = false;
       this.searchMenuPlaceholder = '';
@@ -286,9 +382,11 @@ export class ScatterComponent implements OnInit {
       this.drawPlot();
   }
 
-  private enterMenuList(isSearchMenu: boolean, evt: KeyboardEvent): void {
+  private enterMenuList(menuType: MENU_TYPES, evt: KeyboardEvent): void {
     setTimeout(() => {
-      const list = isSearchMenu ? this.searchMenuList : this.menuList;
+      const list = menuType === MENU_TYPES.SEARCH_MENU ? this.searchMenuList
+                   : menuType === MENU_TYPES.MARK_MENU ? this.markMenuList
+                   : this.menuList;
       if (list?.nativeElement) {
         const menuItems = list.nativeElement.querySelectorAll('li');
         const itemIdx = evt.key === 'ArrowUp' ? menuItems.length - 1 : 0;
@@ -298,9 +396,11 @@ export class ScatterComponent implements OnInit {
     }, 0);
   }
 
-  private navInMenuList(isSearchMenu: boolean, evt: KeyboardEvent): void {
+  private navInMenuList(menuType: MENU_TYPES, evt: KeyboardEvent): void {
     const target = evt.target as HTMLElement | null;
-    const list = isSearchMenu ? this.searchMenuList : this.menuList;
+    const list = menuType === MENU_TYPES.SEARCH_MENU ? this.searchMenuList
+                  : menuType === MENU_TYPES.MARK_MENU ? this.markMenuList
+                  : this.menuList;
     if (target) {
       if (evt.key === 'ArrowDown' || evt.key === 'ArrowUp') {
         let next = evt.key === 'ArrowDown' ?
@@ -394,8 +494,10 @@ export class ScatterComponent implements OnInit {
     }, 0);
   }
 
-  private focusNextMenuItemByLetter(isSearchMenu: boolean, letter: string, targetIdx: number): void {
-    const list = isSearchMenu ? this.searchMenuList : this.menuList;
+  private focusNextMenuItemByLetter(menuType: MENU_TYPES, letter: string, targetIdx: number): void {
+    const list = menuType === MENU_TYPES.SEARCH_MENU ? this.searchMenuList
+                  : menuType === MENU_TYPES.MARK_MENU ? this.markMenuList
+                  : this.menuList;
     if (list?.nativeElement) {
       const listElements = list.nativeElement.querySelectorAll('li');
       let currIdx = targetIdx + 1;

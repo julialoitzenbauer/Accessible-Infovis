@@ -27,12 +27,20 @@
         </ul>
     </li>
     <li id="MenuItemSonification" role="menuitem" (keydown)="menuItemKeyDown($event, 3)">Sonification</li>
-    <li id="MenuItemMarks" role="menuitem" (keydown)="menuItemKeyDown($event, 4)">Markierungen</li>
+    <li id="MenuItemMarks" role="menuitem" aria-haspopup="true" [attr.aria-expanded]="markMenuIsOpen" [attr.aria-controls]="menuId + '_MARKS'" (keydown)="markMenuKeyDown($event, 4)" #markMenuButton>Markierungen</li>
+    <ul *ngIf="markMenuIsOpen" [id]="menuId + '_MARKS'" #markMenuList>
+        <li role="menuitem" (keydown)="markMenuItemKeyDown($event, 0)">Gesetzte Makierungen löschen</li>
+        <li role="menuitem" (keydown)="markMenuItemKeyDown($event, 1)">Zu makierten Datenpunkten</li>
+    </ul>
 </ul>
 <form *ngIf="showSearchform" (submit)="triggerSearch($event)">
     <label class="search-label" for="search">{{ searchMenuPlaceholder }}</label>
     <input id="search" type="text" [placeholder]="searchMenuPlaceholder" #searchFieldInput (keydown)="searchFieldInputKeyDown($event)">
     <input class="button" type="submit" value="Suchen" (keydown)="searchFieldButtonKeyDown($event)">
-  </form>
+</form>
+<form *ngIf="showDeleteMarksForm">
+    <input class="button" type="submit" value="Markierungen löschen" (keydown)="markFormButtonKeyDown($event)" #deleteMarksButton>
+    <input class="button" type="submit" value="Abbrechen" (keydown)="markFormButtonKeyDown($event)" #cancelDeleteMarksButton>
+</form>
 <figure [id]="scatterId" id="" #figureElement>
 </figure>
