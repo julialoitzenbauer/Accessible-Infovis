@@ -54,6 +54,7 @@ export class ScatterComponent implements OnInit {
   @ViewChild('searchFieldInput') searchFieldInput: ElementRef<HTMLInputElement> | undefined;
 
   private cleanData?: Record<number, Array<CleanData>>;
+  private markedData: Record<number, Array<CleanData>> = {};
   private svg?: D3Selection;
   private dots?: D3Selection;
   private focusedDot?: string | null;
@@ -372,14 +373,6 @@ export class ScatterComponent implements OnInit {
     }
   }
 
-  private async waitFor(delay: number) {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve('foo');
-      }, delay);
-    });
-  }
-
   private calcSoniNote(value: number): string {
     let note = '';
     if (this.minY != null) {
@@ -620,6 +613,24 @@ export class ScatterComponent implements OnInit {
         } else if (evt.key === 'End') {
           const newKey = this.keys[this.keys.length - 1];
           newDataPoint = { key: newKey, idx: this.cleanData[newKey].length - 1 };
+        } else if (evt.key === 'M' && evt.shiftKey) {
+          const cleanDataToMark = this.cleanData[dataPoint.key][dataPoint.idx];
+          let removeMark = false;
+          if (!this.markedData[dataPoint.key]) {
+            this.markedData[dataPoint.key] = [cleanDataToMark];
+          } else {
+            if (this.markedData[dataPoint.key].includes(cleanDataToMark)) {
+              removeMark = true;
+              let removeIdx = this.markedData[dataPoint.key].indexOf(cleanDataToMark);
+              this.markedData[dataPoint.key].splice(removeIdx, 1);
+              if (this.markedData[dataPoint.key].length === 0) {
+                delete this.markedData[dataPoint.key];
+              }
+            } else {
+              this.markedData[dataPoint.key].push(cleanDataToMark);
+            }
+          }
+          this.markDot(dataPoint.key + '_' + dataPoint.idx, removeMark);
         }
       }
       if (newDataPoint) {
@@ -692,8 +703,20 @@ export class ScatterComponent implements OnInit {
       }
       node.focus();
       node.setAttribute("tabindex", "0");
-      node.setAttribute("class", "scatterCircleCurrent");
+      node.classList.add('current');
       this.focusedDot = id;
+    }
+  }
+
+  private markDot(id: string, removeMark?: boolean) {
+    const selection = d3.select('#DOT_' + id.replaceAll('.', '\\.'));
+    const node = selection.node() as HTMLElement | null;
+    if (node) {
+      if (removeMark) {
+        node.classList.remove('marked');
+      } else {
+        node.classList.add('marked');
+      }
     }
   }
 
@@ -703,7 +726,7 @@ export class ScatterComponent implements OnInit {
     if (node) {
       node.setAttribute("tabindex", "-1");
       node.blur();
-      node.setAttribute("class", "scatterCircle");
+      node.classList.remove('current');
     }
   }
 

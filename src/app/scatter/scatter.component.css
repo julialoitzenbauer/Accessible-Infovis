@@ -2,8 +2,12 @@
     fill: cyan;
 }
 
-:host ::ng-deep .scatterCircleCurrent {
+:host ::ng-deep .scatterCircle.current {
     fill: red;
+}
+
+:host ::ng-deep .scatterCircle.marked {
+    fill: white;
 }
 
 [role="log"] {
