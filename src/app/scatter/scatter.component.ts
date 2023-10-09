@@ -83,6 +83,7 @@ export class ScatterComponent implements OnInit {
   showDeleteMarksForm: boolean;
   selectedSearchMenu: SEARCH_MENUS | null;
   searchMenuPlaceholder: string;
+  currNumberOfMarks: number;
 
   constructor() {
     this.scatterId = IDGenerator.getId();
@@ -94,6 +95,7 @@ export class ScatterComponent implements OnInit {
     this.selectedSearchMenu = null;
     this.searchMenuPlaceholder = '';
     this.showDeleteMarksForm = false;
+    this.currNumberOfMarks = 0;
   }
 
   ngOnInit(): void {
@@ -209,6 +211,23 @@ export class ScatterComponent implements OnInit {
             }
           }, 0);
           break;
+        case 1:
+          this.keys = Object.keys(this.markedData).map(Number);
+          this.cleanData = this.markedData;
+          this.sortData(this.cleanData);
+          for (const key of this.keys) {
+            let data = this.cleanData[key];
+            for (let idx = 0; idx < data.length; ++idx) {
+              data[idx].ID = key + '_' + idx;
+            }
+          }
+          if (this.figureElement?.nativeElement) this.figureElement.nativeElement.innerHTML = '';
+          this.createSvg();
+          this.drawPlot();
+          if (this.currNumberOfMarks > 0) {
+            this.focusDot(this.keys[0] +  '_0');
+          }
+          break;
       }
     } else if (this.isMenuLetterNavigation(evt)) {
       this.focusNextMenuItemByLetter(MENU_TYPES.MARK_MENU, evt.key, targetIdx);
@@ -237,6 +256,7 @@ export class ScatterComponent implements OnInit {
         this.closeDeleteMarksForm();
       } else if ((evt.key === 'Enter' || evt.key === ' ') && target === 'DELETE') {
         this.markedData = {};
+        this.currNumberOfMarks = 0;
         const dots = this.svg?.selectAll('circle')?.nodes();
         if (dots?.length) {
           for (const dot of dots) {
@@ -694,7 +714,14 @@ export class ScatterComponent implements OnInit {
           if (this.focusedDot) {
             this.blurDot(this.focusedDot)
           }
-          if (this.searchFieldInput?.nativeElement) {
+          if (this.markMenuIsOpen && this.markMenuList?.nativeElement) {
+            this.cleanData = this.createCleanData();
+            const listItems = this.markMenuList.nativeElement.querySelectorAll('li');
+            listItems[listItems.length - 1].focus();
+            if (this.figureElement?.nativeElement) this.figureElement.nativeElement.innerHTML = '';
+            this.createSvg();
+            this.drawPlot();
+          } else if (this.searchFieldInput?.nativeElement) {
             this.searchFieldInput.nativeElement.focus();
           } else if (this.menuList?.nativeElement) {
             const menuItems = this.menuList.nativeElement.querySelectorAll('li');
@@ -732,6 +759,7 @@ export class ScatterComponent implements OnInit {
               this.markedData[dataPoint.key].push(cleanDataToMark);
             }
           }
+          this.currNumberOfMarks = removeMark ? this.currNumberOfMarks - 1 : this.currNumberOfMarks + 1;
           this.markDot(dataPoint.key + '_' + dataPoint.idx, removeMark);
         }
       }
