@@ -1,8 +1,13 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import * as d3 from 'd3';
 import { D3Selection } from 'src/types';
 import { CleanData } from './barTypes';
 import { IDGenerator } from './IDGenerator';
+
+enum SEARCH_MENU {
+  Y,
+  LABEL,
+}
 
 @Component({
   selector: 'app-bar',
@@ -26,6 +31,8 @@ export class BarComponent implements OnInit {
   height: number = 400 - (this.margin * 2);
   @Input()
   title: string = 'Bar Chart';
+  @Input()
+  description: string = '';
 
   private cleanData: Array<CleanData> = [];
   private svg?: D3Selection;
@@ -33,10 +40,30 @@ export class BarComponent implements OnInit {
   private maxId?: string;
   private minId?: string;
   private focusedBar?: string;
+  private selectedSearchMenu?: SEARCH_MENU | null;
   barId: string;
+  menuId: string;
+  menuIsOpen: boolean;
+  searchMenuIsOpen: boolean;
+  showSearchform: boolean;
+  searchMenuPlaceholder: string;
+
+  @ViewChild('figureElement') figureElement: ElementRef<HTMLElement> | undefined;
+  @ViewChild('menuButton') menuButton: ElementRef<HTMLElement> | undefined;
+  @ViewChild('menuList') menuList: ElementRef<HTMLElement> | undefined;
+  @ViewChild('liveRegion') liveRegion: ElementRef<HTMLElement> | undefined;
+  @ViewChild('searchMenuButton') searchMenuButton: ElementRef<HTMLElement> | undefined;
+  @ViewChild('searchMenuList') searchMenuList: ElementRef<HTMLElement> | undefined;
+  @ViewChild('searchFieldInput') searchFieldInput: ElementRef<HTMLInputElement> | undefined;
+  @ViewChild('searchFieldSubmitBtn') searchFieldSubmitBtn: ElementRef<HTMLElement> | undefined;
 
   constructor() {
     this.barId = IDGenerator.getId();
+    this.menuId = this.barId + '_MENU';
+    this.menuIsOpen = false;
+    this.searchMenuIsOpen = false;
+    this.showSearchform = false;
+    this.searchMenuPlaceholder = '';
   }
 
   ngOnInit(): void {
@@ -45,6 +72,223 @@ export class BarComponent implements OnInit {
       this.createSvg();
       this.drawBars();
     }, 0);
+  }
+
+  menuKeyDown(evt: KeyboardEvent): void {
+    if (evt.key === 'Enter' || evt.key === ' ' || evt.key === 'ArrowDown' || evt.key === 'ArrowUp') {
+      this.menuIsOpen = true;
+      setTimeout(() => {
+        if (this.menuList?.nativeElement) {
+          const items = this.menuList.nativeElement.querySelectorAll('li');
+          let idx = evt.key === 'ArrowUp' ? items.length - 1 : 0;
+          items[idx].setAttribute('tabindex', '0');
+          items[idx].focus();
+        }
+      }, 0);
+    } else if (evt.key === 'Escape') {
+      this.focusSvg(true);
+    }
+    evt.preventDefault();
+  }
+
+  menuItemKeyDown(evt: KeyboardEvent, targetIdx: number): void {
+    if (evt.key === 'Enter' || evt.key === ' ') {
+      switch(targetIdx) {
+        case 0:
+          if (this.cleanData?.length) {
+            this.focusBar(this.cleanData[0].ID);
+          }
+          break;
+        case 1:
+          if (this.liveRegion?.nativeElement) {
+            this.liveRegion.nativeElement.innerHTML = '';
+            const descriptionTag = document.createElement('p');
+            descriptionTag.innerText = this.description || '';
+            this.liveRegion.nativeElement.appendChild(descriptionTag);
+          }
+          break;
+      }
+    } else if (evt.key === 'Escape') {
+      if (this.menuButton?.nativeElement) {
+        this.menuButton.nativeElement.focus();
+        this.menuIsOpen = false;
+      }
+    } else if (evt.key === 'ArrowDown' || evt.key === 'ArrowUp') {
+      if (this.menuList?.nativeElement) {
+        const items = this.menuList.nativeElement.querySelectorAll('li');
+        let newIdx = evt.key === 'ArrowDown' ? targetIdx + 1 : targetIdx - 1;
+        if (newIdx < 0) newIdx = items.length - 1;
+        else if (newIdx >= items.length) newIdx = 0;
+        items[targetIdx].removeAttribute('tabindex');
+        items[newIdx].setAttribute('tabindex', '0');
+        items[newIdx].focus();
+      }
+    }
+    evt.preventDefault();
+  }
+
+  searchMenuKeyDown(evt: KeyboardEvent, idx: number): void {
+    if (evt.key === 'Enter' || evt.key === ' ') {
+      this.searchMenuIsOpen = true;
+      setTimeout(() => {
+        if (this.searchMenuList?.nativeElement) {
+          const items = this.searchMenuList.nativeElement.querySelectorAll('li');
+          items[0].setAttribute('tabindex', '0');
+          items[0].focus();
+        }
+      }, 0);
+    } else if (evt.key === 'ArrowDown' || evt.key === 'ArrowUp') {
+      if (this.menuList?.nativeElement) {
+        const items = this.menuList.nativeElement.querySelectorAll('li');
+        let newIdx = evt.key === 'ArrowDown' ? idx + 1 : idx - 1;
+        if (newIdx >= items?.length) newIdx = 0;
+        if (newIdx < 0) newIdx = items.length - 1;
+        items[idx].removeAttribute('tabindex');
+        items[newIdx].setAttribute('tabindex', '0');
+        items[newIdx].focus();
+      }
+    } else if (evt.key === 'Escape') {
+      this.menuIsOpen = false;
+      if (this.menuButton?.nativeElement) {
+        this.menuButton.nativeElement.focus();
+      }
+    }
+    evt.preventDefault();
+  }
+
+  searchMenuItemKeyDown(evt: KeyboardEvent, idx: number): void {
+    if (evt.key === 'ArrowDown' || evt.key === 'ArrowUp') {
+      if (this.searchMenuList?.nativeElement) {
+        const items = this.searchMenuList.nativeElement.querySelectorAll('li');
+        let newIdx = evt.key === 'ArrowDown' ? idx + 1 : idx - 1;
+        if (newIdx < 0) newIdx = items.length - 1;
+        if (newIdx >= items.length) newIdx = 0;
+        items[idx].removeAttribute('tabindex');
+        items[newIdx].setAttribute('tabindex', '0');
+        items[newIdx].focus();
+      }
+    } else if (evt.key === 'Escape') {
+      if (this.searchMenuButton?.nativeElement) {
+        this.searchMenuIsOpen = false;
+        this.searchMenuButton.nativeElement.focus();
+      }
+    } else if (evt.key === 'Enter' || evt.key === ' ') {
+      if (idx === 0) {
+        this.selectedSearchMenu = SEARCH_MENU.Y;
+        this.searchMenuPlaceholder = 'Suchen nach y-Achsen Wert';
+      } else if (idx === 1) {
+        this.selectedSearchMenu = SEARCH_MENU.LABEL;
+        this.searchMenuPlaceholder = 'Suchen nach Label';
+      } else {
+        this.selectedSearchMenu = null;
+        this.searchMenuPlaceholder = '';
+      }
+      if (this.selectedSearchMenu != null) {
+        this.showSearchform = true;
+        setTimeout(() => {
+          if (this.searchFieldInput?.nativeElement) {
+            this.searchFieldInput.nativeElement.focus();
+          }
+        }, 0);
+      }
+    }
+    evt.preventDefault();
+    evt.stopPropagation();
+  }
+
+  searchFieldInputKeyDown(evt: KeyboardEvent): void {
+    if (evt.key === 'Tab' && !evt.shiftKey && evt.target === this.searchFieldInput?.nativeElement) {
+      if (this.searchFieldSubmitBtn?.nativeElement) {
+        this.searchFieldSubmitBtn.nativeElement.focus();
+      }
+      evt.preventDefault();
+    } else if (evt.key === 'Escape') {
+      if (this.searchMenuList?.nativeElement) {
+        this.showSearchform = false;
+        let searchMenuIdx;
+        if (this.selectedSearchMenu === SEARCH_MENU.Y) searchMenuIdx = 0;
+        else if (this.selectedSearchMenu === SEARCH_MENU.LABEL) searchMenuIdx = 1;
+        if (searchMenuIdx != null) {
+          const items = this.searchMenuList.nativeElement.querySelectorAll('li');
+          items[searchMenuIdx].focus();
+        }
+      }
+      evt.preventDefault();
+    } else if (evt.key === 'Tab') {
+      evt.preventDefault();
+    }
+  }
+
+  searchFieldButtonKeyDown(evt: KeyboardEvent): void {
+    if (evt.key === 'Tab' && evt.shiftKey && evt.target === this.searchFieldSubmitBtn?.nativeElement) {
+      if (this.searchFieldInput?.nativeElement) {
+        this.searchFieldInput.nativeElement.focus();
+      }
+      evt.preventDefault();
+    } else if (evt.key === 'Escape') {
+      if (this.searchMenuList?.nativeElement) {
+        this.showSearchform = false;
+        let searchMenuIdx;
+        if (this.selectedSearchMenu === SEARCH_MENU.Y) searchMenuIdx = 0;
+        else if (this.selectedSearchMenu === SEARCH_MENU.LABEL) searchMenuIdx = 1;
+        if (searchMenuIdx != null) {
+          const items = this.searchMenuList.nativeElement.querySelectorAll('li');
+          items[searchMenuIdx].focus();
+        }
+      }
+      evt.preventDefault();
+    } else if (evt.key === 'Tab') {
+      evt.preventDefault();
+    }
+  }
+
+  triggerSearch(evt: SubmitEvent): void {
+    if (this.searchFieldInput?.nativeElement) {
+      if (this.selectedSearchMenu === SEARCH_MENU.Y) {
+        let searchInput = this.searchFieldInput.nativeElement.value;
+        let compareType = 0;
+        if (searchInput.startsWith('>')) {
+          compareType = 1;
+          searchInput = searchInput.substring(1).trim();
+        } else if (searchInput.startsWith('<')) {
+          compareType = -1;
+          searchInput = searchInput.substring(1).trim();
+        }
+        let searchValue = parseFloat(searchInput);
+        let filteredData: Array<CleanData> = [];
+        this.createCleanData();
+        if (compareType === 0) {
+          filteredData = this.cleanData.filter((cd: CleanData) => cd.yValue === searchValue);
+        } else if (compareType === 1) {
+          filteredData = this.cleanData.filter((cd: CleanData) => cd.yValue > searchValue);
+        } else if (compareType === -1) {
+          filteredData = this.cleanData.filter((cd: CleanData) => cd.yValue < searchValue);
+        }
+        if (this.figureElement?.nativeElement) {
+          if (this.cleanData.length) {
+            this.cleanData = filteredData;
+            this.figureElement.nativeElement.innerHTML = '';
+            this.createSvg();
+            this.drawBars();
+            this.focusBar(this.cleanData[0].ID);
+          }
+        }
+      } else if (this.selectedSearchMenu === SEARCH_MENU.LABEL) {
+        const searchValue = this.searchFieldInput.nativeElement.value;
+        this.createCleanData();
+        const filteredData: Array<CleanData> = this.cleanData.filter((cd: CleanData) => cd.label.toUpperCase().startsWith(searchValue.toUpperCase()));
+        if (this.figureElement?.nativeElement) {
+          if (this.cleanData.length) {
+            this.cleanData = filteredData;
+            this.figureElement.nativeElement.innerHTML = '';
+            this.createSvg();
+            this.drawBars();
+            this.focusBar(this.cleanData[0].ID);
+          }
+        }
+      }
+    }
+    evt.preventDefault();
   }
 
   private createSvg(): void {
@@ -171,7 +415,17 @@ export class BarComponent implements OnInit {
         }
         break;
       case 'Escape':
-        this.focusSvg(true);
+        if (this.showSearchform && this.searchFieldInput?.nativeElement) {
+          if (this.figureElement?.nativeElement) {
+            this.createCleanData();
+            this.figureElement.nativeElement.innerHTML = '';
+            this.createSvg();
+            this.drawBars();
+          }
+          this.searchFieldInput.nativeElement.focus();
+        } else if (this.menuList?.nativeElement) {
+          this.menuList.nativeElement.querySelectorAll('li')[0].focus();
+        }
         break;
     }
     evt.preventDefault();
@@ -199,12 +453,8 @@ export class BarComponent implements OnInit {
   }
 
   private svgKeyDown(evt: KeyboardEvent): void {
-    if (evt.key === 'ArrowDown') {
-      if (this.focusedBar) {
-        this.focusBar(this.focusedBar);
-      } else {
-        this.focusBar(this.cleanData[0].ID);
-      }
+    if (evt.key === 'Enter' && this.menuButton?.nativeElement) {
+      this.menuButton.nativeElement.focus();
     }
   }
 

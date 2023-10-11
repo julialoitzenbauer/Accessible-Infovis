@@ -1,2 +1,33 @@
 <h2>{{ title }}</h2>
-<figure [id]="barId"></figure>
+<div role="log" aria-live="assertive" aria-relevant="all" #liveRegion></div>
+<button
+    [id]="menuId + '_BUTTON'"
+    tabindex="-1"
+    type="menu"
+    aria-haspopup="true"
+    [attr.aria-controls]="menuId"
+    [attr.aria-expanded]="menuIsOpen"
+    (keydown)="menuKeyDown($event)"
+    #menuButton>
+    Visualisierungs-Interaktionen
+</button>
+<ul *ngIf="menuIsOpen"
+    [id]="menuId"
+    role="menu"
+    [attr.aria-labelledby]="menuId + '_BUTTON'"
+    #menuList>
+    <li role="menuitem" (keydown)="menuItemKeyDown($event, 0)">Serielles Navigieren durch Daten</li>
+    <li role="menuitem" (keydown)="menuItemKeyDown($event, 1)">Zusammenfassung</li>
+    <li id="MenuItemSearch" role="menuitem" aria-haspopup="true" [attr.aria-expanded]="searchMenuIsOpen" [attr.aria-controls]="menuId + '_SEARCH'" (keydown)="searchMenuKeyDown($event, 2)" #searchMenuButton>Suchen
+        <ul *ngIf="searchMenuIsOpen" [id]="menuId + '_SEARCH'" #searchMenuList>
+            <li id="SearchMenuY" role="menuitem" (keydown)="searchMenuItemKeyDown($event, 0)">Suchen nach y-Achsen Wert</li>
+            <li id="SearchMenuLabel" role="menuitem" (keydown)="searchMenuItemKeyDown($event, 1)">Suchen nach Label</li>
+        </ul>
+    </li>
+</ul>
+<form *ngIf="showSearchform" (submit)="triggerSearch($event)">
+    <label class="search-label" for="search">{{ searchMenuPlaceholder }}</label>
+    <input id="search" type="text" [placeholder]="searchMenuPlaceholder" #searchFieldInput (keydown)="searchFieldInputKeyDown($event)">
+    <input class="button" type="submit" value="Suchen" #searchFieldSubmitBtn (keydown)="searchFieldButtonKeyDown($event)">
+</form>
+<figure [id]="barId" #figureElement></figure>
