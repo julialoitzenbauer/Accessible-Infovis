@@ -18,5 +18,19 @@ export class AppComponent {
     { System: "Ember", Sterne: 21471, Erscheinungsdatum: 2011 },
   ];
 
+  // Wahlbeteiligung Bundespräsidentenwahl 09. Oktober 2022
+  // https://de.statista.com/statistik/daten/studie/728385/umfrage/wahlbeteiligung-an-der-bundespraesidentenwahl-in-oesterreich-nach-bundeslaendern/
+  wahlbeteiligung = [
+    { Bundesland: 'Niederösterreich', Wahlbeteiligung: 72.6 },
+    { Bundesland: 'Burgenland', Wahlbeteiligung: 70.5 },
+    { Bundesland: 'Oberösterreich', Wahlbeteiligung: 68.3 },
+    { Bundesland: 'Salzburg', Wahlbeteiligung: 66.4 },
+    { Bundesland: 'Steiermark', Wahlbeteiligung: 64.3 },
+    { Bundesland: 'Kärnten', Wahlbeteiligung: 64.3 },
+    { Bundesland: 'Wien', Wahlbeteiligung: 59.6 },
+    { Bundesland: 'Tirol', Wahlbeteiligung: 56.5 },
+    { Bundesland: 'Vorarlberg', Wahlbeteiligung: 56.1 },
+  ];
+
   bigData = bigData;
 }

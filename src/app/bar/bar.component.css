@@ -2,8 +2,12 @@
     fill: cyan;
 }
 
-:host ::ng-deep .barCurrent {
+:host ::ng-deep .bar.current {
     fill: red;
+}
+
+:host ::ng-deep .bar.marked {
+    fill: white;
 }
 
 [role="log"] {

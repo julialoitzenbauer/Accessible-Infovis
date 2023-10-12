@@ -1,6 +1,8 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import * as d3 from 'd3';
+import * as Tone from 'tone';
 import { D3Selection } from 'src/types';
+import { MAX_MIDI_NOTE, MIDI_NOTES, MIN_MIDI_NOTE } from '../sonification/midiNotes';
 import { CleanData } from './barTypes';
 import { IDGenerator } from './IDGenerator';
 
@@ -41,12 +43,15 @@ export class BarComponent implements OnInit {
   private minId?: string;
   private focusedBar?: string;
   private selectedSearchMenu?: SEARCH_MENU | null;
+  markedData: Array<CleanData> = [];
   barId: string;
   menuId: string;
   menuIsOpen: boolean;
   searchMenuIsOpen: boolean;
   showSearchform: boolean;
   searchMenuPlaceholder: string;
+  markMenuIsOpen: boolean;
+  showDeleteMarksForm: boolean;
 
   @ViewChild('figureElement') figureElement: ElementRef<HTMLElement> | undefined;
   @ViewChild('menuButton') menuButton: ElementRef<HTMLElement> | undefined;
@@ -56,6 +61,10 @@ export class BarComponent implements OnInit {
   @ViewChild('searchMenuList') searchMenuList: ElementRef<HTMLElement> | undefined;
   @ViewChild('searchFieldInput') searchFieldInput: ElementRef<HTMLInputElement> | undefined;
   @ViewChild('searchFieldSubmitBtn') searchFieldSubmitBtn: ElementRef<HTMLElement> | undefined;
+  @ViewChild('markMenuButton') markMenuButton: ElementRef<HTMLElement> | undefined;
+  @ViewChild('markMenuList') markMenuList: ElementRef<HTMLElement> | undefined;
+  @ViewChild('deleteMarksButton') deleteMarksButton: ElementRef<HTMLElement> | undefined;
+  @ViewChild('cancelDeleteMarksButton') cancelDeleteMarksButton: ElementRef<HTMLElement> | undefined;
 
   constructor() {
     this.barId = IDGenerator.getId();
@@ -64,6 +73,8 @@ export class BarComponent implements OnInit {
     this.searchMenuIsOpen = false;
     this.showSearchform = false;
     this.searchMenuPlaceholder = '';
+    this.markMenuIsOpen = false;
+    this.showDeleteMarksForm = false;
   }
 
   ngOnInit(): void {
@@ -105,6 +116,31 @@ export class BarComponent implements OnInit {
             const descriptionTag = document.createElement('p');
             descriptionTag.innerText = this.description || '';
             this.liveRegion.nativeElement.appendChild(descriptionTag);
+          }
+          break;
+        case 3:
+          this.playSonification();
+          break;
+        case 5:
+          this.createCleanData();
+          if (this.figureElement?.nativeElement) {
+            this.figureElement.nativeElement.innerHTML = '';
+            this.createSvg();
+            this.drawBars();
+            if (this.liveRegion?.nativeElement) {
+              this.liveRegion.nativeElement.innerHTML = '';
+              this.liveRegion.nativeElement.innerHTML = '<p>Daten wurden erfolgreich zurückgesetzt</p>';
+            }
+            if (this.markedData.length) {
+              for (const mark of this.markedData) {
+                const selection = d3.select('[id="' + mark.ID.replaceAll('.', '\\.') + '"]');
+                const node = selection.node() as HTMLElement | null;
+                if (node) {
+                  node.classList.add('marked');
+                  node.setAttribute('aria-description', this.yAxisKey + ': ' + mark.yValue + ', Makiert');
+                }
+              }
+            }
           }
           break;
       }
@@ -156,6 +192,35 @@ export class BarComponent implements OnInit {
     evt.preventDefault();
   }
 
+  markMenuKeyDown(evt: KeyboardEvent, idx: number): void {
+    if (evt.key === 'ArrowUp' || evt.key === 'ArrowDown') {
+      if (this.menuList?.nativeElement) {
+        const items = this.menuList.nativeElement.querySelectorAll('li');
+        let newIdx = evt.key === 'ArrowDown' ? idx + 1 : idx - 1;
+        if (newIdx < 0) newIdx = items.length - 1;
+        else if (newIdx >= items.length) newIdx = 0;
+        items[idx].removeAttribute('tabindex');
+        items[newIdx].setAttribute('tabindex', '0');
+        items[newIdx].focus();
+      }
+    } else if (evt.key === 'Escape') {
+      this.menuIsOpen = false;
+      if (this.menuButton?.nativeElement) {
+        this.menuButton.nativeElement.focus();
+      }
+    } else if (evt.key === 'Enter' || evt.key === ' ') {
+      this.markMenuIsOpen = true;
+      setTimeout(() => {
+        if (this.markMenuList?.nativeElement) {
+          const items = this.markMenuList.nativeElement.querySelectorAll('li');
+          items[0].setAttribute('tabindex', '0');
+          items[0].focus();
+        }
+      }, 0);
+    }
+    evt.preventDefault();
+  }
+
   searchMenuItemKeyDown(evt: KeyboardEvent, idx: number): void {
     if (evt.key === 'ArrowDown' || evt.key === 'ArrowUp') {
       if (this.searchMenuList?.nativeElement) {
@@ -194,6 +259,83 @@ export class BarComponent implements OnInit {
     }
     evt.preventDefault();
     evt.stopPropagation();
+  }
+
+  markMenuItemKeyDown(evt: KeyboardEvent, idx: number): void {
+    if (evt.key === 'ArrowDown' || evt.key === 'ArrowUp') {
+      if (this.markMenuList?.nativeElement) {
+        const items = this.markMenuList.nativeElement.querySelectorAll('li');
+        let newIdx = evt.key === 'ArrowDown' ? idx + 1 : idx - 1;
+        if (newIdx < 0) newIdx = items.length - 1;
+        else if (newIdx >= items.length) newIdx = 0;
+        items[idx].removeAttribute('tabindex');
+        items[newIdx].setAttribute('tabindex', '0');
+        items[newIdx].focus();
+      }
+    } else if (evt.key === 'Escape') {
+      this.markMenuIsOpen = false;
+      if (this.markMenuButton?.nativeElement) {
+        this.markMenuButton.nativeElement.focus();
+      }
+    } else if (evt.key === 'Enter' || evt.key === ' ') {
+      if (idx === 0) {
+        this.showDeleteMarksForm = true;
+        setTimeout(() => {
+          if (this.deleteMarksButton?.nativeElement) {
+            this.deleteMarksButton.nativeElement.focus();
+          }
+        }, 0);
+      } else if (idx === 1) {
+        this.cleanData = this.markedData;
+        if (this.figureElement?.nativeElement) {
+          this.figureElement.nativeElement.innerHTML = '';
+          this.createSvg();
+          this.drawBars();
+          if (this.markedData.length) {
+            for (const mark of this.markedData) {
+              const selection = d3.select('[id="' + mark.ID.replaceAll('.', '\\.') + '"]');
+              const node = selection.node() as HTMLElement | null;
+              if (node) {
+                node.classList.add('marked');
+                node.setAttribute('aria-description', this.yAxisKey + ': ' + mark.yValue + ', Makiert');
+              }
+            }
+          }
+        }
+      }
+    }
+    evt.preventDefault();
+  }
+
+  markFormButtonKeyDown(evt: KeyboardEvent): void {
+    if (evt.target === this.deleteMarksButton?.nativeElement && this.deleteMarksButton?.nativeElement) {
+      if ((evt.key === 'Tab' && !evt.shiftKey || evt.key === 'ArrowLeft' || evt.key === 'ArrowRight') && this.cancelDeleteMarksButton?.nativeElement) {
+        this.cancelDeleteMarksButton.nativeElement.focus();
+      } else if (evt.key === 'Escape') {
+        this.showDeleteMarksForm = false;
+        if (this.markMenuList?.nativeElement) {
+          const items = this.markMenuList.nativeElement.querySelectorAll('li');
+          items[0].focus();
+        }
+      } else if (evt.key === 'Enter' || evt.key === ' ') {
+        this.markedData = [];
+        if (this.liveRegion?.nativeElement) {
+          this.liveRegion.nativeElement.innerHTML = '';
+          this.liveRegion.nativeElement.innerHTML = '<p>Makierte Daten wurden gelöscht</p>';
+        }
+      }
+    } else if (this.cancelDeleteMarksButton?.nativeElement && evt.target === this.cancelDeleteMarksButton.nativeElement) {
+      if ((evt.key === 'Tab' && evt.shiftKey || evt.key === 'ArrowLeft' || evt.key === 'ArrowRight') && this.deleteMarksButton?.nativeElement) {
+        this.deleteMarksButton.nativeElement.focus();
+      } else if (evt.key === 'Escape' || evt.key === 'Enter' || evt.key === ' ') {
+        this.showDeleteMarksForm = false;
+        if (this.markMenuList?.nativeElement) {
+          const items = this.markMenuList.nativeElement.querySelectorAll('li');
+          items[0].focus();
+        }
+      }
+    }
+    evt.preventDefault();
   }
 
   searchFieldInputKeyDown(evt: KeyboardEvent): void {
@@ -291,6 +433,36 @@ export class BarComponent implements OnInit {
     evt.preventDefault();
   }
 
+  private playSonification(): void {
+    if (this.cleanData.length) {
+      const notes: Array<string> = [];
+      for (const cd of this.cleanData) {
+        notes.push(this.calcSoniNote(cd.yValue));
+      }
+      let noteLength = 5 / this.cleanData.length;
+      if (noteLength > 1) noteLength = 1;
+      console.log(noteLength);
+      const synth = new Tone.PolySynth(Tone.Synth).toDestination();
+      let idx = 0;
+      for (const note of notes) {
+        let delay = Tone.now();
+        delay += idx * noteLength;
+        idx += 1;
+        synth.triggerAttackRelease([note], noteLength > 0.5 ? 0.5 : noteLength  , delay);
+      }
+    }
+  }
+
+  private calcSoniNote(value: number): string {
+    let note = '';
+    let noteVal = Math.round(MIN_MIDI_NOTE + ((value) / (this.maxY)) * (MAX_MIDI_NOTE - MIN_MIDI_NOTE));
+    if (noteVal < MIN_MIDI_NOTE) noteVal = MIN_MIDI_NOTE;
+    if (noteVal > MAX_MIDI_NOTE) noteVal = MAX_MIDI_NOTE;
+    const midiNote = MIDI_NOTES.filter((mn) => mn.midi === noteVal);
+    if (midiNote.length) note = midiNote[0].note;
+    return note;
+  }
+
   private createSvg(): void {
     this.svg = d3.select("figure#" + this.barId)
       .append("svg")
@@ -377,7 +549,7 @@ export class BarComponent implements OnInit {
       }
       node.focus();
       node.setAttribute("tabindex", "0");
-      node.setAttribute("class", "barCurrent");
+      node.classList.add('current');
       this.focusedBar = id;
     }
   }
@@ -388,7 +560,7 @@ export class BarComponent implements OnInit {
     if (node) {
       node.setAttribute("tabindex", "-1");
       node.blur();
-      node.setAttribute("class", "bar");
+      node.classList.remove('current');
     }
   }
 
@@ -416,15 +588,36 @@ export class BarComponent implements OnInit {
         break;
       case 'Escape':
         if (this.showSearchform && this.searchFieldInput?.nativeElement) {
-          if (this.figureElement?.nativeElement) {
-            this.createCleanData();
-            this.figureElement.nativeElement.innerHTML = '';
-            this.createSvg();
-            this.drawBars();
-          }
           this.searchFieldInput.nativeElement.focus();
         } else if (this.menuList?.nativeElement) {
           this.menuList.nativeElement.querySelectorAll('li')[0].focus();
+        }
+        break;
+      case 'm':
+      case 'M':
+        if (evt.shiftKey) {
+          const currBarIdx = this.getCurrBarIdx();
+          const bar = this.cleanData[currBarIdx];
+          let remove = false;
+          if (this.markedData.includes(bar)) {
+            const markedIdx = this.markedData.indexOf(bar);
+            this.markedData.splice(markedIdx, 1);
+            remove = true;
+          } else {
+            this.markedData.push(bar);
+          }
+          const selection = d3.select('[id="' + bar.ID.replaceAll('.', '\\.') + '"]');
+          const node = selection.node() as HTMLElement | null;
+          if (node) {
+            if (remove) {
+              node.classList.remove('marked');
+              node.setAttribute('aria-description', this.yAxisKey + ': ' + bar.yValue);
+            }
+            else {
+              node.setAttribute('aria-description', this.yAxisKey + ': ' + bar.yValue + ', Makiert');
+              node.classList.add('marked');
+            }
+          }
         }
         break;
     }
