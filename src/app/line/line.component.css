@@ -1,0 +1,28 @@
+:host ::ng-deep .axis line{
+    stroke: white;
+    stroke-width: 0.5;
+    shape-rendering: crispEdges;
+}
+
+/* axis contour */
+:host ::ng-deep .axis path {
+    stroke: white;
+    stroke-width: 0.7;
+    shape-rendering: crispEdges;
+}
+
+/* axis text */
+:host ::ng-deep .axis text {
+    fill: white;
+    font-family: Georgia;
+    font-size: 120%;
+}
+
+:host ::ng-deep path {
+    fill: none;
+    stroke: cyan;
+}
+
+:host ::ng-deep circle {
+    fill: red;
+}

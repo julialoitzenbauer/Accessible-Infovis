@@ -1,0 +1,23 @@
+<h2>{{ title }}</h2>
+<button
+    [id]="menuId + '_BUTTON'"
+    tabindex="-1"
+    type="menu"
+    aria-haspopup="true"
+    [attr.aria-controls]="menuId"
+    [attr.aria-expanded]="menuIsOpen"
+    (keydown)="menuKeyDown($event)"
+    #menuButton>
+    Visualisierungs-Interaktionen
+</button>
+<div role="log" aria-live="assertive" aria-relevant="all" #liveRegion>
+</div>
+<ul *ngIf="menuIsOpen"
+    [id]="menuId"
+    role="menu"
+    [attr.aria-labelledby]="menuId + '_BUTTON'"
+    #menuList>
+    <li id="MenuItemNavigate" role="menuitem" (keydown)="menuItemKeyDown($event, 0)">Serielles Navigieren durch Daten</li>
+    <li id="MenuItemSummary" role="menuitem" (keydown)="menuItemKeyDown($event, 1)">Zusammenfassung</li>
+</ul>
+<figure [id]="lineId" #figureElement></figure>

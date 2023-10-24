@@ -64,6 +64,7 @@ export class ScatterComponent implements OnInit {
   @ViewChild('cancelDeleteMarksButton') cancelDeleteMarksButton: ElementRef<HTMLElement> | undefined;
 
   private cleanData?: Record<number, Array<CleanData>>;
+  private tickData: Array<Array<CleanData>> = [];
   private markedData: Record<number, Array<CleanData>> = {};
   private svg?: D3Selection;
   private dots?: D3Selection;
@@ -74,6 +75,7 @@ export class ScatterComponent implements OnInit {
   private maxY: number = 0;
   private minY?: number;
   private keys: Array<number> = [];
+  private currTickIdx: number | null = null;
   scatterId: string;
   menuIsOpen: boolean;
   searchMenuIsOpen: boolean;
@@ -98,8 +100,8 @@ export class ScatterComponent implements OnInit {
     this.currNumberOfMarks = 0;
   }
 
-  ngOnInit(): void {
-    setTimeout(() => {
+  async ngOnInit(): Promise<void> {
+    setTimeout(async () => {
       this.initAria();
       this.createSvg();
       this.drawPlot();
@@ -447,7 +449,11 @@ export class ScatterComponent implements OnInit {
       switch(target.id) {
         case 'MenuItemNavigate':
           if (this.keys.length) {
-            this.focusDot(this.keys[0] + '_0');
+            const tickContainer = this.figureElement?.nativeElement?.querySelector('[data-tickContainer="0"]');
+            if (tickContainer) {
+              tickContainer.setAttribute('tabindex', '0');
+              (tickContainer as HTMLElement).focus();
+            }
           }
           break;
         case 'MenuItemSummary':
@@ -561,7 +567,6 @@ export class ScatterComponent implements OnInit {
       .attr("width", this.width + (this.margin * 2))
       .attr("height", this.height + (this.margin * 2))
       .attr("tabindex", "0")
-      .attr("id", "SVG")
       .attr('aria-label', 'Scatterplot: ' + this.title)
       .attr('aria-description', this.cleanDescription || null)
       .append("g")
@@ -573,18 +578,28 @@ export class ScatterComponent implements OnInit {
     // Add X axis
     if (this.minX == null) this.minX = 0;
     const threshold = (this.maxX - this.minX) * 0.1;
+    const minXVal = Math.floor(this.minX - threshold),
+      maxXVal = Math.floor(this.maxX + threshold);
     const x = d3.scaleLinear()
+      // .ticks(Math.floor(this.minX - threshold), Math.floor(this.maxX + threshold), 10)
       .domain([Math.floor(this.minX - threshold), Math.floor(this.maxX + threshold)])
       .range([0, this.width]);
     if (this.formatXAxisToInt) {
       this.svg.append("g")
         .attr("transform", "translate(0," + this.height + ")")
-        .call(d3.axisBottom(x).tickFormat(d3.format("d")));
+        .attr("data-xAxis", true)
+        .call(d3.axisBottom(x)
+        .tickValues(d3.ticks(minXVal, maxXVal, maxXVal - minXVal < 10 ? maxXVal - minXVal : 10))
+        .tickFormat(d3.format("d"))
+        );
     } else {
       this.svg.append("g")
         .attr("transform", "translate(0," + this.height + ")")
-        .call(d3.axisBottom(x));
+        .attr("data-xAxis", true)
+        .call(d3.axisBottom(x)
+        .tickValues(d3.ticks(minXVal, maxXVal, 10)));
     }
+
 
     // Add Y axis
     const y = d3.scaleLinear()
@@ -596,6 +611,7 @@ export class ScatterComponent implements OnInit {
     // Add dots
     this.addDots(x, y);
     this.addAxisLabels();
+    this.createTickContainers();
   }
 
   private addAxisLabels(): void {
@@ -646,6 +662,91 @@ export class ScatterComponent implements OnInit {
         .attr("display", (d: CleanData) => d.hidden ? "none" : "block")
         .attr("fill", "white");
     }
+  }
+
+  private createTickContainers(): void {
+    this.tickData = [];
+    if (this.figureElement?.nativeElement) {
+      const xAxis = this.figureElement.nativeElement.querySelector('[data-xAxis="true"]');
+      if (xAxis) {
+        const ticks = xAxis.querySelectorAll('.tick');
+        if (ticks.length) {
+          let idx = 0;
+          const figureRect = this.figureElement.nativeElement.getBoundingClientRect();
+          while (idx < ticks.length -1) {
+            const tickLine = ticks[idx].querySelector('line');
+            const nextTickLine = ticks[idx + 1].querySelector('line');
+            const tickValue = parseFloat(ticks[idx].querySelector('text')?.textContent || '');
+            const nextTickValue = parseFloat(ticks[idx + 1].querySelector('text')?.textContent || '');
+            if (tickLine && nextTickLine && tickValue != null && !isNaN(tickValue) && nextTickValue != null && !isNaN(nextTickValue)) {
+              const tickRect = tickLine.getBoundingClientRect();
+              let leftValue = tickRect.left - figureRect.left;
+              const rightValue = nextTickLine.getBoundingClientRect().left - figureRect.left;
+              const width = rightValue - leftValue;
+              const tickContainer = document.createElement('div');
+              tickContainer.style.position = "absolute";
+              tickContainer.style.width = width + "px";
+              tickContainer.style.left = leftValue + "px";
+              tickContainer.style.height = this.height + "px";
+              tickContainer.style.border = "1px solid red";
+              tickContainer.style.bottom = figureRect.bottom - xAxis.getBoundingClientRect().top + "px";
+              tickContainer.setAttribute('data-tickContainer', idx.toString());
+              tickContainer.onkeydown = this.onTickContainerKeyDown.bind(this);
+              this.figureElement.nativeElement.appendChild(tickContainer);
+              if (this.cleanData && this.keys?.length) {
+                const currTickData: Array<CleanData> = [];
+                let tickKeys = [];
+                if (idx === 0) {
+                  tickKeys = this.keys.filter((x: number) => x <= nextTickValue);
+                } else {
+                  tickKeys = this.keys.filter((x: number) => x > tickValue && x <= nextTickValue);
+                }
+                for (const tickKey of tickKeys) {
+                  const cd = this.cleanData[tickKey];
+                  if (cd) {
+                    currTickData.push(...cd);
+                  }
+                }
+                this.tickData.push(currTickData.sort((a: CleanData, b: CleanData) => a.yValue - b.yValue));
+                tickContainer.setAttribute('aria-label', `Daten von ${tickValue} bis inklusive ${nextTickValue}. Beinhaltet ${currTickData.length} ${currTickData.length === 1 ? 'Datenpunkt' : 'Datenpunkte'}.`);
+                tickContainer.setAttribute('aria-description', 'Drücken Sie Enter um in die Daten zu navigieren');
+              }
+            }
+            idx += 1;
+          }
+        }
+      }
+    }
+  }
+
+  private onTickContainerKeyDown(evt: KeyboardEvent): void {
+    if (evt.target) {
+      const target = evt.target as HTMLElement;
+      const currTickIdx = parseInt(target.getAttribute('data-tickContainer') || '');
+      if (evt.key === 'ArrowRight' || evt.key === 'ArrowLeft') {
+        if (currTickIdx != null && !isNaN(currTickIdx)) {
+          let newTickIdx = evt.key === 'ArrowRight' ? currTickIdx + 1 : currTickIdx - 1;
+          if (newTickIdx >= this.tickData.length) newTickIdx = this.tickData.length - 1;
+          if (newTickIdx < 0) newTickIdx = 0;
+          const newTickContainer = this.figureElement?.nativeElement.querySelector(`[data-tickContainer="${newTickIdx}"`);
+          if (newTickContainer) {
+            target.removeAttribute('tabindex');
+            newTickContainer.setAttribute('tabindex', '0');
+            (newTickContainer as HTMLElement).focus();
+          }
+        }
+      } else if (evt.key === 'Enter') {
+        if (currTickIdx != null && !isNaN(currTickIdx)) {
+          const tickToFocus = this.tickData[currTickIdx];
+          if (tickToFocus?.length) {
+            const dotToFocus = tickToFocus[0];
+            this.focusDot(dotToFocus.ID);
+            this.currTickIdx = currTickIdx;
+          }
+        }
+      }
+    }
+    evt.preventDefault();
   }
 
   private createCleanData(): Record<number, Array<CleanData>> {
@@ -703,6 +804,33 @@ export class ScatterComponent implements OnInit {
   }
 
   private dotKeyDown(evt: KeyboardEvent): void {
+    if (evt.target && this.currTickIdx != null) {
+      const target = evt.target as HTMLElement;
+      const tickData = this.tickData[this.currTickIdx];
+      if (evt.key === 'ArrowUp' || evt.key === 'ArrowDown') {
+        const dataID = target.id.substring(('DOT_').length);
+        const currDotIdx = this.tickData[this.currTickIdx].map((cd: CleanData) => cd.ID).indexOf(dataID);
+        if (currDotIdx !== -1) {
+          let newDotIdx = evt.key === 'ArrowUp' ? currDotIdx + 1 : currDotIdx - 1;
+          if (newDotIdx >= tickData.length) newDotIdx = tickData.length - 1;
+          if (newDotIdx < 0) newDotIdx = 0;
+          target.removeAttribute('tabindex');
+          this.focusDot(this.tickData[this.currTickIdx][newDotIdx].ID);
+        }
+      } else if (evt.key === 'Escape') {
+        const tickContainer = this.figureElement?.nativeElement.querySelector(`[data-tickContainer="${this.currTickIdx}"]`);
+        if (tickContainer) {
+          target.removeAttribute('tabindex');
+          tickContainer.setAttribute('tabindex', '0');
+          (tickContainer as HTMLElement).focus();
+          this.currTickIdx = null;
+        }
+      }
+    }
+    evt.preventDefault();
+  }
+
+  /* private dotKeyDown(evt: KeyboardEvent): void {
     const targetElement = evt.target as HTMLElement;
     if (targetElement && this.cleanData) {
       const dataPoint = this.getDataPointById(targetElement.id);
@@ -768,7 +896,7 @@ export class ScatterComponent implements OnInit {
       }
     }
     evt.preventDefault();
-  }
+  } */
 
   private getDataPointById(id: string): DataPoint | null {
     const dataId = id.substring(id.indexOf('_') + 1);

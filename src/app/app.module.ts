@@ -4,6 +4,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BarComponent } from './bar/bar.component';
+import { LineComponent } from './line/line.component';
 import { PieComponent } from './pie/pie.component';
 import { ScatterComponent } from './scatter/scatter.component';
 
@@ -12,7 +13,8 @@ import { ScatterComponent } from './scatter/scatter.component';
     AppComponent,
     BarComponent,
     PieComponent,
-    ScatterComponent
+    ScatterComponent,
+    LineComponent,
   ],
   imports: [
     BrowserModule,
