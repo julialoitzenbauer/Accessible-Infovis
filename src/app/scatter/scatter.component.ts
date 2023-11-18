@@ -76,6 +76,7 @@ export class ScatterComponent implements OnInit {
   private minY?: number;
   private keys: Array<number> = [];
   private currTickIdx: number | null = null;
+  private triggeredSearchElem: HTMLElement | null = null;
   scatterId: string;
   menuIsOpen: boolean;
   searchMenuIsOpen: boolean;
@@ -226,9 +227,11 @@ export class ScatterComponent implements OnInit {
           if (this.figureElement?.nativeElement) this.figureElement.nativeElement.innerHTML = '';
           this.createSvg();
           this.drawPlot();
-          if (this.currNumberOfMarks > 0) {
-            this.focusDot(this.keys[0] +  '_0');
-          }
+          const tickContainer = this.figureElement?.nativeElement?.querySelector('[data-tickContainer="0"]');
+            if (tickContainer) {
+              tickContainer.setAttribute('tabindex', '0');
+              (tickContainer as HTMLElement).focus();
+            }
           break;
       }
     } else if (this.isMenuLetterNavigation(evt)) {
@@ -278,12 +281,18 @@ export class ScatterComponent implements OnInit {
       evt.preventDefault();
     } else if (evt.key === 'Escape') {
       this.closeSearchMenu();
+    } else if (evt.key === 'Enter') {
+      this.triggeredSearchElem = evt.target as HTMLElement;
     }
   }
 
   searchFieldButtonKeyDown(evt: KeyboardEvent): void {
     if (evt.key === 'Escape') {
       this.closeSearchMenu();
+    } else if (evt.key === ' ' || evt.key === 'Enter') {
+      this.triggeredSearchElem = evt.target as HTMLElement;
+    } else if (evt.key === 'Tab' && !evt.shiftKey) {
+      evt.preventDefault();
     }
   }
 
@@ -307,7 +316,6 @@ export class ScatterComponent implements OnInit {
           searchValue = parseFloat(searchInput);
         }
         if (searchValue == null || isNaN(searchValue)) {
-          console.log('ERROR');
           if (this.liveRegion?.nativeElement) {
             this.liveRegion.nativeElement.innerHTML = '';
             const pTag = document.createElement('p');
@@ -349,18 +357,15 @@ export class ScatterComponent implements OnInit {
     if (this.figureElement?.nativeElement) this.figureElement.nativeElement.innerHTML = '';
     this.createSvg();
     this.drawPlot();
-    if (numberOfDataPoints > 0) {
-      this.focusDot(this.keys[0] +  '_0');
-    }
     if (this.liveRegion?.nativeElement) {
       this.liveRegion.nativeElement.innerHTML = '';
       const descriptionTag = document.createElement('p');
       if (numberOfDataPoints === 1) {
-        descriptionTag.innerHTML = 'Ein Datenpunkt gefunden. Dieser Datenpunkt wurde fokussiert.';
+        descriptionTag.innerHTML = 'Ein Datenpunkt gefunden. Der gefundene Datenpunkt wird angezeigt.';
       } else if (numberOfDataPoints > 1) {
-        descriptionTag.innerHTML = `${numberOfDataPoints} Datenpunkte gefunden. Der erste Datenpunkt wurde fokussiert`;
+        descriptionTag.innerHTML = `${numberOfDataPoints} Datenpunkte gefunden. Die gefundenen Datenpunkte werden angezeigt.`;
       } else {
-        descriptionTag.innerHTML = 'Kein Datenpunkt gefunden';
+        descriptionTag.innerHTML = 'Keine Datenpunkte gefunden.';
       }
       this.liveRegion.nativeElement.appendChild(descriptionTag);
     }
@@ -398,10 +403,10 @@ export class ScatterComponent implements OnInit {
           currSelectedSearchListItem.focus();
         }
       }
-      this.cleanData = this.createCleanData();
+      /* this.cleanData = this.createCleanData();
       if (this.figureElement?.nativeElement) this.figureElement.nativeElement.innerHTML = '';
       this.createSvg();
-      this.drawPlot();
+      this.drawPlot(); */
   }
 
   private enterMenuList(menuType: MENU_TYPES, evt: KeyboardEvent): void {
@@ -466,6 +471,12 @@ export class ScatterComponent implements OnInit {
           break;
         case 'MenuItemSonification':
           this.startSonification();
+          break;
+        case 'MenuItemReset':
+          this.cleanData = this.createCleanData();
+          if (this.figureElement?.nativeElement) this.figureElement.nativeElement.innerHTML = '';
+          this.createSvg();
+          this.drawPlot();
           break;
       }
     }
@@ -688,7 +699,6 @@ export class ScatterComponent implements OnInit {
               tickContainer.style.width = width + "px";
               tickContainer.style.left = leftValue + "px";
               tickContainer.style.height = this.height + "px";
-              tickContainer.style.border = "1px solid red";
               tickContainer.style.bottom = figureRect.bottom - xAxis.getBoundingClientRect().top + "px";
               tickContainer.setAttribute('data-tickContainer', idx.toString());
               tickContainer.onkeydown = this.onTickContainerKeyDown.bind(this);
@@ -743,6 +753,18 @@ export class ScatterComponent implements OnInit {
             this.focusDot(dotToFocus.ID);
             this.currTickIdx = currTickIdx;
           }
+        }
+      } else if (evt.key === 'Escape') {
+        if (this.searchFieldInput?.nativeElement) {
+          if (this.triggeredSearchElem) {
+            this.triggeredSearchElem.focus();
+            this.triggeredSearchElem = null;
+          } else {
+            this.searchFieldInput.nativeElement.focus();
+          }
+        } else if (this.menuList?.nativeElement) {
+          const items = this.menuList.nativeElement.querySelectorAll('li');
+          items[0].focus();
         }
       }
     }
@@ -825,9 +847,36 @@ export class ScatterComponent implements OnInit {
           (tickContainer as HTMLElement).focus();
           this.currTickIdx = null;
         }
+      } else if (evt.key === 'M' && evt.shiftKey && this.cleanData) {
+        const dataID = target.id.substring(('DOT_').length);
+        const currDotIdx = this.tickData[this.currTickIdx].map((cd: CleanData) => cd.ID).indexOf(dataID);
+        let removeMark = false;
+        if (currDotIdx !== -1) {
+          const cleanDataToMark = this.tickData[this.currTickIdx][currDotIdx];
+          if (!this.markedData[cleanDataToMark.xValue]) {
+            this.markedData[cleanDataToMark.xValue] = [cleanDataToMark];
+            target.setAttribute('aria-label', cleanDataToMark.label + ', makiert');
+          } else {
+            if (this.markedData[cleanDataToMark.xValue].includes(cleanDataToMark)) {
+              removeMark = true;
+              let removeIdx = this.markedData[cleanDataToMark.xValue].indexOf(cleanDataToMark);
+              this.markedData[cleanDataToMark.xValue].splice(removeIdx, 1);
+              if (this.markedData[cleanDataToMark.xValue].length === 0) {
+                delete this.markedData[cleanDataToMark.xValue];
+              }
+              target.setAttribute('aria-label', cleanDataToMark.label);
+            } else {
+              this.markedData[cleanDataToMark.xValue].push(cleanDataToMark);
+              target.setAttribute('aria-label', cleanDataToMark.label + ', makiert');
+            }
+          }
+          this.currNumberOfMarks = removeMark ? this.currNumberOfMarks - 1 : this.currNumberOfMarks + 1;
+          this.markDot(cleanDataToMark.ID, removeMark);
+        }
       }
     }
     evt.preventDefault();
+    evt.stopPropagation();
   }
 
   /* private dotKeyDown(evt: KeyboardEvent): void {
