@@ -77,6 +77,7 @@ export class ScatterComponent implements OnInit {
   private keys: Array<number> = [];
   private currTickIdx: number | null = null;
   private triggeredSearchElem: HTMLElement | null = null;
+  isFilteredByMarks: boolean = false;
   scatterId: string;
   menuIsOpen: boolean;
   searchMenuIsOpen: boolean;
@@ -215,29 +216,43 @@ export class ScatterComponent implements OnInit {
           }, 0);
           break;
         case 1:
-          this.keys = Object.keys(this.markedData).map(Number);
-          this.cleanData = this.markedData;
-          this.sortData(this.cleanData);
-          for (const key of this.keys) {
-            let data = this.cleanData[key];
-            for (let idx = 0; idx < data.length; ++idx) {
-              data[idx].ID = key + '_' + idx;
-            }
+          if (this.isFilteredByMarks) {
+            this.cleanData = this.createCleanData();
+            if (this.figureElement?.nativeElement) this.figureElement.nativeElement.innerHTML = '';
+            this.createSvg();
+            this.drawPlot();
+            this.isFilteredByMarks = false;
+          } else {
+            this.filterByMarks();
           }
-          if (this.figureElement?.nativeElement) this.figureElement.nativeElement.innerHTML = '';
-          this.createSvg();
-          this.drawPlot();
-          const tickContainer = this.figureElement?.nativeElement?.querySelector('[data-tickContainer="0"]');
-            if (tickContainer) {
-              tickContainer.setAttribute('tabindex', '0');
-              (tickContainer as HTMLElement).focus();
-            }
           break;
       }
     } else if (this.isMenuLetterNavigation(evt)) {
       this.focusNextMenuItemByLetter(MENU_TYPES.MARK_MENU, evt.key, targetIdx);
     }
     evt.preventDefault();
+  }
+
+  filterByMarks(): void {
+    this.isFilteredByMarks = true;
+    this.keys = Object.keys(this.markedData).map(Number);
+    this.cleanData = this.markedData;
+    this.sortData(this.cleanData);
+    for (const key of this.keys) {
+      let data = this.cleanData[key];
+      for (let idx = 0; idx < data.length; ++idx) {
+        data[idx].ID = key + '_' + idx;
+      }
+    }
+    if (this.figureElement?.nativeElement) this.figureElement.nativeElement.innerHTML = '';
+    this.createSvg();
+    this.drawPlot();
+    if (this.liveRegion?.nativeElement) {
+      this.liveRegion.nativeElement.innerHTML = '';
+      const descriptionTag = document.createElement('p');
+      descriptionTag.innerHTML = 'Nur die makierten Datenpunkte werden angezeigt.';
+      this.liveRegion.nativeElement.appendChild(descriptionTag);
+    }
   }
 
   markFormButtonKeyDown(evt: KeyboardEvent) {
@@ -847,7 +862,7 @@ export class ScatterComponent implements OnInit {
           (tickContainer as HTMLElement).focus();
           this.currTickIdx = null;
         }
-      } else if (evt.key === 'M' && evt.shiftKey && this.cleanData) {
+      } else if (evt.key === 'M' && evt.shiftKey && this.cleanData && !this.isFilteredByMarks) {
         const dataID = target.id.substring(('DOT_').length);
         const currDotIdx = this.tickData[this.currTickIdx].map((cd: CleanData) => cd.ID).indexOf(dataID);
         let removeMark = false;
