@@ -7,13 +7,13 @@ import { IDGenerator } from './IDGenerator';
 import { CleanData, DataPoint } from './scatterTypes';
 import { MAX_MIDI_NOTE, MIDI_NOTES, MIN_MIDI_NOTE } from '../sonification/midiNotes';
 
-export enum SEARCH_MENUS {
+enum SEARCH_MENUS {
   X,
   Y,
   LABEL,
 }
 
-export enum MENU_TYPES {
+enum MENU_TYPES {
   BASE_MENU,
   MARK_MENU,
   SEARCH_MENU,

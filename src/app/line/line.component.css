@@ -26,3 +26,8 @@
 :host ::ng-deep circle {
     fill: red;
 }
+
+[role="log"] {
+    position: absolute;
+    left: -999999px;
+}

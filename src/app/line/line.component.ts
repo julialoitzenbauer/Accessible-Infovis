@@ -5,6 +5,11 @@ import { IDGenerator } from './IDGenerator';
 import { CleanData, CleanDataObj, CleanDotData } from './lineTypes';
 import { data } from './testData';
 
+enum SEARCH_MENUS {
+    X,
+    LABEL,
+}
+
 @Component({
   selector: 'app-line',
   templateUrl: './line.component.html',
@@ -39,6 +44,7 @@ export class LineComponent implements OnInit {
   @ViewChild('liveRegion') liveRegion: ElementRef<HTMLElement> | undefined;
   @ViewChild('figureElement') figureElement: ElementRef<HTMLElement> | undefined;
   @ViewChild('menuList') menuList: ElementRef<HTMLElement> | undefined;
+  @ViewChild('searchMenuList') searchMenuList: ElementRef<HTMLElement> | undefined;
 
   private svg?: D3Selection;
   private maxY: number = -1;
@@ -48,6 +54,10 @@ export class LineComponent implements OnInit {
   lineId: string;
   menuId: string;
   menuIsOpen: boolean;
+  searchMenuIsOpen: boolean = false;
+  showSearchform: boolean = false;
+  searchMenuPlaceholder: string = '';
+  selectedSearchMenu: SEARCH_MENUS | null = null;
 
 
   constructor() {
@@ -102,14 +112,97 @@ export class LineComponent implements OnInit {
             case 0:
                 this.focusLine(0);
                 break;
+            case 1:
+                if (this.liveRegion?.nativeElement) {
+                    this.liveRegion.nativeElement.innerHTML = '';
+                    const descriptionTag = document.createElement('p');
+                    descriptionTag.innerHTML = this.summary;
+                    this.liveRegion.nativeElement.appendChild(descriptionTag);
+                }
+                break;
         }
     } else if (evt.key === 'Escape') {
         this.menuIsOpen = false;
         if (this.menuButton?.nativeElement) {
             this.menuButton.nativeElement.focus();
         }
+    } else if (evt.key === 'ArrowDown' || evt.key === 'ArrowUp') {
+        const menuItems = this.menuList?.nativeElement.querySelectorAll('li');
+        if (menuItems?.length) {
+            let newIdx = evt.key === 'ArrowDown' ? targetIdx + 1 : targetIdx - 1;
+            if (newIdx < 0) newIdx = menuItems.length - 1;
+            if (newIdx >= menuItems.length) newIdx = 0;
+            menuItems[targetIdx].removeAttribute('tabindex');
+            menuItems[newIdx].setAttribute('tabindex', '0');
+            (menuItems[newIdx] as HTMLElement).focus();
+        }
     }
     evt.preventDefault();
+  }
+
+  searchMenuKeyDown(evt: KeyboardEvent, idx: number): void {
+    if (evt.key === 'Enter' || evt.key === ' ') {
+        this.searchMenuIsOpen = !this.searchMenuIsOpen;
+        setTimeout(() => {
+            if (this.searchMenuList?.nativeElement) {
+                const items = this.searchMenuList.nativeElement.querySelectorAll('li');
+                items[0].setAttribute('tabindex', '0');
+                console.log(items[0]);
+                (items[0]).focus();
+            }
+        }, 0);
+    } else if (evt.key === 'ArrowUp' || evt.key === 'ArrowDown') {
+        if (this.menuList?.nativeElement) {
+            const menuItems = this.menuList.nativeElement.querySelectorAll('li');
+            let newIdx = evt.key === 'ArrowUp' ? idx - 1 : idx + 1;
+            if (newIdx < 0) newIdx = menuItems.length - 1;
+            if (newIdx >= menuItems.length) newIdx = 0;
+            menuItems[idx].removeAttribute('tabindex');
+            menuItems[newIdx].setAttribute('tabindex', '0');
+            (menuItems[newIdx]).focus();
+        }
+    } else if (evt.key === 'Escape') {
+        if (this.menuButton?.nativeElement) {
+            this.menuButton.nativeElement.focus();
+            this.menuIsOpen = false;
+        }
+    }
+    evt.preventDefault();
+  }
+
+  searchMenuItemKeyDown(evt: KeyboardEvent, idx: number): void {
+    if (evt.key === 'ArrowUp' || evt.key === 'ArrowDown') {
+        if (this.searchMenuList?.nativeElement) {
+            let items = this.searchMenuList.nativeElement.querySelectorAll('li');
+            let newIdx = evt.key === 'ArrowUp' ? idx - 1 : idx + 1;
+            if (newIdx < 0) newIdx = items.length - 1;
+            if (newIdx >= items.length) newIdx = 0;
+            items[idx].removeAttribute('tabindex');
+            items[newIdx].setAttribute('tabindex', '0');
+            (items[newIdx]).focus();
+        }
+    } else if (evt.key === 'Escape') {
+        if (this.menuList?.nativeElement) {
+            const menuItems = this.menuList.nativeElement.querySelectorAll('li');
+            menuItems[2].setAttribute('tabindex', '0');
+            menuItems[2].focus();
+            this.searchMenuIsOpen = false;
+        }
+    }
+    evt.preventDefault();
+    evt.stopPropagation();
+  }
+
+  triggerSearch(evt: Event): void {
+
+  }
+
+  searchFieldInputKeyDown(evt: KeyboardEvent): void {
+
+  }
+
+  searchFieldButtonKeyDown(evt: KeyboardEvent): void {
+
   }
 
   private initCleanData(): void {

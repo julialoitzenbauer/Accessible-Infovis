@@ -2,3 +2,4 @@
 .browserslistrc
 .editorconfig
 .vscode
+node_modules
