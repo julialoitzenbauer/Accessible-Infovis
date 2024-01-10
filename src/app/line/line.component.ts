@@ -127,6 +127,13 @@ export class LineComponent implements OnInit {
                     this.liveRegion.nativeElement.appendChild(descriptionTag);
                 }
                 break;
+            case 5:
+                if (this.figureElement?.nativeElement) this.figureElement.nativeElement.innerHTML = '';
+                this.cleanData = [];
+                this.initCleanData();
+                this.createData();
+                this.drawChart();
+                break;
         }
     } else if (evt.key === 'Escape') {
         this.menuIsOpen = false;
