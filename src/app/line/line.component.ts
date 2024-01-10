@@ -45,6 +45,7 @@ export class LineComponent implements OnInit {
   @ViewChild('figureElement') figureElement: ElementRef<HTMLElement> | undefined;
   @ViewChild('menuList') menuList: ElementRef<HTMLElement> | undefined;
   @ViewChild('searchMenuList') searchMenuList: ElementRef<HTMLElement> | undefined;
+  @ViewChild('searchFieldInput') searchFieldInput: ElementRef<HTMLInputElement> | undefined;
 
   private svg?: D3Selection;
   private maxY: number = -1;
@@ -58,6 +59,8 @@ export class LineComponent implements OnInit {
   showSearchform: boolean = false;
   searchMenuPlaceholder: string = '';
   selectedSearchMenu: SEARCH_MENUS | null = null;
+  markMenuIsOpen: boolean = false;
+  isFilteredByMarks: boolean = false;
 
 
   constructor() {
@@ -70,19 +73,23 @@ export class LineComponent implements OnInit {
     setTimeout(() => {
         this.initCleanData();
         this.createData();
-        this.createSvg();
 
-        const xScale = d3.scaleTime().range([0, this.width]);
-        const yScale = d3.scaleLinear().rangeRound([this.height, 0]);
-        var minDate = this.dates.reduce(function (a, b) { return a < b ? a : b; });
-        var maxDate = this.dates.reduce(function (a, b) { return a > b ? a : b; });
-        xScale.domain([minDate, maxDate]);
-        yScale.domain([(0), this.maxMeasurement + 4]);
-
-        this.createAxis(xScale, yScale);
-        this.createLines(xScale, yScale);
-        this.createDots(xScale, yScale);
+        this.drawChart();
     }, 0);
+  }
+
+  private drawChart(): void {
+    this.createSvg();
+    const xScale = d3.scaleTime().range([0, this.width]);
+    const yScale = d3.scaleLinear().rangeRound([this.height, 0]);
+    var minDate = this.dates.reduce(function (a, b) { return a < b ? a : b; });
+    var maxDate = this.dates.reduce(function (a, b) { return a > b ? a : b; });
+    xScale.domain([minDate, maxDate]);
+    yScale.domain([(0), this.maxMeasurement + 4]);
+
+    this.createAxis(xScale, yScale);
+    this.createLines(xScale, yScale);
+    this.createDots(xScale, yScale);
   }
 
   menuKeyDown(evt: KeyboardEvent): void {
@@ -188,20 +195,123 @@ export class LineComponent implements OnInit {
             menuItems[2].focus();
             this.searchMenuIsOpen = false;
         }
+    } else if (evt.key === 'Enter' || evt.key === ' ') {
+        if (idx === 0) {
+            this.searchMenuPlaceholder = 'Suchen nach x-Achsen Wert';
+            this.selectedSearchMenu = SEARCH_MENUS.X;
+        } else if (idx === 1) {
+            this.searchMenuPlaceholder = 'Suchen nach Label';
+            this.selectedSearchMenu = SEARCH_MENUS.LABEL;
+        } else {
+            this.searchMenuPlaceholder = '';
+            this.selectedSearchMenu = null;
+        }
+        if (this.selectedSearchMenu != null && this.searchMenuPlaceholder) {
+            this.showSearchform = true;
+            setTimeout(() => {
+                if (this.searchFieldInput?.nativeElement) {
+                    this.searchFieldInput.nativeElement.focus();
+                }
+            }, 0);
+        }
     }
     evt.preventDefault();
     evt.stopPropagation();
   }
 
   triggerSearch(evt: Event): void {
-
+    let searchValue = this.searchFieldInput?.nativeElement.value || '';
+    if (searchValue.length) {
+        if (this.selectedSearchMenu === SEARCH_MENUS.X) {
+            let searchOperator = 0;
+            if (searchValue.startsWith('>')) {
+                searchOperator = 1;
+                searchValue = searchValue.substring(1);
+            }
+            else if (searchValue.startsWith('<')) {
+                searchOperator = -1;
+                searchValue = searchValue.substring(1);
+            }
+            const searchDate = new Date(searchValue);
+            if (isNaN(searchDate.getDate())) {
+                if (this.liveRegion?.nativeElement) {
+                    this.liveRegion.nativeElement.innerHTML = '';
+                    const alertTag = document.createElement('p');
+                    alertTag.innerHTML = 'Ungültiges Datem zur Suche eingegeben. Versuchen Sie es mit dem Format "MM-TT-JJJJ"';
+                    this.liveRegion.nativeElement.appendChild(alertTag);
+                }
+            } else {
+                for (const cd of this.cleanData) {
+                    cd.values = cd.values.filter((value: CleanData) => {
+                        const valueDate = new Date(value.date);
+                        if (isNaN(valueDate.getDate())) return false;
+                        if (searchOperator === 1) return valueDate > searchDate;
+                        if (searchOperator === -1) return valueDate < searchDate;
+                        return valueDate == searchDate;
+                    });
+                }
+                if (this.figureElement?.nativeElement) this.figureElement.nativeElement.innerHTML = '';
+                this.drawChart();
+            }
+        }
+    }
+    evt.preventDefault();
   }
 
   searchFieldInputKeyDown(evt: KeyboardEvent): void {
-
+    if (evt.key === 'Escape') {
+        this.goBackToSearchMenu();
+    } else if (evt.key === 'Tab' && evt.shiftKey) {
+        evt.preventDefault();
+    }
   }
 
   searchFieldButtonKeyDown(evt: KeyboardEvent): void {
+    if (evt.key === 'Tab' && !evt.shiftKey) {
+        evt.preventDefault();
+    } else if (evt.key === 'Escape') {
+        this.goBackToSearchMenu();
+    }
+  }
+
+  private goBackToSearchMenu(): void {
+    if (this.searchMenuList?.nativeElement) {
+        const items = this.searchMenuList.nativeElement.querySelectorAll('li');
+        let item: HTMLElement | undefined;
+        if (this.selectedSearchMenu === SEARCH_MENUS.X) {
+            item = items[0];
+        } else if (this.selectedSearchMenu === SEARCH_MENUS.LABEL) {
+            item = items[1];
+        }
+        if (item) {
+            item.setAttribute('tabindex', '0');
+            item.focus();
+            this.showSearchform = false;
+        }
+    }
+  }
+
+  markMenuKeyDown(evt: KeyboardEvent, idx: number): void {
+    if (evt.key === 'Escape') {
+        if (this.menuButton?.nativeElement) {
+            this.menuButton.nativeElement.focus();
+            this.menuIsOpen = false;
+        }
+    } else if (evt.key === 'ArrowDown' || evt.key === 'ArrowUp') {
+        if (this.menuList?.nativeElement) {
+            const items = this.menuList.nativeElement.querySelectorAll('li');
+            let newIdx = evt.key === 'ArrowDown' ? idx + 1 : idx - 1;
+            if (newIdx < 0) newIdx = items.length - 1;
+            if (newIdx >= items.length) newIdx = 0;
+            items[idx].removeAttribute('tabindex');
+            items[newIdx].setAttribute('tabindex', '0');
+            items[newIdx].focus();
+        }
+    }
+    evt.preventDefault();
+  }
+
+  markMenuItemKeyDown(evt: KeyboardEvent, idx: number): void {
 
   }
 
