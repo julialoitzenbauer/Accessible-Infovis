@@ -38,4 +38,8 @@
     <input id="search" type="text" [placeholder]="searchMenuPlaceholder" #searchFieldInput (keydown)="searchFieldInputKeyDown($event)">
     <input class="button" type="submit" value="Suchen" (keydown)="searchFieldButtonKeyDown($event)">
 </form>
+<form *ngIf="showDeleteMarksForm">
+    <input class="button" type="submit" [value]="getCurrNumberOfMarks() + ' Markierungen löschen'" (keydown)="markFormButtonKeyDown($event, 0)" #deleteMarksButton>
+    <input class="button" type="submit" value="Abbrechen" (keydown)="markFormButtonKeyDown($event, 1)" #cancelDeleteMarksButton>
+</form>
 <figure [id]="lineId" #figureElement></figure>
