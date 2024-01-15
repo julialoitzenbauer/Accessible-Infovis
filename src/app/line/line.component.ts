@@ -378,6 +378,17 @@ export class LineComponent implements OnInit {
               this.deleteMarksButton.nativeElement.focus();
             }
           }, 0);
+        } else if (idx === 1) {
+          if (this.figureElement?.nativeElement)
+            this.figureElement.nativeElement.innerHTML = '';
+          if (this.isFilteredByMarks) {
+            this.cleanData = [];
+            this.createData();
+          } else {
+            this.cleanData = this.markedData;
+          }
+          this.isFilteredByMarks = false;
+          this.drawChart();
         }
       }
     }
