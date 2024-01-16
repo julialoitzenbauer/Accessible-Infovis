@@ -1,9 +1,15 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import * as d3 from 'd3';
+import * as Tone from 'tone';
 import { D3ScaleLinear, D3ScaleTime, D3Selection } from 'src/types';
 import { IDGenerator } from './IDGenerator';
 import { CleanData, CleanDataObj, CleanDotData } from './lineTypes';
 import { data } from './testData';
+import {
+  MAX_MIDI_NOTE,
+  MIDI_NOTES,
+  MIN_MIDI_NOTE,
+} from '../sonification/midiNotes';
 
 enum SEARCH_MENUS {
   X,
@@ -64,6 +70,7 @@ export class LineComponent implements OnInit {
 
   private svg?: D3Selection;
   private maxY: number = -1;
+  private minY: number = -1;
   private cleanData: Array<CleanDataObj> = [];
   private markedData: Array<CleanDataObj> = [];
   dates: Array<Date> = [];
@@ -152,6 +159,9 @@ export class LineComponent implements OnInit {
             this.liveRegion.nativeElement.appendChild(descriptionTag);
           }
           break;
+        case 3:
+          this.startSonification();
+          break;
         case 5:
           if (this.figureElement?.nativeElement)
             this.figureElement.nativeElement.innerHTML = '';
@@ -178,6 +188,116 @@ export class LineComponent implements OnInit {
       }
     }
     evt.preventDefault();
+  }
+
+  startSonification(): void {
+    // Create oscillators
+    const oscillator1 = new Tone.Oscillator().toDestination();
+    const oscillator2 = new Tone.Oscillator().toDestination();
+    const oscillator3 = new Tone.Oscillator().toDestination();
+
+    // Start the oscillators
+    oscillator1.start();
+    oscillator2.start();
+    oscillator3.start();
+
+    // Define target frequencies and ramp durations
+    const targetFreq1 = 880; // Target frequency for oscillator1
+    const targetFreq2 = 440; // Target frequency for oscillator2
+    const targetFreq3 = 660; // Target frequency for oscillator3
+    const rampDuration = 4; // Duration in seconds for the frequency ramp
+
+    // Ramp the frequencies
+    oscillator1.frequency.rampTo(targetFreq1, rampDuration);
+    oscillator2.frequency.rampTo(targetFreq2, rampDuration);
+    oscillator3.frequency.rampTo(targetFreq3, rampDuration);
+
+    // Optionally, you can schedule when to stop the oscillators after the ramp
+    Tone.Transport.schedule(() => {
+      oscillator1.stop();
+      oscillator2.stop();
+      oscillator3.stop();
+    }, `+${rampDuration}`);
+
+    // Start the Tone Transport to begin scheduling events
+    Tone.Transport.start();
+    /* const oscillators: Array<Tone.Oscillator> = [];
+    for (let idx = 0; idx < this.cleanData.length; ++idx) {
+      oscillators.push(new Tone.Oscillator(undefined, 'sine').toDestination());
+    }
+
+    if (this.cleanData) {
+      for (let dataIdx = 0; dataIdx < this.cleanData.length; ++dataIdx) {
+        const oscillator = oscillators[dataIdx];
+        const xAxisSpan = this.cleanData[dataIdx].values.length;
+        const values = this.cleanData[dataIdx].values;
+        for (let valueIdx = 0; valueIdx < values.length; ++valueIdx) {
+          const note = this.calcSoniNote(
+            this.cleanData[dataIdx].values[valueIdx].measurment
+          );
+          const hzNote = Tone.Frequency(note).toFrequency();
+          if (valueIdx === 0) {
+            oscillator.frequency.value = hzNote;
+            oscillator.start();
+          } else {
+            oscillator.frequency.rampTo(hzNote, '+1', '+' + valueIdx);
+          }
+        }
+      }
+    }
+
+    for (const osc of oscillators) osc.stop(this.cleanData[0].values.length); */
+
+    /* const notes: Record<number, Array<string>> = {};
+      const xAxisSpan = this.maxX - this.minX;
+      for (const key of this.keys) {
+        const cd = this.cleanData[key];
+        const dataNotes: Array<string> = [];
+        for (const d of cd) {
+          dataNotes.push(this.calcSoniNote(d.yValue));
+        }
+        const xAxisAbsoluteValue = key - this.minX;
+        const xAxisRatio: number = xAxisAbsoluteValue / xAxisSpan;
+        const playTime = 5 * xAxisRatio;
+        notes[playTime] = dataNotes;
+      }
+
+      const synth = new Tone.PolySynth(Tone.Synth).toDestination();
+      const noteKeys = Object.keys(notes).map(Number);
+      noteKeys.sort((a: number, b: number) => a - b);
+      for (let idx = 0; idx < noteKeys.length; ++idx) {
+        const dataNotes = notes[noteKeys[idx]];
+        let delay = Tone.now();
+        delay += noteKeys[idx];
+        synth.triggerAttackRelease(dataNotes, '8n', delay);
+      }
+      console.log(notes);
+    } */
+
+    /*const noteKeys = Object.keys(notes).map(Number);
+      noteKeys.sort((a: number, b: number) => a - b);
+      for (let idx = 0; idx < noteKeys.length; ++idx) {
+        const dataNotes = notes[noteKeys[idx]];
+        let delay = Tone.now();
+        delay += noteKeys[idx];
+        synth.triggerAttackRelease(dataNotes, '8n', delay);
+      }*/
+  }
+
+  private calcSoniNote(value: number): string {
+    let note = '';
+    if (this.minY != null) {
+      let noteVal = Math.round(
+        MIN_MIDI_NOTE +
+          ((value - this.minY) / (this.maxY - this.minY)) *
+            (MAX_MIDI_NOTE - MIN_MIDI_NOTE)
+      );
+      if (noteVal < MIN_MIDI_NOTE) noteVal = MIN_MIDI_NOTE;
+      if (noteVal > MAX_MIDI_NOTE) noteVal = MAX_MIDI_NOTE;
+      const midiNote = MIDI_NOTES.filter((mn) => mn.midi === noteVal);
+      if (midiNote.length) note = midiNote[0].note;
+    }
+    return note;
   }
 
   searchMenuKeyDown(evt: KeyboardEvent, idx: number): void {
@@ -447,6 +567,8 @@ export class LineComponent implements OnInit {
 
   private createData(): void {
     const timeConv = d3.timeParse('%d-%b-%Y');
+    this.maxY = -1;
+    this.minY = -1;
     for (const d of data) {
       const currValues: Array<number> = [];
       let idx = 0;
@@ -458,6 +580,8 @@ export class LineComponent implements OnInit {
           measurment: value,
         });
         idx += 1;
+        if (this.maxY === -1 || value > this.maxY) this.maxY = value;
+        if (this.minY === -1 || value < this.minY) this.minY = value;
       }
       const currMax = Math.max(...currValues);
       if (currMax > this.maxMeasurement) this.maxMeasurement = currMax;
