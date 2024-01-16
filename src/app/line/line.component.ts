@@ -166,6 +166,12 @@ export class LineComponent implements OnInit {
           if (this.figureElement?.nativeElement)
             this.figureElement.nativeElement.innerHTML = '';
           this.cleanData = [];
+          if (this.liveRegion?.nativeElement) {
+            this.liveRegion.nativeElement.innerHTML = '';
+            const descriptionTag = document.createElement('p');
+            descriptionTag.innerHTML = 'Daten wurden zurückgesetzt';
+            this.liveRegion.nativeElement.appendChild(descriptionTag);
+          }
           this.initCleanData();
           this.createData();
           this.drawChart();
@@ -528,9 +534,16 @@ export class LineComponent implements OnInit {
       }
     } else if (evt.key === 'Enter' || evt.key === ' ') {
       if (idx === 0) {
+        const numberOfMarks = this.getCurrNumberOfMarks();
         this.markedData = [];
         if (this.figureElement?.nativeElement)
           this.figureElement.nativeElement.innerHTML = '';
+        if (this.liveRegion?.nativeElement) {
+          this.liveRegion.nativeElement.innerHTML = '';
+          const descriptionTag = document.createElement('p');
+          descriptionTag.innerHTML = `${numberOfMarks} Markierungen wurden gelöscht.`;
+          this.liveRegion.nativeElement.appendChild(descriptionTag);
+        }
         this.drawChart();
       } else if (idx === 1) {
         if (this.markMenuList?.nativeElement) {
@@ -682,6 +695,21 @@ export class LineComponent implements OnInit {
     });
   }
 
+  private dotIsMarked(d: CleanData, lineId: string): boolean {
+    const markedLine = this.markedData.filter(
+      (cdObj: CleanDataObj) => cdObj.id === lineId
+    );
+    if (markedLine.length) {
+      const markedDot = markedLine[0].values.filter(
+        (cd: CleanData) => cd.date === d.date
+      );
+      if (markedDot.length) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   private createDots(xScale: D3ScaleTime, yScale: D3ScaleLinear): void {
     if (!this.svg) return;
     const dots = this.svg.append('g');
@@ -696,17 +724,16 @@ export class LineComponent implements OnInit {
         .attr('r', 3)
         .attr('data-lineid', this.cleanData[idx].id)
         .attr('data-dotIdx', (d: CleanData, dotIdx: number) => dotIdx)
+        .attr(
+          'aria-label',
+          (d: CleanData) =>
+            `${this.yAxisLabel}: ${d.measurment}, Linie ${
+              this.cleanData[idx].id
+            }${this.dotIsMarked(d, this.cleanData[idx].id) ? ', Makiert' : ''}`
+        )
         .attr('class', (d: CleanData) => {
-          const markedLine = this.markedData.filter(
-            (cdObj: CleanDataObj) => cdObj.id === this.cleanData[idx].id
-          );
-          if (markedLine.length) {
-            const markedDot = markedLine[0].values.filter(
-              (cd: CleanData) => cd.date === d.date
-            );
-            if (markedDot.length) {
-              return 'markedDot';
-            }
+          if (this.dotIsMarked(d, this.cleanData[idx].id)) {
+            return 'markedDot';
           }
           return '';
         })
@@ -848,6 +875,7 @@ export class LineComponent implements OnInit {
             line.focus();
           }
         } else if (evt.key.toUpperCase() === 'M' && evt.shiftKey) {
+          const markedDotData = lineData.values[currDotIdx];
           let markedLineIdx = -1;
           for (let idx = 0; idx < this.markedData.length; ++idx) {
             if (this.markedData[idx].id === currLineId) {
@@ -864,7 +892,6 @@ export class LineComponent implements OnInit {
             setMark = true;
           } else {
             const markedValues = this.markedData[markedLineIdx];
-            const markedDotData = lineData.values[currDotIdx];
             let markedDotIdx = -1;
             for (let idx = 0; idx < markedValues.values.length; ++idx) {
               if (markedValues.values[idx].date === markedDotData.date) {
@@ -884,8 +911,16 @@ export class LineComponent implements OnInit {
           }
           if (setMark) {
             target?.setAttribute('class', 'markedDot');
+            target?.setAttribute(
+              'aria-label',
+              `${this.yAxisLabel}: ${markedDotData.measurment}, Linie ${lineData.id}, Makiert`
+            );
           } else {
             target?.setAttribute('class', '');
+            target?.setAttribute(
+              'aria-label',
+              `${this.yAxisLabel}: ${markedDotData.measurment}, Linie ${lineData.id}`
+            );
           }
         }
       }
