@@ -7,6 +7,8 @@ import { BarComponent } from './bar/bar.component';
 import { LineComponent } from './line/line.component';
 import { PieComponent } from './pie/pie.component';
 import { ScatterComponent } from './scatter/scatter.component';
+import { provideRoutes } from '@angular/router';
+import { routes } from './app-routing.module';
 
 @NgModule({
   declarations: [
@@ -16,11 +18,8 @@ import { ScatterComponent } from './scatter/scatter.component';
     ScatterComponent,
     LineComponent,
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule
-  ],
-  providers: [],
-  bootstrap: [AppComponent]
+  imports: [BrowserModule, AppRoutingModule],
+  providers: [provideRoutes(routes)],
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

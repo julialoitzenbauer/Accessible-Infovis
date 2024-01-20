@@ -198,7 +198,7 @@ export class LineComponent implements OnInit {
 
   startSonification(): void {
     // Create oscillators
-    const oscillator1 = new Tone.Oscillator().toDestination();
+    /* const oscillator1 = new Tone.Oscillator().toDestination();
     const oscillator2 = new Tone.Oscillator().toDestination();
     const oscillator3 = new Tone.Oscillator().toDestination();
 
@@ -223,11 +223,11 @@ export class LineComponent implements OnInit {
       oscillator1.stop();
       oscillator2.stop();
       oscillator3.stop();
-    }, `+${rampDuration}`);
+    }, `+${rampDuration}`); */
 
     // Start the Tone Transport to begin scheduling events
-    Tone.Transport.start();
-    /* const oscillators: Array<Tone.Oscillator> = [];
+    // Tone.Transport.start();
+    const oscillators: Array<Tone.Oscillator> = [];
     for (let idx = 0; idx < this.cleanData.length; ++idx) {
       oscillators.push(new Tone.Oscillator(undefined, 'sine').toDestination());
     }
@@ -252,7 +252,8 @@ export class LineComponent implements OnInit {
       }
     }
 
-    for (const osc of oscillators) osc.stop(this.cleanData[0].values.length); */
+    for (const osc of oscillators)
+      osc.stop('+' + this.cleanData[0].values.length);
 
     /* const notes: Record<number, Array<string>> = {};
       const xAxisSpan = this.maxX - this.minX;

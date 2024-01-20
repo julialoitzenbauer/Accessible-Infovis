@@ -4,14 +4,17 @@
 <header>
   <h1>Angular + D3</h1>
 </header>
+<router-outlet></router-outlet>
 <!--
   <app-bar></app-bar>
   <app-pie></app-pie>
 -->
-<app-scatter [labelKey]="'System'" [xAxisKey]="'Erscheinungsdatum'" [yAxisKey]="'Sterne'" [data]="data" [title]="'Systeme und ihre Sterne im Vergleich zu ihrem Erscheinungsdatum'" [formatXAxisToInt]="true"></app-scatter>
-<app-scatter [labelKey]="'name'" [xAxisKey]="'danceability'" [yAxisKey]="'energy'" [data]="bigData" [title]="'Spotify Data - Danceability vs. Energy'" [showLabel]="false" [radius]="4"></app-scatter>
+<!--
+  <app-scatter [labelKey]="'System'" [xAxisKey]="'Erscheinungsdatum'" [yAxisKey]="'Sterne'" [data]="data" [title]="'Systeme und ihre Sterne im Vergleich zu ihrem Erscheinungsdatum'" [formatXAxisToInt]="true"></app-scatter>
+  <app-scatter [labelKey]="'name'" [xAxisKey]="'danceability'" [yAxisKey]="'energy'" [data]="bigData" [title]="'Spotify Data - Danceability vs. Energy'" [showLabel]="false" [radius]="4"></app-scatter>
 
-<app-bar [data]="data" [yAxisKey]="'Sterne'" [labelKey]="'System'" [description]="'Systeme und die Sterne mit denen sie bewertet worden sind'"></app-bar>
-<app-bar [data]="wahlbeteiligung" [yAxisKey]="'Wahlbeteiligung'" [labelKey]="'Bundesland'" [title]="'Wahlbeteiligung Bundespräsidentenwahl 2022'" [description]="'Wahlbeteiligung pro Bundesland bei der Bundespräsidentenwahl am 09. Oktober 2022'"></app-bar>
+  <app-bar [data]="data" [yAxisKey]="'Sterne'" [labelKey]="'System'" [description]="'Systeme und die Sterne mit denen sie bewertet worden sind'"></app-bar>
+  <app-bar [data]="wahlbeteiligung" [yAxisKey]="'Wahlbeteiligung'" [labelKey]="'Bundesland'" [title]="'Wahlbeteiligung Bundespräsidentenwahl 2022'" [description]="'Wahlbeteiligung pro Bundesland bei der Bundespräsidentenwahl am 09. Oktober 2022'"></app-bar>
 
-<app-line [xAxisKey]="'date'" [yAxisKeys]="['A', 'B', 'C']" [xAxisLabel]="'Datum'" [yAxisLabel]="'Frequenz'" [description]="'Frequenz zu einem bestimmten Datum. Drücken Sie Enter um mit der Visualisierung zu interagieren.'" [summary]="'ZUSAMMENFASSUNG'"></app-line>
+  <app-line [xAxisKey]="'date'" [yAxisKeys]="['A', 'B', 'C']" [xAxisLabel]="'Datum'" [yAxisLabel]="'Frequenz'" [description]="'Frequenz zu einem bestimmten Datum. Drücken Sie Enter um mit der Visualisierung zu interagieren.'" [summary]="'ZUSAMMENFASSUNG'"></app-line>
+-->

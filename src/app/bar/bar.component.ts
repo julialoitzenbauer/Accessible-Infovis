@@ -2,7 +2,11 @@ import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import * as d3 from 'd3';
 import * as Tone from 'tone';
 import { D3Selection } from 'src/types';
-import { MAX_MIDI_NOTE, MIDI_NOTES, MIN_MIDI_NOTE } from '../sonification/midiNotes';
+import {
+  MAX_MIDI_NOTE,
+  MIDI_NOTES,
+  MIN_MIDI_NOTE,
+} from '../sonification/midiNotes';
 import { CleanData } from './barTypes';
 import { IDGenerator } from './IDGenerator';
 
@@ -14,11 +18,9 @@ enum SEARCH_MENU {
 @Component({
   selector: 'app-bar',
   templateUrl: './bar.component.html',
-  styleUrls: ['./bar.component.css']
+  styleUrls: ['./bar.component.css'],
 })
-
 export class BarComponent implements OnInit {
-
   @Input()
   data: Array<Record<string, string | number>> = [];
   @Input()
@@ -28,9 +30,9 @@ export class BarComponent implements OnInit {
   @Input()
   margin: number = 50;
   @Input()
-  width: number = 750 - (this.margin * 2);
+  width: number = 750 - this.margin * 2;
   @Input()
-  height: number = 400 - (this.margin * 2);
+  height: number = 400 - this.margin * 2;
   @Input()
   title: string = 'Bar Chart';
   @Input()
@@ -53,18 +55,34 @@ export class BarComponent implements OnInit {
   markMenuIsOpen: boolean;
   showDeleteMarksForm: boolean;
 
-  @ViewChild('figureElement') figureElement: ElementRef<HTMLElement> | undefined;
+  @ViewChild('figureElement') figureElement:
+    | ElementRef<HTMLElement>
+    | undefined;
   @ViewChild('menuButton') menuButton: ElementRef<HTMLElement> | undefined;
   @ViewChild('menuList') menuList: ElementRef<HTMLElement> | undefined;
   @ViewChild('liveRegion') liveRegion: ElementRef<HTMLElement> | undefined;
-  @ViewChild('searchMenuButton') searchMenuButton: ElementRef<HTMLElement> | undefined;
-  @ViewChild('searchMenuList') searchMenuList: ElementRef<HTMLElement> | undefined;
-  @ViewChild('searchFieldInput') searchFieldInput: ElementRef<HTMLInputElement> | undefined;
-  @ViewChild('searchFieldSubmitBtn') searchFieldSubmitBtn: ElementRef<HTMLElement> | undefined;
-  @ViewChild('markMenuButton') markMenuButton: ElementRef<HTMLElement> | undefined;
+  @ViewChild('searchMenuButton') searchMenuButton:
+    | ElementRef<HTMLElement>
+    | undefined;
+  @ViewChild('searchMenuList') searchMenuList:
+    | ElementRef<HTMLElement>
+    | undefined;
+  @ViewChild('searchFieldInput') searchFieldInput:
+    | ElementRef<HTMLInputElement>
+    | undefined;
+  @ViewChild('searchFieldSubmitBtn') searchFieldSubmitBtn:
+    | ElementRef<HTMLElement>
+    | undefined;
+  @ViewChild('markMenuButton') markMenuButton:
+    | ElementRef<HTMLElement>
+    | undefined;
   @ViewChild('markMenuList') markMenuList: ElementRef<HTMLElement> | undefined;
-  @ViewChild('deleteMarksButton') deleteMarksButton: ElementRef<HTMLElement> | undefined;
-  @ViewChild('cancelDeleteMarksButton') cancelDeleteMarksButton: ElementRef<HTMLElement> | undefined;
+  @ViewChild('deleteMarksButton') deleteMarksButton:
+    | ElementRef<HTMLElement>
+    | undefined;
+  @ViewChild('cancelDeleteMarksButton') cancelDeleteMarksButton:
+    | ElementRef<HTMLElement>
+    | undefined;
 
   constructor() {
     this.barId = IDGenerator.getId();
@@ -86,7 +104,12 @@ export class BarComponent implements OnInit {
   }
 
   menuKeyDown(evt: KeyboardEvent): void {
-    if (evt.key === 'Enter' || evt.key === ' ' || evt.key === 'ArrowDown' || evt.key === 'ArrowUp') {
+    if (
+      evt.key === 'Enter' ||
+      evt.key === ' ' ||
+      evt.key === 'ArrowDown' ||
+      evt.key === 'ArrowUp'
+    ) {
       this.menuIsOpen = true;
       setTimeout(() => {
         if (this.menuList?.nativeElement) {
@@ -104,7 +127,7 @@ export class BarComponent implements OnInit {
 
   menuItemKeyDown(evt: KeyboardEvent, targetIdx: number): void {
     if (evt.key === 'Enter' || evt.key === ' ') {
-      switch(targetIdx) {
+      switch (targetIdx) {
         case 0:
           if (this.cleanData?.length) {
             this.focusBar(this.cleanData[0].ID);
@@ -129,15 +152,21 @@ export class BarComponent implements OnInit {
             this.drawBars();
             if (this.liveRegion?.nativeElement) {
               this.liveRegion.nativeElement.innerHTML = '';
-              this.liveRegion.nativeElement.innerHTML = '<p>Daten wurden erfolgreich zurückgesetzt</p>';
+              this.liveRegion.nativeElement.innerHTML =
+                '<p>Daten wurden erfolgreich zurückgesetzt</p>';
             }
             if (this.markedData.length) {
               for (const mark of this.markedData) {
-                const selection = d3.select('[id="' + mark.ID.replaceAll('.', '\\.') + '"]');
+                const selection = d3.select(
+                  '[id="' + mark.ID.replaceAll('.', '\\.') + '"]'
+                );
                 const node = selection.node() as HTMLElement | null;
                 if (node) {
                   node.classList.add('marked');
-                  node.setAttribute('aria-description', this.yAxisKey + ': ' + mark.yValue + ', Makiert');
+                  node.setAttribute(
+                    'aria-description',
+                    this.yAxisKey + ': ' + mark.yValue + ', Makiert'
+                  );
                 }
               }
             }
@@ -168,7 +197,8 @@ export class BarComponent implements OnInit {
       this.searchMenuIsOpen = true;
       setTimeout(() => {
         if (this.searchMenuList?.nativeElement) {
-          const items = this.searchMenuList.nativeElement.querySelectorAll('li');
+          const items =
+            this.searchMenuList.nativeElement.querySelectorAll('li');
           items[0].setAttribute('tabindex', '0');
           items[0].focus();
         }
@@ -293,11 +323,16 @@ export class BarComponent implements OnInit {
           this.drawBars();
           if (this.markedData.length) {
             for (const mark of this.markedData) {
-              const selection = d3.select('[id="' + mark.ID.replaceAll('.', '\\.') + '"]');
+              const selection = d3.select(
+                '[id="' + mark.ID.replaceAll('.', '\\.') + '"]'
+              );
               const node = selection.node() as HTMLElement | null;
               if (node) {
                 node.classList.add('marked');
-                node.setAttribute('aria-description', this.yAxisKey + ': ' + mark.yValue + ', Makiert');
+                node.setAttribute(
+                  'aria-description',
+                  this.yAxisKey + ': ' + mark.yValue + ', Makiert'
+                );
               }
             }
           }
@@ -308,8 +343,16 @@ export class BarComponent implements OnInit {
   }
 
   markFormButtonKeyDown(evt: KeyboardEvent): void {
-    if (evt.target === this.deleteMarksButton?.nativeElement && this.deleteMarksButton?.nativeElement) {
-      if ((evt.key === 'Tab' && !evt.shiftKey || evt.key === 'ArrowLeft' || evt.key === 'ArrowRight') && this.cancelDeleteMarksButton?.nativeElement) {
+    if (
+      evt.target === this.deleteMarksButton?.nativeElement &&
+      this.deleteMarksButton?.nativeElement
+    ) {
+      if (
+        ((evt.key === 'Tab' && !evt.shiftKey) ||
+          evt.key === 'ArrowLeft' ||
+          evt.key === 'ArrowRight') &&
+        this.cancelDeleteMarksButton?.nativeElement
+      ) {
         this.cancelDeleteMarksButton.nativeElement.focus();
       } else if (evt.key === 'Escape') {
         this.showDeleteMarksForm = false;
@@ -319,15 +362,34 @@ export class BarComponent implements OnInit {
         }
       } else if (evt.key === 'Enter' || evt.key === ' ') {
         this.markedData = [];
+        this.createCleanData();
+        if (this.figureElement?.nativeElement) {
+          this.figureElement.nativeElement.innerHTML = '';
+          this.createSvg();
+          this.drawBars();
+        }
         if (this.liveRegion?.nativeElement) {
           this.liveRegion.nativeElement.innerHTML = '';
-          this.liveRegion.nativeElement.innerHTML = '<p>Makierte Daten wurden gelöscht</p>';
+          this.liveRegion.nativeElement.innerHTML =
+            '<p>Makierte Daten wurden gelöscht</p>';
         }
       }
-    } else if (this.cancelDeleteMarksButton?.nativeElement && evt.target === this.cancelDeleteMarksButton.nativeElement) {
-      if ((evt.key === 'Tab' && evt.shiftKey || evt.key === 'ArrowLeft' || evt.key === 'ArrowRight') && this.deleteMarksButton?.nativeElement) {
+    } else if (
+      this.cancelDeleteMarksButton?.nativeElement &&
+      evt.target === this.cancelDeleteMarksButton.nativeElement
+    ) {
+      if (
+        ((evt.key === 'Tab' && evt.shiftKey) ||
+          evt.key === 'ArrowLeft' ||
+          evt.key === 'ArrowRight') &&
+        this.deleteMarksButton?.nativeElement
+      ) {
         this.deleteMarksButton.nativeElement.focus();
-      } else if (evt.key === 'Escape' || evt.key === 'Enter' || evt.key === ' ') {
+      } else if (
+        evt.key === 'Escape' ||
+        evt.key === 'Enter' ||
+        evt.key === ' '
+      ) {
         this.showDeleteMarksForm = false;
         if (this.markMenuList?.nativeElement) {
           const items = this.markMenuList.nativeElement.querySelectorAll('li');
@@ -339,7 +401,11 @@ export class BarComponent implements OnInit {
   }
 
   searchFieldInputKeyDown(evt: KeyboardEvent): void {
-    if (evt.key === 'Tab' && !evt.shiftKey && evt.target === this.searchFieldInput?.nativeElement) {
+    if (
+      evt.key === 'Tab' &&
+      !evt.shiftKey &&
+      evt.target === this.searchFieldInput?.nativeElement
+    ) {
       if (this.searchFieldSubmitBtn?.nativeElement) {
         this.searchFieldSubmitBtn.nativeElement.focus();
       }
@@ -349,9 +415,11 @@ export class BarComponent implements OnInit {
         this.showSearchform = false;
         let searchMenuIdx;
         if (this.selectedSearchMenu === SEARCH_MENU.Y) searchMenuIdx = 0;
-        else if (this.selectedSearchMenu === SEARCH_MENU.LABEL) searchMenuIdx = 1;
+        else if (this.selectedSearchMenu === SEARCH_MENU.LABEL)
+          searchMenuIdx = 1;
         if (searchMenuIdx != null) {
-          const items = this.searchMenuList.nativeElement.querySelectorAll('li');
+          const items =
+            this.searchMenuList.nativeElement.querySelectorAll('li');
           items[searchMenuIdx].focus();
         }
       }
@@ -362,7 +430,11 @@ export class BarComponent implements OnInit {
   }
 
   searchFieldButtonKeyDown(evt: KeyboardEvent): void {
-    if (evt.key === 'Tab' && evt.shiftKey && evt.target === this.searchFieldSubmitBtn?.nativeElement) {
+    if (
+      evt.key === 'Tab' &&
+      evt.shiftKey &&
+      evt.target === this.searchFieldSubmitBtn?.nativeElement
+    ) {
       if (this.searchFieldInput?.nativeElement) {
         this.searchFieldInput.nativeElement.focus();
       }
@@ -372,9 +444,11 @@ export class BarComponent implements OnInit {
         this.showSearchform = false;
         let searchMenuIdx;
         if (this.selectedSearchMenu === SEARCH_MENU.Y) searchMenuIdx = 0;
-        else if (this.selectedSearchMenu === SEARCH_MENU.LABEL) searchMenuIdx = 1;
+        else if (this.selectedSearchMenu === SEARCH_MENU.LABEL)
+          searchMenuIdx = 1;
         if (searchMenuIdx != null) {
-          const items = this.searchMenuList.nativeElement.querySelectorAll('li');
+          const items =
+            this.searchMenuList.nativeElement.querySelectorAll('li');
           items[searchMenuIdx].focus();
         }
       }
@@ -400,11 +474,17 @@ export class BarComponent implements OnInit {
         let filteredData: Array<CleanData> = [];
         this.createCleanData();
         if (compareType === 0) {
-          filteredData = this.cleanData.filter((cd: CleanData) => cd.yValue === searchValue);
+          filteredData = this.cleanData.filter(
+            (cd: CleanData) => cd.yValue === searchValue
+          );
         } else if (compareType === 1) {
-          filteredData = this.cleanData.filter((cd: CleanData) => cd.yValue > searchValue);
+          filteredData = this.cleanData.filter(
+            (cd: CleanData) => cd.yValue > searchValue
+          );
         } else if (compareType === -1) {
-          filteredData = this.cleanData.filter((cd: CleanData) => cd.yValue < searchValue);
+          filteredData = this.cleanData.filter(
+            (cd: CleanData) => cd.yValue < searchValue
+          );
         }
         if (this.figureElement?.nativeElement) {
           if (this.cleanData.length) {
@@ -418,7 +498,10 @@ export class BarComponent implements OnInit {
       } else if (this.selectedSearchMenu === SEARCH_MENU.LABEL) {
         const searchValue = this.searchFieldInput.nativeElement.value;
         this.createCleanData();
-        const filteredData: Array<CleanData> = this.cleanData.filter((cd: CleanData) => cd.label.toUpperCase().startsWith(searchValue.toUpperCase()));
+        const filteredData: Array<CleanData> = this.cleanData.filter(
+          (cd: CleanData) =>
+            cd.label.toUpperCase().startsWith(searchValue.toUpperCase())
+        );
         if (this.figureElement?.nativeElement) {
           if (this.cleanData.length) {
             this.cleanData = filteredData;
@@ -448,14 +531,20 @@ export class BarComponent implements OnInit {
         let delay = Tone.now();
         delay += idx * noteLength;
         idx += 1;
-        synth.triggerAttackRelease([note], noteLength > 0.5 ? 0.5 : noteLength  , delay);
+        synth.triggerAttackRelease(
+          [note],
+          noteLength > 0.5 ? 0.5 : noteLength,
+          delay
+        );
       }
     }
   }
 
   private calcSoniNote(value: number): string {
     let note = '';
-    let noteVal = Math.round(MIN_MIDI_NOTE + ((value) / (this.maxY)) * (MAX_MIDI_NOTE - MIN_MIDI_NOTE));
+    let noteVal = Math.round(
+      MIN_MIDI_NOTE + (value / this.maxY) * (MAX_MIDI_NOTE - MIN_MIDI_NOTE)
+    );
     if (noteVal < MIN_MIDI_NOTE) noteVal = MIN_MIDI_NOTE;
     if (noteVal > MAX_MIDI_NOTE) noteVal = MAX_MIDI_NOTE;
     const midiNote = MIDI_NOTES.filter((mn) => mn.midi === noteVal);
@@ -464,57 +553,64 @@ export class BarComponent implements OnInit {
   }
 
   private createSvg(): void {
-    this.svg = d3.select("figure#" + this.barId)
-      .append("svg")
-      .on("keydown", this.svgKeyDown.bind(this))
-      .attr("id", "SVG_" + this.barId)
-      .attr("tabindex", "0")
-      .attr("width", this.width + (this.margin * 2))
-      .attr("height", this.height + (this.margin * 2))
-      .append("g")
-      .attr("transform", "translate(" + this.margin + "," + this.margin + ")");
+    this.svg = d3
+      .select('figure#' + this.barId)
+      .append('svg')
+      .on('keydown', this.svgKeyDown.bind(this))
+      .attr('id', 'SVG_' + this.barId)
+      .attr('tabindex', '0')
+      .attr('width', this.width + this.margin * 2)
+      .attr('height', this.height + this.margin * 2)
+      .append('g')
+      .attr('transform', 'translate(' + this.margin + ',' + this.margin + ')');
   }
 
   private drawBars(): void {
     if (!this.svg) return;
     // Create the X-axis band scale
-    const x = d3.scaleBand()
+    const x = d3
+      .scaleBand()
       .range([0, this.width])
-      .domain(this.cleanData.map(d => d.label))
+      .domain(this.cleanData.map((d) => d.label))
       .padding(0.2);
 
     // Draw the X-axis on the DOM
-    this.svg.append("g")
-      .attr("transform", "translate(0," + this.height + ")")
+    this.svg
+      .append('g')
+      .attr('transform', 'translate(0,' + this.height + ')')
       .call(d3.axisBottom(x))
-      .selectAll("text")
-      .attr("transform", "translate(-10,0)rotate(-45)")
-      .style("text-anchor", "end");
+      .selectAll('text')
+      .attr('transform', 'translate(-10,0)rotate(-45)')
+      .style('text-anchor', 'end');
 
     // Create the Y-axis band scale
-    const y = d3.scaleLinear()
+    const y = d3
+      .scaleLinear()
       .domain([0, Math.floor(this.maxY + 0.2 * this.maxY)])
       .range([this.height, 0]);
 
     // Draw the Y-axis on the DOM
-    this.svg.append("g")
-      .call(d3.axisLeft(y));
+    this.svg.append('g').call(d3.axisLeft(y));
 
     // Create and fill the bars
-    this.svg.selectAll("bars")
+    this.svg
+      .selectAll('bars')
       .data(this.cleanData)
       .enter()
-      .append("rect")
-      .attr("x", (d: CleanData) => x(d.label) || 0)
-      .attr("y", (d: CleanData) => y(d.yValue))
-      .attr("width", x.bandwidth())
-      .attr("height", (d: CleanData) => this.height - y(d.yValue))
-      .attr("class", "bar")
-      .attr("tabindex", "-1")
-      .attr("id", (d: CleanData) => d.ID)
-      .attr("aria-label", (d: CleanData) => d.label)
-      .attr("aria-description", (d: CleanData) => this.yAxisKey + ': ' + d.yValue)
-      .on("keydown", this.barKeyDown.bind(this));
+      .append('rect')
+      .attr('x', (d: CleanData) => x(d.label) || 0)
+      .attr('y', (d: CleanData) => y(d.yValue))
+      .attr('width', x.bandwidth())
+      .attr('height', (d: CleanData) => this.height - y(d.yValue))
+      .attr('class', 'bar')
+      .attr('tabindex', '-1')
+      .attr('id', (d: CleanData) => d.ID)
+      .attr('aria-label', (d: CleanData) => d.label)
+      .attr(
+        'aria-description',
+        (d: CleanData) => this.yAxisKey + ': ' + d.yValue
+      )
+      .on('keydown', this.barKeyDown.bind(this));
   }
 
   private createCleanData(): void {
@@ -525,7 +621,7 @@ export class BarComponent implements OnInit {
       const obj = {
         yValue: d[this.yAxisKey] as number,
         label: d[this.labelKey] as string,
-        ID: d[this.labelKey] + '_' + d[this.yAxisKey]
+        ID: d[this.labelKey] + '_' + d[this.yAxisKey],
       };
       if (obj.yValue > this.maxY) this.maxY = obj.yValue;
       if (minValue == null || obj.yValue < minValue) {
@@ -548,7 +644,7 @@ export class BarComponent implements OnInit {
         this.blurBar(this.focusedBar);
       }
       node.focus();
-      node.setAttribute("tabindex", "0");
+      node.setAttribute('tabindex', '0');
       node.classList.add('current');
       this.focusedBar = id;
     }
@@ -558,7 +654,7 @@ export class BarComponent implements OnInit {
     const selection = d3.select('[id="' + id.replaceAll('.', '\\.') + '"]');
     const node = selection.node() as HTMLElement | null;
     if (node) {
-      node.setAttribute("tabindex", "-1");
+      node.setAttribute('tabindex', '-1');
       node.blur();
       node.classList.remove('current');
     }
@@ -606,15 +702,22 @@ export class BarComponent implements OnInit {
           } else {
             this.markedData.push(bar);
           }
-          const selection = d3.select('[id="' + bar.ID.replaceAll('.', '\\.') + '"]');
+          const selection = d3.select(
+            '[id="' + bar.ID.replaceAll('.', '\\.') + '"]'
+          );
           const node = selection.node() as HTMLElement | null;
           if (node) {
             if (remove) {
               node.classList.remove('marked');
-              node.setAttribute('aria-description', this.yAxisKey + ': ' + bar.yValue);
-            }
-            else {
-              node.setAttribute('aria-description', this.yAxisKey + ': ' + bar.yValue + ', Makiert');
+              node.setAttribute(
+                'aria-description',
+                this.yAxisKey + ': ' + bar.yValue
+              );
+            } else {
+              node.setAttribute(
+                'aria-description',
+                this.yAxisKey + ': ' + bar.yValue + ', Makiert'
+              );
               node.classList.add('marked');
             }
           }
@@ -664,5 +767,4 @@ export class BarComponent implements OnInit {
       }
     }
   }
-
 }
