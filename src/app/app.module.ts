@@ -9,6 +9,7 @@ import { PieComponent } from './pie/pie.component';
 import { ScatterComponent } from './scatter/scatter.component';
 import { provideRoutes } from '@angular/router';
 import { routes } from './app-routing.module';
+import { TestComponent } from './test/test.component';
 
 @NgModule({
   declarations: [
@@ -17,6 +18,7 @@ import { routes } from './app-routing.module';
     PieComponent,
     ScatterComponent,
     LineComponent,
+    TestComponent,
   ],
   imports: [BrowserModule, AppRoutingModule],
   providers: [provideRoutes(routes)],

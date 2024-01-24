@@ -83,6 +83,9 @@ export class BarComponent implements OnInit {
   @ViewChild('cancelDeleteMarksButton') cancelDeleteMarksButton:
     | ElementRef<HTMLElement>
     | undefined;
+  @ViewChild('labelsContainer') labelsContainer:
+    | ElementRef<HTMLElement>
+    | undefined;
 
   constructor() {
     this.barId = IDGenerator.getId();
@@ -605,11 +608,8 @@ export class BarComponent implements OnInit {
       .attr('class', 'bar')
       .attr('tabindex', '-1')
       .attr('id', (d: CleanData) => d.ID)
-      .attr('aria-label', (d: CleanData) => d.label)
-      .attr(
-        'aria-description',
-        (d: CleanData) => this.yAxisKey + ': ' + d.yValue
-      )
+      .attr('aria-labelledby', (d: CleanData) => 'LABEL_' + d.ID)
+      .attr('aria-describedby', (d: CleanData) => 'DESCR_' + d.ID)
       .on('keydown', this.barKeyDown.bind(this));
   }
 
@@ -623,6 +623,19 @@ export class BarComponent implements OnInit {
         label: d[this.labelKey] as string,
         ID: d[this.labelKey] + '_' + d[this.yAxisKey],
       };
+      if (this.labelsContainer?.nativeElement) {
+        const labelSpan = document.createElement('span');
+        labelSpan.innerHTML = obj.label;
+        labelSpan.id = 'LABEL_' + obj.ID;
+
+        const descriptionSpan = document.createElement('span');
+        descriptionSpan.innerHTML = this.yAxisKey + ': ' + obj.yValue;
+        descriptionSpan.id = 'DESCR_' + obj.ID;
+
+        this.labelsContainer.nativeElement.appendChild(labelSpan);
+        this.labelsContainer.nativeElement.appendChild(descriptionSpan);
+      }
+
       if (obj.yValue > this.maxY) this.maxY = obj.yValue;
       if (minValue == null || obj.yValue < minValue) {
         minValue = obj.yValue;
@@ -707,18 +720,27 @@ export class BarComponent implements OnInit {
           );
           const node = selection.node() as HTMLElement | null;
           if (node) {
-            if (remove) {
-              node.classList.remove('marked');
-              node.setAttribute(
-                'aria-description',
-                this.yAxisKey + ': ' + bar.yValue
-              );
-            } else {
-              node.setAttribute(
-                'aria-description',
-                this.yAxisKey + ': ' + bar.yValue + ', Makiert'
-              );
-              node.classList.add('marked');
+            if (this.labelsContainer?.nativeElement) {
+              const descriptionTag =
+                this.labelsContainer.nativeElement.querySelector(
+                  '[id="DESCR_' + node.id.replaceAll('.', '\\.') + '"]'
+                );
+              if (descriptionTag) {
+                if (remove) {
+                  node.classList.remove('marked');
+                  descriptionTag.innerHTML = this.yAxisKey + ': ' + bar.yValue;
+                } else {
+                  descriptionTag.innerHTML =
+                    this.yAxisKey + ': ' + bar.yValue + ', Makiert';
+                  node.classList.add('marked');
+                }
+              }
+              if (this.liveRegion?.nativeElement) {
+                this.liveRegion.nativeElement.innerHTML = '';
+                this.liveRegion.nativeElement.innerHTML = `<p>Makierung wurde ${
+                  remove ? 'entfernt' : 'hinzugefügt'
+                }</p>`;
+              }
             }
           }
         }
