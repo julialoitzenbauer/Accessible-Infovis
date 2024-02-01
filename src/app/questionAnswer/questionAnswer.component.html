@@ -1,0 +1,58 @@
+<h2>Test 2: Frage & Antwort</h2>
+<ng-template [ngIf]="!testId">
+    <a href="/frageAntwort?testId=1">Frage & Antwort: Test 1</a>
+    <br>
+    <a href="/frageAntwort?testId=2">Frage & Antwort: Test 2</a>
+    <br>
+    <a href="/frageAntwort?testId=3">Frage & Antwort: Test 3</a>
+    <br>
+    <br>
+    <a href="/">Zurück</a>
+</ng-template>
+<ng-template [ngIf]="testId === '1'">
+    <app-bar title="Wahlergebnis der Nationalratswahl 2019" [data]="[
+    { Partei: 'ÖVP', Ergebnis: 37.5 },
+    { Partei: 'SPÖ', Ergebnis: 21.2 },
+    { Partei: 'FPÖ', Ergebnis: 16.2 },
+    { Partei: 'NEOS', Ergebnis: 8.1 },
+    { Partei: 'JETZT', Ergebnis: 1.9 },
+    { Partei: 'KPÖ', Ergebnis: 0.7 },
+    { Partei: 'GRÜNE', Ergebnis: 13.9 },
+    { Partei: 'Andere', Ergebnis: 0.5 },
+    ]" yAxisKey="Ergebnis" labelKey="Partei"></app-bar>
+</ng-template>
+<ng-template [ngIf]="testId === '2'">
+    <app-line title="Wahlergebnisse von ÖVP und SPÖ von 1970 bis 2019" [data]="[
+    { date: '01-Mar-1970', SPOE: 48.42, OEVP: 44.69  },
+    { date: '10-Oct-1971', SPOE: 50.04, OEVP: 43.11  },
+    { date: '05-Oct-1975', SPOE: 50.42, OEVP: 42.95  },
+    { date: '06-May-1979', SPOE: 51.03, OEVP: 41.9  },
+    { date: '24-Apr-1983', SPOE: 47.65, OEVP: 43.22  },
+    { date: '23-Nov-1986', SPOE: 43.1, OEVP: 41.3  },
+    { date: '07-Oct-1990', SPOE: 42.8, OEVP: 32.1  },
+    { date: '09-Oct-1994', SPOE: 34.9, OEVP: 27.7  },
+    { date: '17-Dec-1995', SPOE: 38.1, OEVP: 28.3  },
+    { date: '03-Oct-1999', SPOE: 33.15, OEVP: 26.91  },
+    { date: '24-Nov-2002', SPOE: 36.51, OEVP: 42.3  },
+    { date: '01-Oct-2006', SPOE: 35.34, OEVP: 34.33  },
+    { date: '28-Sep-2008', SPOE: 29.26, OEVP: 25.98  },
+    { date: '29-Sep-2013', SPOE: 26.82, OEVP: 23.99  },
+    { date: '15-Oct-2017', SPOE: 26.86, OEVP: 31.47  },
+    { date: '29-Sep-2019', SPOE: 21.18, OEVP: 37.46  },
+    ]" xAxisKey="date" [yAxisKeys]="['OEVP', 'SPOE']" xAxisLabel="Datum" yAxisLabel="Wahlergebnis in Prozent" description="" [yearlyDates]="true"></app-line>
+</ng-template>
+<ng-template [ngIf]="testId === '3'">
+    <app-scatter title="Wahlkampfkosten vs. Wahlergebnisse der Parteien bei der Nationalratswahl 2013" labelKey="Partei" xAxisKey="Wahlkampfkosten" yAxisKey="Wahlergebnis" [formatXAxisToInt]="true" [radius]="4" [data]="[
+    { Partei: 'BZOE', Wahlkampfkosten: 2771857, Wahlergebnis: 3.53 },
+    { Partei: 'FPOE', Wahlkampfkosten: 6505889, Wahlergebnis: 20.51 },
+    { Partei: 'GRUENE', Wahlkampfkosten: 5393042, Wahlergebnis: 12.42 },
+    { Partei: 'KPOE', Wahlkampfkosten: 154894, Wahlergebnis: 1.03 },
+    { Partei: 'NEOS', Wahlkampfkosten: 763844, Wahlergebnis: 4.96 },
+    { Partei: 'OEVP', Wahlkampfkosten: 11275498, Wahlergebnis: 23.99 },
+    { Partei: 'SPOE', Wahlkampfkosten: 7326874, Wahlergebnis: 26.82 },
+    { Partei: 'TEAM STRONACH', Wahlkampfkosten: 13544227, Wahlergebnis: 5.73 },
+  ]"></app-scatter>
+</ng-template>
+<ng-template [ngIf]="!!testId">
+    <a href="/frageAntwort">Zurück</a>
+</ng-template>

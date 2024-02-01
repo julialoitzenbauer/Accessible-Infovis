@@ -8,7 +8,7 @@ import { LineComponent } from './line/line.component';
 import { ScatterComponent } from './scatter/scatter.component';
 import { provideRoutes } from '@angular/router';
 import { routes } from './app-routing.module';
-import { TestComponent } from './test/test.component';
+import { QuestionAnswerComponent } from './questionAnswer/questionAnswer.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +16,7 @@ import { TestComponent } from './test/test.component';
     BarComponent,
     ScatterComponent,
     LineComponent,
-    TestComponent,
+    QuestionAnswerComponent,
   ],
   imports: [BrowserModule, AppRoutingModule],
   providers: [provideRoutes(routes)],

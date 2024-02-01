@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { TestComponent } from './test/test.component';
+import { QuestionAnswerComponent } from './questionAnswer/questionAnswer.component';
 import { NavComponent } from './nav/nav.component';
 
 export const routes: Routes = [
   { path: '', component: NavComponent },
-  { path: 'test', component: TestComponent },
+  { path: 'frageAntwort', component: QuestionAnswerComponent },
 ];
 
 @NgModule({

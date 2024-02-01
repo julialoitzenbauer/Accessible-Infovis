@@ -4,7 +4,7 @@ import * as Tone from 'tone';
 import { D3ScaleLinear, D3ScaleTime, D3Selection } from 'src/types';
 import { IDGenerator } from './IDGenerator';
 import { CleanData, CleanDataObj, CleanDotData } from './lineTypes';
-import { data } from './testData';
+import { data as importData } from './testData';
 import {
   MAX_MIDI_NOTE,
   MIDI_NOTES,
@@ -44,6 +44,10 @@ export class LineComponent implements OnInit {
   xAxisLabel: string = '';
   @Input()
   summary: string = '';
+  @Input()
+  data: Array<Record<string, string | number>> = importData;
+  @Input()
+  yearlyDates: boolean = false;
 
   @ViewChild('menuButton') menuButton: ElementRef<HTMLElement> | undefined;
   @ViewChild('liveRegion') liveRegion: ElementRef<HTMLElement> | undefined;
@@ -583,7 +587,7 @@ export class LineComponent implements OnInit {
     const timeConv = d3.timeParse('%d-%b-%Y');
     this.maxY = -1;
     this.minY = -1;
-    for (const d of data) {
+    for (const d of this.data) {
       const currValues: Array<number> = [];
       let idx = 0;
       for (const yKey of this.yAxisKeys) {
@@ -636,11 +640,16 @@ export class LineComponent implements OnInit {
       .axisLeft(yScale)
       .ticks(this.cleanData[0].values.length)
       .scale(yScale);
-    const xaxis = d3
-      .axisBottom(xScale)
-      .ticks(d3.timeDay.every(1))
-      .tickFormat(d3.timeFormat('%b %d') as any)
-      .scale(xScale);
+    let xaxis = this.yearlyDates
+      ? d3
+          .axisBottom(xScale)
+          .tickFormat(d3.timeFormat('%Y') as any)
+          .scale(xScale)
+      : d3
+          .axisBottom(xScale)
+          .ticks(d3.timeDay.every(1))
+          .tickFormat(d3.timeFormat('%b %d') as any)
+          .scale(xScale);
     this.svg
       .append('g')
       .attr('class', 'axis')
@@ -670,10 +679,12 @@ export class LineComponent implements OnInit {
       .line()
       .x(function (d: any) {
         const xValue = xScale(new Date(d.date));
+        console.log('xValue: ', xValue);
         return xValue;
       })
       .y(function (d: any) {
         const yValue = yScale(d.measurment);
+        console.log('yValue: ', yValue);
         return yValue;
       });
 
@@ -689,8 +700,13 @@ export class LineComponent implements OnInit {
         'Drücken Sie "Enter" um in die Linie zu navigieren'
       )
       .on('keydown', this.lineKeyDown.bind(this));
-
     lines.append('path').attr('d', function (d: any) {
+      console.log('d.values: ', d.values);
+      for (const value of d.values) {
+        let obj = value;
+        obj.measurment = parseInt(obj.measurment);
+      }
+      console.log('values: ', d.values);
       const test = line(d.values);
       return test;
     });
