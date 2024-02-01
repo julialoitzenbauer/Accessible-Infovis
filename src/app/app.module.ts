@@ -9,6 +9,7 @@ import { ScatterComponent } from './scatter/scatter.component';
 import { provideRoutes } from '@angular/router';
 import { routes } from './app-routing.module';
 import { QuestionAnswerComponent } from './questionAnswer/questionAnswer.component';
+import { FindErrorsComponent } from './findErrors/findErrors.component';
 
 @NgModule({
   declarations: [
@@ -17,6 +18,7 @@ import { QuestionAnswerComponent } from './questionAnswer/questionAnswer.compone
     ScatterComponent,
     LineComponent,
     QuestionAnswerComponent,
+    FindErrorsComponent,
   ],
   imports: [BrowserModule, AppRoutingModule],
   providers: [provideRoutes(routes)],

@@ -1,0 +1,44 @@
+<h2>Teil 3: Fehler finden</h2>
+<ng-template [ngIf]="!testId">
+    <a href="/fehlerFinden?testId=1">Fehler finden: Test 1</a>
+    <br>
+    <a href="/fehlerFinden?testId=2">Fehler finden: Test 2</a>
+    <br>
+    <br>
+    <a href="/">Zurück</a>
+</ng-template>
+<ng-template [ngIf]="testId === '1'">
+    <p>In der nachfolgenden Visualisierung ist ersichtlich, dass die Neuzulassungen von Elektroautos in Österreich seit 2008 kontinuierlich gestiegen ist.</p>
+    <app-line title="Anzahl der Neuzulassungen von Elektroautos in Österreich von 2008 bis 2023" [data]="[
+    { date: '01-Jan-2008', Neuzulassungen: 2  },
+    { date: '01-Jan-2009', Neuzulassungen: 39  },
+    { date: '01-Jan-2010', Neuzulassungen: 112  },
+    { date: '01-Jan-2011', Neuzulassungen: 631  },
+    { date: '01-Jan-2012', Neuzulassungen: 427  },
+    { date: '01-Jan-2013', Neuzulassungen: 654  },
+    { date: '01-Jan-2014', Neuzulassungen: 1281  },
+    { date: '01-Jan-2015', Neuzulassungen: 1677  },
+    { date: '01-Jan-2016', Neuzulassungen: 3826  },
+    { date: '01-Jan-2017', Neuzulassungen: 5433  },
+    { date: '01-Jan-2018', Neuzulassungen: 6757  },
+    { date: '01-Jan-2019', Neuzulassungen: 9242  },
+    { date: '01-Jan-2020', Neuzulassungen: 15972  },
+    { date: '01-Jan-2021', Neuzulassungen: 33366  },
+    { date: '01-Jan-2022', Neuzulassungen: 34165  },
+    { date: '01-Jan-2023', Neuzulassungen: 47621  },
+    ]" xAxisKey="date" [yAxisKeys]="['Neuzulassungen']" xAxisLabel="Datum" yAxisLabel="Neuzulassungen" description="" [yearlyDates]="true"></app-line>
+</ng-template>
+<ng-template [ngIf]="testId === '2'">
+    <p>In der nachfolgenden Visualisierung ist ersichtlich, dass die Neuzulassungen von Elektroautos in Österreich seit 2008 kontinuierlich gestiegen ist.</p>
+    <app-bar title="Ranking der beliebtesten Teigwarenmarken in Österreich nach Kauf in letzter Zeit im Jahr 2023" [data]="[
+    { Marke: 'Recheis', Anteil: 30 },
+    { Marke: 'Barilla', Anteil: 28 },
+    { Marke: 'Wolf', Anteil: 18 },
+    { Marke: 'Buitoni', Anteil: 8 },
+    { Marke: 'Landleben', Anteil: 8 },
+    { Marke: 'Fritsch', Anteil: 6 },
+    ]" yAxisKey="Anteil" labelKey="Marke"></app-bar>
+</ng-template>
+<ng-template [ngIf]="!!testId">
+    <a href="/fehlerFinden">Zurück</a>
+</ng-template>
