@@ -4,11 +4,19 @@
     <br>
     <a href="/fehlerFinden?testId=2">Fehler finden: Test 2</a>
     <br>
+    <a href="/fehlerFinden?testId=3">Fehler finden: Test 3</a>
+    <br>
+    <a href="/fehlerFinden?testId=4">Fehler finden: Test 4</a>
+    <br>
+    <a href="/fehlerFinden?testId=5">Fehler finden: Test 5</a>
+    <br>
+    <a href="/fehlerFinden?testId=6">Fehler finden: Test 6</a>
+    <br>
     <br>
     <a href="/">Zurück</a>
 </ng-template>
 <ng-template [ngIf]="testId === '1'">
-    <p>In der nachfolgenden Visualisierung ist ersichtlich, dass die Neuzulassungen von Elektroautos in Österreich seit 2008 kontinuierlich gestiegen ist.</p>
+    <p tabindex="0">In der nachfolgenden Visualisierung ist ersichtlich, dass die Neuzulassungen von Elektroautos in Österreich seit 2008 kontinuierlich gestiegen ist.</p>
     <app-line title="Anzahl der Neuzulassungen von Elektroautos in Österreich von 2008 bis 2023" [data]="[
     { date: '01-Jan-2008', Neuzulassungen: 2  },
     { date: '01-Jan-2009', Neuzulassungen: 39  },
@@ -29,7 +37,7 @@
     ]" xAxisKey="date" [yAxisKeys]="['Neuzulassungen']" xAxisLabel="Datum" yAxisLabel="Neuzulassungen" description="" [yearlyDates]="true"></app-line>
 </ng-template>
 <ng-template [ngIf]="testId === '2'">
-    <p>In der nachfolgenden Visualisierung ist ersichtlich, dass die Neuzulassungen von Elektroautos in Österreich seit 2008 kontinuierlich gestiegen ist.</p>
+    <p tabindex="0">In der nachfolgenden Visualisierung ist ersichtlich, dass die Neuzulassungen von Elektroautos in Österreich seit 2008 kontinuierlich gestiegen ist.</p>
     <app-bar title="Ranking der beliebtesten Teigwarenmarken in Österreich nach Kauf in letzter Zeit im Jahr 2023" [data]="[
     { Marke: 'Recheis', Anteil: 30 },
     { Marke: 'Barilla', Anteil: 28 },
@@ -38,6 +46,47 @@
     { Marke: 'Landleben', Anteil: 8 },
     { Marke: 'Fritsch', Anteil: 6 },
     ]" yAxisKey="Anteil" labelKey="Marke"></app-bar>
+</ng-template>
+<ng-template [ngIf]="testId === '3'">
+    <p tabindex="0">In der nachfolgenden Visualisierung ist ersichtlich, dass je höher das BIP pro Kopf eines Landes ist, desto geringer ist der Anteil der Angestellten, die in der Agrikultur arbeiten.</p>
+    <app-scatter title="BIP pro Kopf vs. Angestellte in der Agrikultur in 2015" labelKey="Land" xAxisKey="BIP pro Kopf" yAxisKey="Angestellte in Agrikultur" [formatXAxisToInt]="true" [radius]="4" [data]="data3" [showLabel]="false"></app-scatter>
+</ng-template>
+<ng-template [ngIf]="testId === '4'">
+    <p tabindex="0">In der nachfolgenden Visualisierung ist ersichtlich, dass das Bundesland Kärnten zu Jahresbeginn 2023 eine Einwohneranzahl von 568995 aufwies.</p>
+    <app-bar title="Bevölkerung von Österreich nach Bundesländern zu Jahresbeginn 2023" [data]="[
+    { Bundesland: 'Wien', 'Anzahl der Einwohner': 1982442 },
+    { Bundesland: 'Niederoesterreich', 'Anzahl der Einwohner': 1718529 },
+    { Bundesland: 'Oberoesterreich', 'Anzahl der Einwohner': 1523200 },
+    { Bundesland: 'Steiermark', 'Anzahl der Einwohner': 1265422 },
+    { Bundesland: 'Tirol', 'Anzahl der Einwohner': 771361 },
+    { Bundesland: 'Kaernten', 'Anzahl der Einwohner': 568995 },
+    { Bundesland: 'Salzburg', 'Anzahl der Einwohner': 568468 },
+    { Bundesland: 'Vorarlberg', 'Anzahl der Einwohner': 406398 },
+    { Bundesland: 'Burgenland', 'Anzahl der Einwohner': 301311 },
+    ]" yAxisKey="Anzahl der Einwohner" labelKey="Bundesland"></app-bar>
+</ng-template>
+<ng-template [ngIf]="testId === '5'">
+    <p tabindex="0">In der nachfolgenden Visualisierung ist ersichtlich, dass die Neuzulassungen von Elektroautos in Österreich seit 2008 kontinuierlich gestiegen ist.</p>
+    <app-line title="Werbeumsätze von Meta weltweit in den Jahren 2010 bis 2023 (in Millionen US-Dollar)" [data]="[
+    { date: '01-Jan-2010', Umsatz: 1868  },
+    { date: '01-Jan-2011', Umsatz: 3154  },
+    { date: '01-Jan-2012', Umsatz: 4279  },
+    { date: '01-Jan-2013', Umsatz: 6986  },
+    { date: '01-Jan-2014', Umsatz: 11492  },
+    { date: '01-Jan-2015', Umsatz: 17079  },
+    { date: '01-Jan-2016', Umsatz: 26885  },
+    { date: '01-Jan-2017', Umsatz: 39942  },
+    { date: '01-Jan-2018', Umsatz: 55013  },
+    { date: '01-Jan-2019', Umsatz: 69655  },
+    { date: '01-Jan-2020', Umsatz: 84169  },
+    { date: '01-Jan-2021', Umsatz: 114934  },
+    { date: '01-Jan-2022', Umsatz: 113642  },
+    { date: '01-Jan-2023', Umsatz: 131948  },
+    ]" xAxisKey="date" [yAxisKeys]="['Umsatz']" xAxisLabel="Datum" yAxisLabel="Werbeumsatz" description="" [yearlyDates]="true"></app-line>
+</ng-template>
+<ng-template [ngIf]="testId === '6'">
+    <p tabindex="0">In der nachfolgenden Visualisierung ist ersichtlich, dass der Anteil der Raucher unter Erwachsenen im Jahr 2015 umso höher war, desto höher das BIP pro Kopf des Landes war (in internationalen $)</p>
+    <app-scatter title="BIP pro Kopf vs. Anteil der Raucher bei Erwachsenen, 2015" labelKey="Land" xAxisKey="BIP pro Kopf" yAxisKey="Raucher bei Erwachsenen" [formatXAxisToInt]="true" [radius]="4" [data]="data6" [showLabel]="false"></app-scatter>
 </ng-template>
 <ng-template [ngIf]="!!testId">
     <a href="/fehlerFinden">Zurück</a>
