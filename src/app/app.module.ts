@@ -10,6 +10,7 @@ import { provideRoutes } from '@angular/router';
 import { routes } from './app-routing.module';
 import { QuestionAnswerComponent } from './questionAnswer/questionAnswer.component';
 import { FindErrorsComponent } from './findErrors/findErrors.component';
+import { IntroductionComponent } from './introduction/introduction.component';
 
 @NgModule({
   declarations: [
@@ -19,6 +20,7 @@ import { FindErrorsComponent } from './findErrors/findErrors.component';
     LineComponent,
     QuestionAnswerComponent,
     FindErrorsComponent,
+    IntroductionComponent,
   ],
   imports: [BrowserModule, AppRoutingModule],
   providers: [provideRoutes(routes)],
