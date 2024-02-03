@@ -2,6 +2,8 @@
 <ng-template [ngIf]="!testId">
     <a href="/introduction?testId=1">Einführung: Test 1</a>
     <br>
+    <a href="/introduction?testId=2">Einführung: Test 2</a>
+    <br>
     <br>
     <a href="/">Zurück</a>
 </ng-template>
@@ -69,6 +71,72 @@
     { Automarke: 'Nissan', 'Anteil an Neuzulassungen': 1.3 },
     { Automarke: 'Sonstige', 'Anteil an Neuzulassungen': 8.8 },
     ]" yAxisKey="Anteil an Neuzulassungen" labelKey="Automarke"></app-bar>
+</ng-template>
+
+<ng-template [ngIf]="testId === '2'">
+    <div tabindex="0">In der nachfolgenden Visualisierung wird ein Liniendiagramm gezeigt. Um mit Liniendiagrammen zu interagieren, navigieren Sie zu der Visualisierung und drücken anschließen Enter. Danach gelangen Sie zu einem Interaktionsmenü, dass Ihnen mehrere
+        Interaktionsmöglichkeiten auflistet. Die einzelnen Interaktionsmöglichkeiten können Sie mit Hilfe von Enter aktivieren. Folgende Interaktionsmenüs existeren:
+        <ul>
+            <li>Navigieren durch die Daten
+                <ul>
+                    <li>Der Fokus wird direkt auf die erste Linie in der Visualisierung gesetzt. Sie können mit den Pfeiltasten nach unten und oben zu den anderen Linien navigieren.</li>
+                    <li>Mit Enter navigieren Sie in die Linie hinein, wobei der Fokus auf den ersten Datenpunkt der Linie gesetzt wird. Danach können Sie mit den Pfeiltasten nach links und rechts zu den übrigen Datenpunkten navigieren.</li>
+                    <li>Wenn Sie den Fokus auf einem Datenpunkt haben können Sie den Datenpunkt mit Hilfe von SHIFT+M makieren. Dieser Datenpunkt wird daraufhin in einer Liste gespeichert, die Sie anschließend filtern können.</li>
+                    <li>Beim Fokus auf einem Datenpunkt können Sie ebenfalls SHIFT+S drücken um die auditive Repräsentierung des Datenpunktes abzupielen.</li>
+                </ul>
+            </li>
+            <li>Zusammenfassung
+                <ul>
+                    <li>Es wird eine Zusammenfassung über die Visualisierung ausgegeben: was für Daten werden gezeigt, welche Daten werden von den einzelnen Achsen repräsentiert, wie ist der Datenverlauf, usw.</li>
+                </ul>
+            </li>
+            <li>Suchen
+                <ul>
+                    <li>Es öffnet sich ein Untermenü wo Sie auswählen können, ob Sie nach einem Wert auf der x-Achse oder einem Linien-Label suchen wollen</li>
+                    <li>Bei der Suche nach einem x-Wert können Sie die Symbole &lt; und &gt; verwenden oder nach einem exakten Wert suchen</li>
+                    <li>Bei der Suche nach einem Linien-Label verwenden Sie statt Umlauten bitte die ausgeschriebene Variante davon - statt ä schreiben Sie bitte ae</li>
+                </ul>
+            </li>
+            <li>
+                Sonification
+                <ul>
+                    <li>Es wird eine auditive Repräsentation der Daten abgespielt, mit deren Hilfe Sie den Datenverlauf auditiv hören können</li>
+                </ul>
+            </li>
+            <li>Makierungen
+                <ul>
+                    <li>Es öffnet sich ein weiteres Untermenü, in dem Sie auswählen können, ob Sie die aktuell gesetzten Makierungen löschen wollen oder ob Sie die abgebildeten Daten nach den makierten Datenpunkten filtern wollen.</li>
+                </ul>
+            </li>
+            <li>Daten zurücksetzen
+                <ul>
+                    <li>Die Visualisierung wird auf den Ausgangszustand zurückgesetzt - alle Filterungen werden aufgehoben, doch makierte Datenpunkte bleiben erhalten.</li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <app-line title="Umsatz von Apple Inc. weltweit in den Geschäftsjahren von 2004 bis 2023 (in Milliarden US-Dollar)" [data]="[
+    { date: '01-Jan-2004', Umsatz: 8.28  },
+    { date: '01-Jan-2005', Umsatz: 13.93 },
+    { date: '01-Jan-2006', Umsatz: 19.32 },
+    { date: '01-Jan-2007', Umsatz: 24.58 },
+    { date: '01-Jan-2008', Umsatz: 37.49 },
+    { date: '01-Jan-2009', Umsatz: 42.91 },
+    { date: '01-Jan-2010', Umsatz: 65.23 },
+    { date: '01-Jan-2011', Umsatz: 108.25 },
+    { date: '01-Jan-2012', Umsatz: 156.51 },
+    { date: '01-Jan-2013', Umsatz: 170.91 },
+    { date: '01-Jan-2014', Umsatz: 182.8 },
+    { date: '01-Jan-2015', Umsatz: 233.72 },
+    { date: '01-Jan-2016', Umsatz: 215.64 },
+    { date: '01-Jan-2017', Umsatz: 229.23 },
+    { date: '01-Jan-2018', Umsatz: 265.6 },
+    { date: '01-Jan-2019', Umsatz: 260.17 },
+    { date: '01-Jan-2020', Umsatz: 274.52 },
+    { date: '01-Jan-2021', Umsatz: 365.82 },
+    { date: '01-Jan-2022', Umsatz: 394.33 },
+    { date: '01-Jan-2023', Umsatz: 383.29 },
+    ]" xAxisKey="date" [yAxisKeys]="['Umsatz']" xAxisLabel="Datum" yAxisLabel="Umsatz" description="" [yearlyDates]="true"></app-line>
 </ng-template>
 <ng-template [ngIf]="!!testId">
     <a href="/introduction">Zurück</a>
