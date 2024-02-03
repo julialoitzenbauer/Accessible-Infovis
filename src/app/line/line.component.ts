@@ -201,98 +201,37 @@ export class LineComponent implements OnInit {
   }
 
   startSonification(): void {
-    // Create oscillators
-    /* const oscillator1 = new Tone.Oscillator().toDestination();
-    const oscillator2 = new Tone.Oscillator().toDestination();
-    const oscillator3 = new Tone.Oscillator().toDestination();
-
-    // Start the oscillators
-    oscillator1.start();
-    oscillator2.start();
-    oscillator3.start();
-
-    // Define target frequencies and ramp durations
-    const targetFreq1 = 880; // Target frequency for oscillator1
-    const targetFreq2 = 440; // Target frequency for oscillator2
-    const targetFreq3 = 660; // Target frequency for oscillator3
-    const rampDuration = 4; // Duration in seconds for the frequency ramp
-
-    // Ramp the frequencies
-    oscillator1.frequency.rampTo(targetFreq1, rampDuration);
-    oscillator2.frequency.rampTo(targetFreq2, rampDuration);
-    oscillator3.frequency.rampTo(targetFreq3, rampDuration);
-
-    // Optionally, you can schedule when to stop the oscillators after the ramp
-    Tone.Transport.schedule(() => {
-      oscillator1.stop();
-      oscillator2.stop();
-      oscillator3.stop();
-    }, `+${rampDuration}`); */
-
-    // Start the Tone Transport to begin scheduling events
-    // Tone.Transport.start();
-    const oscillators: Array<Tone.Oscillator> = [];
-    for (let idx = 0; idx < this.cleanData.length; ++idx) {
-      oscillators.push(new Tone.Oscillator(undefined, 'sine').toDestination());
-    }
-
     if (this.cleanData) {
       for (let dataIdx = 0; dataIdx < this.cleanData.length; ++dataIdx) {
-        const oscillator = oscillators[dataIdx];
-        const xAxisSpan = this.cleanData[dataIdx].values.length;
-        const values = this.cleanData[dataIdx].values;
-        for (let valueIdx = 0; valueIdx < values.length; ++valueIdx) {
-          const note = this.calcSoniNote(
-            this.cleanData[dataIdx].values[valueIdx].measurment
-          );
-          const hzNote = Tone.Frequency(note).toFrequency();
-          if (valueIdx === 0) {
-            oscillator.frequency.value = hzNote;
-            oscillator.start();
-          } else {
-            oscillator.frequency.rampTo(hzNote, '+1', '+' + valueIdx);
-          }
-        }
+        this.playSoniForLine(this.cleanData[dataIdx].values);
       }
     }
+  }
 
-    for (const osc of oscillators)
-      osc.stop('+' + this.cleanData[0].values.length);
-
-    /* const notes: Record<number, Array<string>> = {};
-      const xAxisSpan = this.maxX - this.minX;
-      for (const key of this.keys) {
-        const cd = this.cleanData[key];
-        const dataNotes: Array<string> = [];
-        for (const d of cd) {
-          dataNotes.push(this.calcSoniNote(d.yValue));
-        }
-        const xAxisAbsoluteValue = key - this.minX;
-        const xAxisRatio: number = xAxisAbsoluteValue / xAxisSpan;
-        const playTime = 5 * xAxisRatio;
-        notes[playTime] = dataNotes;
-      }
-
-      const synth = new Tone.PolySynth(Tone.Synth).toDestination();
-      const noteKeys = Object.keys(notes).map(Number);
-      noteKeys.sort((a: number, b: number) => a - b);
-      for (let idx = 0; idx < noteKeys.length; ++idx) {
-        const dataNotes = notes[noteKeys[idx]];
-        let delay = Tone.now();
-        delay += noteKeys[idx];
-        synth.triggerAttackRelease(dataNotes, '8n', delay);
-      }
-      console.log(notes);
-    } */
-
-    /*const noteKeys = Object.keys(notes).map(Number);
-      noteKeys.sort((a: number, b: number) => a - b);
-      for (let idx = 0; idx < noteKeys.length; ++idx) {
-        const dataNotes = notes[noteKeys[idx]];
-        let delay = Tone.now();
-        delay += noteKeys[idx];
-        synth.triggerAttackRelease(dataNotes, '8n', delay);
-      }*/
+  playSoniForLine(values: Array<CleanData>) {
+    var context = new AudioContext();
+    var osc = context.createOscillator();
+    // Sine is the default type. Also available: square, sawtooth and triangle waveforms.
+    osc.type = 'sine';
+    var now = context.currentTime;
+    // Frequency in Hz.
+    // Set initial value. (you can use .value=freq if you want)
+    const timePerNote = 5 / values.length;
+    for (let valueIdx = 0; valueIdx < values.length - 1; ++valueIdx) {
+      const note = this.calcSoniNote(values[valueIdx].measurment);
+      const hzNote = Tone.Frequency(note).toFrequency();
+      osc.frequency.setValueAtTime(hzNote, now + valueIdx * timePerNote);
+      // set a ramp to freq+100Hz over the next 4 seconds.
+      const nextNote = this.calcSoniNote(values[valueIdx + 1].measurment);
+      const nextHzNote = Tone.Frequency(nextNote).toFrequency();
+      osc.frequency.linearRampToValueAtTime(
+        nextHzNote,
+        now + (valueIdx + 1) * timePerNote
+      );
+    }
+    osc.connect(context.destination);
+    osc.start(now);
+    osc.stop(now + 5);
   }
 
   private calcSoniNote(value: number): string {
@@ -319,7 +258,6 @@ export class LineComponent implements OnInit {
           const items =
             this.searchMenuList.nativeElement.querySelectorAll('li');
           items[0].setAttribute('tabindex', '0');
-          console.log(items[0]);
           items[0].focus();
         }
       }, 0);
@@ -679,12 +617,10 @@ export class LineComponent implements OnInit {
       .line()
       .x(function (d: any) {
         const xValue = xScale(new Date(d.date));
-        console.log('xValue: ', xValue);
         return xValue;
       })
       .y(function (d: any) {
         const yValue = yScale(d.measurment);
-        console.log('yValue: ', yValue);
         return yValue;
       });
 
@@ -701,12 +637,10 @@ export class LineComponent implements OnInit {
       )
       .on('keydown', this.lineKeyDown.bind(this));
     lines.append('path').attr('d', function (d: any) {
-      console.log('d.values: ', d.values);
       for (const value of d.values) {
         let obj = value;
         obj.measurment = parseInt(obj.measurment);
       }
-      console.log('values: ', d.values);
       const test = line(d.values);
       return test;
     });
