@@ -745,6 +745,18 @@ export class BarComponent implements OnInit {
           }
         }
         break;
+      case 's':
+      case 'S':
+        if (evt.shiftKey) {
+          const currBarIdx = this.getCurrBarIdx();
+          const bar = this.cleanData[currBarIdx];
+          if (bar) {
+            const note = this.calcSoniNote(bar.yValue);
+            const synth = new Tone.PolySynth(Tone.Synth).toDestination();
+            synth.triggerAttackRelease(note, '8n');
+          }
+        }
+        break;
     }
     evt.preventDefault();
   }
