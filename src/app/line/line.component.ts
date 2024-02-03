@@ -873,6 +873,13 @@ export class LineComponent implements OnInit {
               `${this.yAxisLabel}: ${markedDotData.measurment}, Linie ${lineData.id}`
             );
           }
+        } else if (evt.key.toUpperCase() === 'S' && evt.shiftKey) {
+          const currDot = lineData.values[currDotIdx];
+          if (currDot) {
+            const note = this.calcSoniNote(currDot.measurment);
+            const synth = new Tone.PolySynth(Tone.Synth).toDestination();
+            synth.triggerAttackRelease(note, '8n');
+          }
         }
       }
     }
