@@ -1061,6 +1061,18 @@ export class ScatterComponent implements OnInit {
             : this.currNumberOfMarks + 1;
           this.markDot(cleanDataToMark.ID, removeMark);
         }
+      } else if (evt.key.toUpperCase() === 'S' && evt.shiftKey) {
+        const dataID = target.id.substring('DOT_'.length);
+        const currDotIdx = this.tickData[this.currTickIdx]
+          .map((cd: CleanData) => cd.ID)
+          .indexOf(dataID);
+        if (currDotIdx != -1) {
+          const note = this.calcSoniNote(
+            this.tickData[this.currTickIdx][currDotIdx].yValue
+          );
+          const synth = new Tone.PolySynth(Tone.Synth).toDestination();
+          synth.triggerAttackRelease(note, '8n');
+        }
       }
     }
     evt.preventDefault();
