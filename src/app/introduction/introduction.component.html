@@ -141,6 +141,45 @@
     ]" xAxisKey="date" [yAxisKeys]="['Umsatz']" xAxisLabel="Datum" yAxisLabel="Umsatz" description="" [yearlyDates]="true"></app-line>
 </ng-template>
 <ng-template [ngIf]="testId === '3'">
+    <div tabindex="0">In der nachfolgenden Visualisierung wird ein Balkendiagramm gezeigt. Um mit Balkendiagrammen zu interagieren, navigieren Sie zu der Visualisierung und drücken anschließen Enter. Danach gelangen Sie zu einem Interaktionsmenü, dass Ihnen mehrere
+        Interaktionsmöglichkeiten auflistet. Die einzelnen Interaktionsmöglichkeiten können Sie mit Hilfe von Enter aktivieren. Folgende Interaktionsmenüs existeren:
+        <ul>
+            <li>Navigieren durch die Daten
+                <ul>
+                    <li>Der Fokus wird auf den ersten Abschnitt der Datenpunkte gelegt. Dabei wird Ihnen ausgegeben, wie viele Datenpunkte sich in dieser Gruppierung befinden. Mit Enter können Sie in diese Gruppierung navigieren und anschließend können Sie durch die darin befindlichen Datenpunkte mit Pfeiltasten navigieren.</li>
+                </ul>
+            </li>
+            <li>Zusammenfassung
+                <ul>
+                    <li>Es wird eine Zusammenfassung über die Visualisierung ausgegeben: was für Daten werden gezeigt, welche Daten werden von den einzelnen Achsen repräsentiert, wie ist der Datenverlauf, usw.</li>
+                </ul>
+            </li>
+            <li>Suchen
+                <ul>
+                    <li>Es öffnet sich ein Untermenü wo Sie auswählen können, ob Sie nach einem Wert auf der y-Achse, der x-Achse oder einem Datenpunkt-Namen suchen wollen</li>
+                    <li>Bei der Suche nach einem y-Wert können Sie die Symbole &lt; und &gt; verwenden oder nach einem exakten Wert suchen</li>
+                    <li>Bei der Suche nach einem x-Wert können Sie die Symbole &lt; und &gt; verwenden oder nach einem exakten Wert suchen</li>
+                    <li>Bei der Suche nach einem Datenpunkt-Namen verwenden Sie statt Umlauten bitte die ausgeschriebene Variante davon - statt ä schreiben Sie bitte ae</li>
+                </ul>
+            </li>
+            <li>
+                Sonification
+                <ul>
+                    <li>Es wird eine auditive Repräsentation der Daten abgespielt, mit deren Hilfe Sie den Datenverlauf auditiv hören können</li>
+                </ul>
+            </li>
+            <li>Makierungen
+                <ul>
+                    <li>Es öffnet sich ein weiteres Untermenü, in dem Sie auswählen können, ob Sie die aktuell gesetzten Makierungen löschen wollen oder ob Sie die abgebildeten Daten nach den makierten Datenpunkten filtern wollen.</li>
+                </ul>
+            </li>
+            <li>Daten zurücksetzen
+                <ul>
+                    <li>Die Visualisierung wird auf den Ausgangszustand zurückgesetzt - alle Filterungen werden aufgehoben, doch makierte Datenpunkte bleiben erhalten.</li>
+                </ul>
+            </li>
+        </ul>
+    </div>
     <app-scatter title="BIP pro Kopf vs. Lebenserwartung, 2015" labelKey="Land" xAxisKey="BIP pro Kopf" yAxisKey="Lebenserwartung" [formatXAxisToInt]="true" [radius]="4" [data]="scatterData" [showLabel]="false"></app-scatter>
 </ng-template>
 <ng-template [ngIf]="!!testId">
