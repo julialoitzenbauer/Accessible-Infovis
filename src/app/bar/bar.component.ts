@@ -505,7 +505,14 @@ export class BarComponent implements OnInit {
             this.figureElement.nativeElement.innerHTML = '';
             this.createSvg();
             this.drawBars();
-            this.focusBar(this.cleanData[0].ID);
+            if (this.liveRegion?.nativeElement) {
+              this.liveRegion.nativeElement.innerHTML = '';
+              const descriptionTag = document.createElement('p');
+              descriptionTag.innerHTML = `${filteredData.length} ${
+                filteredData.length === 1 ? 'Datenpunkt' : 'Datenpunkte'
+              } wurden gefunden. Die Datenpunkte werden nun angezeigt.`;
+              this.liveRegion.nativeElement.appendChild(descriptionTag);
+            }
           }
         }
       } else if (this.selectedSearchMenu === SEARCH_MENU.LABEL) {
@@ -521,7 +528,14 @@ export class BarComponent implements OnInit {
             this.figureElement.nativeElement.innerHTML = '';
             this.createSvg();
             this.drawBars();
-            this.focusBar(this.cleanData[0].ID);
+            if (this.liveRegion?.nativeElement) {
+              this.liveRegion.nativeElement.innerHTML = '';
+              const descriptionTag = document.createElement('p');
+              descriptionTag.innerHTML = `${filteredData.length} ${
+                filteredData.length === 1 ? 'Datenpunkt' : 'Datenpunkte'
+              } wurden gefunden. Die Datenpunkte werden nun angezeigt.`;
+              this.liveRegion.nativeElement.appendChild(descriptionTag);
+            }
           }
         }
       }
