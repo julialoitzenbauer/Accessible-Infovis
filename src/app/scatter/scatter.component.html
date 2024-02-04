@@ -43,5 +43,8 @@
     <input class="button" type="submit" [value]="currNumberOfMarks + ' Markierungen löschen'" (keydown)="markFormButtonKeyDown($event)" #deleteMarksButton>
     <input class="button" type="submit" value="Abbrechen" (keydown)="markFormButtonKeyDown($event)" #cancelDeleteMarksButton>
 </form>
-<figure [id]="scatterId" id="" #figureElement style="position: relative">
-</figure>
+<p style="position: absolute; left: -10000px;" id="SVG_DESCR">Drücken Sie Enter um mit der Visualisierung zu interagieren</p>
+<div #figureContainer tabindex="0" aria-describedby="SVG_DESCR">
+    <figure [id]="scatterId" id="" #figureElement style="position: relative">
+    </figure>
+</div>

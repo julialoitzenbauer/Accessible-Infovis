@@ -53,6 +53,10 @@ export class ScatterComponent implements OnInit {
   radius: number = 7;
   @Input()
   formatXAxisToInt: boolean = false;
+  @Input()
+  xAxisUnit: string = '';
+  @Input()
+  yAxisUnit: string = '';
 
   @ViewChild('figureElement') figureElement:
     | ElementRef<HTMLElement>
@@ -77,6 +81,9 @@ export class ScatterComponent implements OnInit {
     | ElementRef<HTMLElement>
     | undefined;
   @ViewChild('cancelDeleteMarksButton') cancelDeleteMarksButton:
+    | ElementRef<HTMLElement>
+    | undefined;
+  @ViewChild('figureContainer') figureContainer:
     | ElementRef<HTMLElement>
     | undefined;
 
@@ -545,7 +552,8 @@ export class ScatterComponent implements OnInit {
           if (this.liveRegion?.nativeElement) {
             this.liveRegion.nativeElement.innerHTML = '';
             const descriptionTag = document.createElement('p');
-            descriptionTag.innerText = this.cleanDescription || '';
+            descriptionTag.innerText =
+              this.description ?? 'Keine Beschreibung verfügbar';
             this.liveRegion.nativeElement.appendChild(descriptionTag);
           }
           break;
@@ -665,16 +673,16 @@ export class ScatterComponent implements OnInit {
   }
 
   private createSvg(): void {
+    if (this.figureContainer?.nativeElement) {
+      this.figureContainer.nativeElement.onkeydown = this.svgKeyDown.bind(this);
+      this.figureContainer.nativeElement.setAttribute('aria-label', this.title);
+    }
     this.svg = d3
       .select('figure#' + this.scatterId)
       .append('svg')
       .attr('id', 'SVG_' + this.scatterId)
-      .on('keydown', this.svgKeyDown.bind(this))
       .attr('width', this.width + this.margin * 2)
       .attr('height', this.height + this.margin * 2)
-      .attr('tabindex', '0')
-      .attr('aria-label', 'Scatterplot: ' + this.title)
-      .attr('aria-description', this.cleanDescription || null)
       .append('g')
       .attr('transform', 'translate(' + this.margin + ',' + this.margin + ')');
   }
@@ -775,10 +783,12 @@ export class ScatterComponent implements OnInit {
           this.xAxisKey +
           ': ' +
           d.xValue +
+          (this.xAxisUnit ? ' ' + this.xAxisUnit : '') +
           ', ' +
           this.yAxisKey +
           ': ' +
-          d.yValue
+          d.yValue +
+          (this.yAxisUnit ? ' ' + this.yAxisUnit : '')
       )
       .attr('display', (d: CleanData) => (d.hidden ? 'none' : 'block'))
       .on('keydown', this.dotKeyDown.bind(this));
@@ -1256,19 +1266,14 @@ export class ScatterComponent implements OnInit {
   }
 
   private focusSvg(blurCurrDot?: boolean): void {
-    if (this.svg) {
+    if (this.figureContainer?.nativeElement) {
       if (this.menuButton?.nativeElement) {
         this.menuButton.nativeElement.tabIndex = -1;
       }
       if (blurCurrDot && this.focusedDot != null) {
         this.blurDot(this.focusedDot);
       }
-      this.svg.node()?.parentElement?.focus();
-      const selection = d3.select('[id="SVG_' + this.scatterId + '"]');
-      const node = selection.node() as HTMLElement | null;
-      if (node) {
-        node.focus();
-      }
+      this.figureContainer.nativeElement.focus();
     }
   }
 }
