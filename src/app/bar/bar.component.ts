@@ -39,6 +39,8 @@ export class BarComponent implements OnInit {
   description: string = '';
   @Input()
   yAxisUnit: string = '';
+  @Input()
+  hideMenu: boolean = true;
 
   private cleanData: Array<CleanData> = [];
   private svg?: D3Selection;

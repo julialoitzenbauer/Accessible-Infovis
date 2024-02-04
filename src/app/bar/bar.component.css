@@ -10,7 +10,7 @@
     fill: white;
 }
 
-[role="log"], #labels {
+[role="log"], #labels, .hidden {
     position: absolute;
     left: -999999px;
 }

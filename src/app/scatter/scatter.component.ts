@@ -57,6 +57,8 @@ export class ScatterComponent implements OnInit {
   xAxisUnit: string = '';
   @Input()
   yAxisUnit: string = '';
+  @Input()
+  hideMenu: boolean = true;
 
   @ViewChild('figureElement') figureElement:
     | ElementRef<HTMLElement>

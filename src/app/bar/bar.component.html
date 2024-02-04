@@ -3,6 +3,7 @@
 <div id="labels" #labelsContainer></div>
 <button
     [id]="menuId + '_BUTTON'"
+    [ngClass]="{hidden: hideMenu}"
     tabindex="-1"
     type="menu"
     aria-haspopup="true"
@@ -13,6 +14,7 @@
     Visualisierungs-Interaktionen
 </button>
 <ul *ngIf="menuIsOpen"
+    [ngClass]="{hidden: hideMenu}"
     [id]="menuId"
     role="menu"
     [attr.aria-labelledby]="menuId + '_BUTTON'"
@@ -33,12 +35,12 @@
     </ul>
     <li id="MenuItemReset" role="menuitem" (keydown)="menuItemKeyDown($event, 5)">Daten Zurücksetzen</li>
 </ul>
-<form *ngIf="showSearchform" (submit)="triggerSearch($event)">
+<form *ngIf="showSearchform" [ngClass]="{hidden: hideMenu}" (submit)="triggerSearch($event)">
     <label class="search-label" for="search">{{ searchMenuPlaceholder }}</label>
     <input id="search" type="text" [placeholder]="searchMenuPlaceholder" #searchFieldInput (keydown)="searchFieldInputKeyDown($event)">
     <input class="button" type="submit" value="Suchen" #searchFieldSubmitBtn (keydown)="searchFieldButtonKeyDown($event)">
 </form>
-<form *ngIf="showDeleteMarksForm">
+<form *ngIf="showDeleteMarksForm" [ngClass]="{hidden: hideMenu}">
     <input class="button" type="submit" [value]="markedData.length + ' Markierungen löschen'" (keydown)="markFormButtonKeyDown($event)" #deleteMarksButton>
     <input class="button" type="submit" value="Abbrechen" (keydown)="markFormButtonKeyDown($event)" #cancelDeleteMarksButton>
 </form>

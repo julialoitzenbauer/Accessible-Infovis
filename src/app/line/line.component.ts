@@ -52,6 +52,8 @@ export class LineComponent implements OnInit {
   xAxisUnit: string = '';
   @Input()
   yAxisUnit: string = '';
+  @Input()
+  hideMenu: boolean = true;
 
   @ViewChild('menuButton') menuButton: ElementRef<HTMLElement> | undefined;
   @ViewChild('liveRegion') liveRegion: ElementRef<HTMLElement> | undefined;

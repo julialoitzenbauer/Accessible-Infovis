@@ -31,6 +31,11 @@
     fill: white;
 }
 
+.hidden {
+    position: absolute;
+    left: -10000px;
+}
+
 [role="log"] {
     position: absolute;
     left: -999999px;
