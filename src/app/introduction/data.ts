@@ -9,7 +9,7 @@ export const scatterData = [
     Continent: 'Asia',
   },
   {
-    Land: 'Albania',
+    Land: 'Albanien',
     Code: 'ALB',
     Jahr: 2015,
     Lebenserwartung: 78.6,
@@ -18,7 +18,7 @@ export const scatterData = [
     Continent: 'Europe',
   },
   {
-    Land: 'Algeria',
+    Land: 'Algerien',
     Code: 'DZA',
     Jahr: 2015,
     Lebenserwartung: 75.6,
@@ -36,7 +36,7 @@ export const scatterData = [
     Continent: 'Africa',
   },
   {
-    Land: 'Antigua and Barbuda',
+    Land: 'Antigua und Barbuda',
     Code: 'ATG',
     Jahr: 2015,
     Lebenserwartung: 77.9,
@@ -45,7 +45,7 @@ export const scatterData = [
     Continent: 'North America',
   },
   {
-    Land: 'Argentina',
+    Land: 'Argentinien',
     Code: 'ARG',
     Jahr: 2015,
     Lebenserwartung: 76.8,
@@ -54,7 +54,7 @@ export const scatterData = [
     Continent: 'South America',
   },
   {
-    Land: 'Armenia',
+    Land: 'Armenien',
     Code: 'ARM',
     Jahr: 2015,
     Lebenserwartung: 74.4,
@@ -72,7 +72,7 @@ export const scatterData = [
     Continent: 'North America',
   },
   {
-    Land: 'Australia',
+    Land: 'Australien',
     Code: 'AUS',
     Jahr: 2015,
     Lebenserwartung: 82.7,
@@ -81,7 +81,7 @@ export const scatterData = [
     Continent: 'Oceania',
   },
   {
-    Land: 'Austria',
+    Land: 'Oesterreich',
     Code: 'AUT',
     Jahr: 2015,
     Lebenserwartung: 81.2,
@@ -90,7 +90,7 @@ export const scatterData = [
     Continent: 'Europe',
   },
   {
-    Land: 'Azerbaijan',
+    Land: 'Aserbaidschan',
     Code: 'AZE',
     Jahr: 2015,
     Lebenserwartung: 71.5,
@@ -117,7 +117,7 @@ export const scatterData = [
     Continent: 'Asia',
   },
   {
-    Land: 'Bangladesh',
+    Land: 'Bangladesch',
     Code: 'BGD',
     Jahr: 2015,
     Lebenserwartung: 70.5,
@@ -144,7 +144,7 @@ export const scatterData = [
     Continent: 'Europe',
   },
   {
-    Land: 'Belgium',
+    Land: 'Belgien',
     Code: 'BEL',
     Jahr: 2015,
     Lebenserwartung: 80.9,
@@ -189,7 +189,7 @@ export const scatterData = [
     Continent: 'Asia',
   },
   {
-    Land: 'Bolivia',
+    Land: 'Bolivien',
     Code: 'BOL',
     Jahr: 2015,
     Lebenserwartung: 67.3,
@@ -198,7 +198,7 @@ export const scatterData = [
     Continent: 'South America',
   },
   {
-    Land: 'Bosnia and Herzegovina',
+    Land: 'Bosnien und Herzegowina',
     Code: 'BIH',
     Jahr: 2015,
     Lebenserwartung: 76.2,
@@ -207,7 +207,7 @@ export const scatterData = [
     Continent: 'Europe',
   },
   {
-    Land: 'Botswana',
+    Land: 'Botsuana',
     Code: 'BWA',
     Jahr: 2015,
     Lebenserwartung: 63.8,
@@ -216,7 +216,7 @@ export const scatterData = [
     Continent: 'Africa',
   },
   {
-    Land: 'Brazil',
+    Land: 'Brasilien',
     Code: 'BRA',
     Jahr: 2015,
     Lebenserwartung: 74.3,
@@ -225,7 +225,7 @@ export const scatterData = [
     Continent: 'South America',
   },
   {
-    Land: 'Brunei',
+    Land: 'Brunei Darussalam',
     Code: 'BRN',
     Jahr: 2015,
     Lebenserwartung: 74.7,
@@ -234,7 +234,7 @@ export const scatterData = [
     Continent: 'Asia',
   },
   {
-    Land: 'Bulgaria',
+    Land: 'Bulgarien',
     Code: 'BGR',
     Jahr: 2015,
     Lebenserwartung: 74.6,
@@ -261,7 +261,7 @@ export const scatterData = [
     Continent: 'Africa',
   },
   {
-    Land: 'Cambodia',
+    Land: 'Kambodscha',
     Code: 'KHM',
     Jahr: 2015,
     Lebenserwartung: 69.9,
@@ -270,7 +270,7 @@ export const scatterData = [
     Continent: 'Asia',
   },
   {
-    Land: 'Cameroon',
+    Land: 'Kamerun',
     Code: 'CMR',
     Jahr: 2015,
     Lebenserwartung: 59.7,
@@ -279,7 +279,7 @@ export const scatterData = [
     Continent: 'Africa',
   },
   {
-    Land: 'Canada',
+    Land: 'Kanada',
     Code: 'CAN',
     Jahr: 2015,
     Lebenserwartung: 81.9,
@@ -288,7 +288,7 @@ export const scatterData = [
     Continent: 'North America',
   },
   {
-    Land: 'Cape Verde',
+    Land: 'Kap Verde',
     Code: 'CPV',
     Jahr: 2015,
     Lebenserwartung: 74.6,
@@ -297,7 +297,7 @@ export const scatterData = [
     Continent: 'Africa',
   },
   {
-    Land: 'Cayman Islands',
+    Land: 'Kaimaninseln',
     Code: 'CYM',
     Jahr: 2015,
     Lebenserwartung: 74.8,
@@ -306,7 +306,7 @@ export const scatterData = [
     Continent: 'North America',
   },
   {
-    Land: 'Central African Republic',
+    Land: 'Zentralafrikanische Republik',
     Code: 'CAF',
     Jahr: 2015,
     Lebenserwartung: 52.8,
@@ -315,7 +315,7 @@ export const scatterData = [
     Continent: 'Africa',
   },
   {
-    Land: 'Chad',
+    Land: 'Tschad',
     Code: 'TCD',
     Jahr: 2015,
     Lebenserwartung: 51.6,
@@ -342,7 +342,7 @@ export const scatterData = [
     Continent: 'Asia',
   },
   {
-    Land: 'Colombia',
+    Land: 'Kolumbien',
     Code: 'COL',
     Jahr: 2015,
     Lebenserwartung: 76.3,
@@ -351,7 +351,7 @@ export const scatterData = [
     Continent: 'South America',
   },
   {
-    Land: 'Comoros',
+    Land: 'Komoren',
     Code: 'COM',
     Jahr: 2015,
     Lebenserwartung: 62.9,
@@ -360,7 +360,7 @@ export const scatterData = [
     Continent: 'Africa',
   },
   {
-    Land: 'Congo',
+    Land: 'Demokratische Republik Kongo',
     Code: 'COG',
     Jahr: 2015,
     Lebenserwartung: 63.2,
@@ -378,7 +378,7 @@ export const scatterData = [
     Continent: 'North America',
   },
   {
-    Land: "Cote d'Ivoire",
+    Land: 'Elfenbeinküste',
     Code: 'CIV',
     Jahr: 2015,
     Lebenserwartung: 57.8,
@@ -387,7 +387,7 @@ export const scatterData = [
     Continent: 'Africa',
   },
   {
-    Land: 'Croatia',
+    Land: 'Kroatien',
     Code: 'HRV',
     Jahr: 2015,
     Lebenserwartung: 77.6,
@@ -405,7 +405,7 @@ export const scatterData = [
     Continent: 'North America',
   },
   {
-    Land: 'Cyprus',
+    Land: 'Zypern',
     Code: 'CYP',
     Jahr: 2015,
     Lebenserwartung: 81,
@@ -414,7 +414,7 @@ export const scatterData = [
     Continent: 'Europe',
   },
   {
-    Land: 'Czechia',
+    Land: 'Tschechien',
     Code: 'CZE',
     Jahr: 2015,
     Lebenserwartung: 78.6,
@@ -423,7 +423,7 @@ export const scatterData = [
     Continent: 'Europe',
   },
   {
-    Land: 'Democratic Republic of Congo',
+    Land: 'Demokratische Republik Kongo',
     Code: 'COD',
     Jahr: 2015,
     Lebenserwartung: 58.5,
@@ -432,7 +432,7 @@ export const scatterData = [
     Continent: 'Africa',
   },
   {
-    Land: 'Denmark',
+    Land: 'Daenemark',
     Code: 'DNK',
     Jahr: 2015,
     Lebenserwartung: 80.7,
@@ -441,7 +441,7 @@ export const scatterData = [
     Continent: 'Europe',
   },
   {
-    Land: 'Djibouti',
+    Land: 'Dschibuti',
     Code: 'DJI',
     Jahr: 2015,
     Lebenserwartung: 62,
@@ -459,7 +459,7 @@ export const scatterData = [
     Continent: 'North America',
   },
   {
-    Land: 'Dominican Republic',
+    Land: 'Dominikanische Republik',
     Code: 'DOM',
     Jahr: 2015,
     Lebenserwartung: 73,
@@ -468,7 +468,7 @@ export const scatterData = [
     Continent: 'North America',
   },
   {
-    Land: 'East Timor',
+    Land: 'Osttimor',
     Code: 'TLS',
     Jahr: 2015,
     Lebenserwartung: 67.1,
@@ -486,7 +486,7 @@ export const scatterData = [
     Continent: 'South America',
   },
   {
-    Land: 'Egypt',
+    Land: 'Aegypten',
     Code: 'EGY',
     Jahr: 2015,
     Lebenserwartung: 70.5,
@@ -504,7 +504,7 @@ export const scatterData = [
     Continent: 'North America',
   },
   {
-    Land: 'Equatorial Guinea',
+    Land: 'Aequatorialguinea',
     Code: 'GNQ',
     Jahr: 2015,
     Lebenserwartung: 60.1,
@@ -513,7 +513,7 @@ export const scatterData = [
     Continent: 'Africa',
   },
   {
-    Land: 'Estonia',
+    Land: 'Estland',
     Code: 'EST',
     Jahr: 2015,
     Lebenserwartung: 77.7,
@@ -522,7 +522,7 @@ export const scatterData = [
     Continent: 'Europe',
   },
   {
-    Land: 'Eswatini',
+    Land: 'Swasiland',
     Code: 'SWZ',
     Jahr: 2015,
     Lebenserwartung: 55,
@@ -531,7 +531,7 @@ export const scatterData = [
     Continent: 'Africa',
   },
   {
-    Land: 'Ethiopia',
+    Land: 'Aethiopien',
     Code: 'ETH',
     Jahr: 2015,
     Lebenserwartung: 63.6,
@@ -540,7 +540,7 @@ export const scatterData = [
     Continent: 'Africa',
   },
   {
-    Land: 'Fiji',
+    Land: 'Fidschi',
     Code: 'FJI',
     Jahr: 2015,
     Lebenserwartung: 66.8,
@@ -549,7 +549,7 @@ export const scatterData = [
     Continent: 'Oceania',
   },
   {
-    Land: 'Finland',
+    Land: 'Finnland',
     Code: 'FIN',
     Jahr: 2015,
     Lebenserwartung: 81.4,
@@ -558,7 +558,7 @@ export const scatterData = [
     Continent: 'Europe',
   },
   {
-    Land: 'France',
+    Land: 'Frankreich',
     Code: 'FRA',
     Jahr: 2015,
     Lebenserwartung: 82.2,
@@ -567,7 +567,7 @@ export const scatterData = [
     Continent: 'Europe',
   },
   {
-    Land: 'Gabon',
+    Land: 'Gabun',
     Code: 'GAB',
     Jahr: 2015,
     Lebenserwartung: 65.5,
@@ -594,7 +594,7 @@ export const scatterData = [
     Continent: 'Asia',
   },
   {
-    Land: 'Germany',
+    Land: 'Deutschland',
     Code: 'DEU',
     Jahr: 2015,
     Lebenserwartung: 80.6,
@@ -612,7 +612,7 @@ export const scatterData = [
     Continent: 'Africa',
   },
   {
-    Land: 'Greece',
+    Land: 'Griechenland',
     Code: 'GRC',
     Jahr: 2015,
     Lebenserwartung: 80.7,
@@ -684,7 +684,7 @@ export const scatterData = [
     Continent: 'North America',
   },
   {
-    Land: 'Hong Kong',
+    Land: 'Hongkong',
     Code: 'HKG',
     Jahr: 2015,
     Lebenserwartung: 84.3,
@@ -693,7 +693,7 @@ export const scatterData = [
     Continent: 'Asia',
   },
   {
-    Land: 'Hungary',
+    Land: 'Ungarn',
     Code: 'HUN',
     Jahr: 2015,
     Lebenserwartung: 75.7,
@@ -702,7 +702,7 @@ export const scatterData = [
     Continent: 'Europe',
   },
   {
-    Land: 'Iceland',
+    Land: 'Island',
     Code: 'ISL',
     Jahr: 2015,
     Lebenserwartung: 82.4,
@@ -711,7 +711,7 @@ export const scatterData = [
     Continent: 'Europe',
   },
   {
-    Land: 'India',
+    Land: 'Indien',
     Code: 'IND',
     Jahr: 2015,
     Lebenserwartung: 69.6,
@@ -720,7 +720,7 @@ export const scatterData = [
     Continent: 'Asia',
   },
   {
-    Land: 'Indonesia',
+    Land: 'Indonesien',
     Code: 'IDN',
     Jahr: 2015,
     Lebenserwartung: 69.7,
@@ -738,7 +738,7 @@ export const scatterData = [
     Continent: 'Asia',
   },
   {
-    Land: 'Iraq',
+    Land: 'Irak',
     Code: 'IRQ',
     Jahr: 2015,
     Lebenserwartung: 69.4,
@@ -747,7 +747,7 @@ export const scatterData = [
     Continent: 'Asia',
   },
   {
-    Land: 'Ireland',
+    Land: 'Irland',
     Code: 'IRL',
     Jahr: 2015,
     Lebenserwartung: 81.4,
@@ -765,7 +765,7 @@ export const scatterData = [
     Continent: 'Asia',
   },
   {
-    Land: 'Italy',
+    Land: 'Italien',
     Code: 'ITA',
     Jahr: 2015,
     Lebenserwartung: 82.5,
@@ -774,7 +774,7 @@ export const scatterData = [
     Continent: 'Europe',
   },
   {
-    Land: 'Jamaica',
+    Land: 'Jamaika',
     Code: 'JAM',
     Jahr: 2015,
     Lebenserwartung: 72.4,
@@ -792,7 +792,7 @@ export const scatterData = [
     Continent: 'Asia',
   },
   {
-    Land: 'Jordan',
+    Land: 'Jordanien',
     Code: 'JOR',
     Jahr: 2015,
     Lebenserwartung: 75,
@@ -801,7 +801,7 @@ export const scatterData = [
     Continent: 'Asia',
   },
   {
-    Land: 'Kazakhstan',
+    Land: 'Kasachstan',
     Code: 'KAZ',
     Jahr: 2015,
     Lebenserwartung: 70.7,
@@ -810,7 +810,7 @@ export const scatterData = [
     Continent: 'Asia',
   },
   {
-    Land: 'Kenya',
+    Land: 'Kenia',
     Code: 'KEN',
     Jahr: 2015,
     Lebenserwartung: 61.9,
@@ -846,7 +846,7 @@ export const scatterData = [
     Continent: 'Asia',
   },
   {
-    Land: 'Kyrgyzstan',
+    Land: 'Kirgisistan',
     Code: 'KGZ',
     Jahr: 2015,
     Lebenserwartung: 70,
@@ -864,7 +864,7 @@ export const scatterData = [
     Continent: 'Asia',
   },
   {
-    Land: 'Latvia',
+    Land: 'Lettland',
     Code: 'LVA',
     Jahr: 2015,
     Lebenserwartung: 74.7,
@@ -873,7 +873,7 @@ export const scatterData = [
     Continent: 'Europe',
   },
   {
-    Land: 'Lebanon',
+    Land: 'Libanon',
     Code: 'LBN',
     Jahr: 2015,
     Lebenserwartung: 79.2,
@@ -900,7 +900,7 @@ export const scatterData = [
     Continent: 'Africa',
   },
   {
-    Land: 'Libya',
+    Land: 'Libyen',
     Code: 'LBY',
     Jahr: 2015,
     Lebenserwartung: 71.7,
@@ -909,7 +909,7 @@ export const scatterData = [
     Continent: 'Africa',
   },
   {
-    Land: 'Lithuania',
+    Land: 'Litauen',
     Code: 'LTU',
     Jahr: 2015,
     Lebenserwartung: 74.6,
@@ -918,7 +918,7 @@ export const scatterData = [
     Continent: 'Europe',
   },
   {
-    Land: 'Luxembourg',
+    Land: 'Luxemburg',
     Code: 'LUX',
     Jahr: 2015,
     Lebenserwartung: 81.8,
@@ -927,7 +927,7 @@ export const scatterData = [
     Continent: 'Europe',
   },
   {
-    Land: 'Macao',
+    Land: 'Macau',
     Code: 'MAC',
     Jahr: 2015,
     Lebenserwartung: 84,
@@ -936,7 +936,7 @@ export const scatterData = [
     Continent: 'Asia',
   },
   {
-    Land: 'Madagascar',
+    Land: 'Madagaskar',
     Code: 'MDG',
     Jahr: 2015,
     Lebenserwartung: 64.3,
@@ -963,7 +963,7 @@ export const scatterData = [
     Continent: 'Asia',
   },
   {
-    Land: 'Maldives',
+    Land: 'Malediven',
     Code: 'MDV',
     Jahr: 2015,
     Lebenserwartung: 79.7,
@@ -990,7 +990,7 @@ export const scatterData = [
     Continent: 'Europe',
   },
   {
-    Land: 'Marshall Islands',
+    Land: 'Marshallinseln',
     Code: 'MHL',
     Jahr: 2015,
     Lebenserwartung: 63.8,
@@ -999,7 +999,7 @@ export const scatterData = [
     Continent: 'Oceania',
   },
   {
-    Land: 'Mauritania',
+    Land: 'Mauretanien',
     Code: 'MRT',
     Jahr: 2015,
     Lebenserwartung: 64.5,
@@ -1017,7 +1017,7 @@ export const scatterData = [
     Continent: 'Africa',
   },
   {
-    Land: 'Mexico',
+    Land: 'Mexiko',
     Code: 'MEX',
     Jahr: 2015,
     Lebenserwartung: 74.7,
@@ -1026,7 +1026,7 @@ export const scatterData = [
     Continent: 'North America',
   },
   {
-    Land: 'Micronesia (country)',
+    Land: 'Föderierte Staaten von Mikronesien',
     Code: 'FSM',
     Jahr: 2015,
     Lebenserwartung: 71.4,
@@ -1035,7 +1035,7 @@ export const scatterData = [
     Continent: 'Oceania',
   },
   {
-    Land: 'Moldova',
+    Land: 'Moldawien',
     Code: 'MDA',
     Jahr: 2015,
     Lebenserwartung: 69.2,
@@ -1044,7 +1044,7 @@ export const scatterData = [
     Continent: 'Europe',
   },
   {
-    Land: 'Mongolia',
+    Land: 'Mongolei',
     Code: 'MNG',
     Jahr: 2015,
     Lebenserwartung: 69.5,
@@ -1062,7 +1062,7 @@ export const scatterData = [
     Continent: 'Europe',
   },
   {
-    Land: 'Morocco',
+    Land: 'Marokko',
     Code: 'MAR',
     Jahr: 2015,
     Lebenserwartung: 72.9,
@@ -1071,7 +1071,7 @@ export const scatterData = [
     Continent: 'Africa',
   },
   {
-    Land: 'Mozambique',
+    Land: 'Mosambik',
     Code: 'MOZ',
     Jahr: 2015,
     Lebenserwartung: 58.2,
@@ -1116,7 +1116,7 @@ export const scatterData = [
     Continent: 'Asia',
   },
   {
-    Land: 'Netherlands',
+    Land: 'Niederlande',
     Code: 'NLD',
     Jahr: 2015,
     Lebenserwartung: 81.5,
@@ -1125,7 +1125,7 @@ export const scatterData = [
     Continent: 'Europe',
   },
   {
-    Land: 'New Zealand',
+    Land: 'Neuseeland',
     Code: 'NZL',
     Jahr: 2015,
     Lebenserwartung: 82,
@@ -1161,7 +1161,7 @@ export const scatterData = [
     Continent: 'Africa',
   },
   {
-    Land: 'North Macedonia',
+    Land: 'Nordmazedonien',
     Code: 'MKD',
     Jahr: 2015,
     Lebenserwartung: 76,
@@ -1170,7 +1170,7 @@ export const scatterData = [
     Continent: 'Europe',
   },
   {
-    Land: 'Norway',
+    Land: 'Norwegen',
     Code: 'NOR',
     Jahr: 2015,
     Lebenserwartung: 82.3,
@@ -1206,7 +1206,7 @@ export const scatterData = [
     Continent: 'Oceania',
   },
   {
-    Land: 'Palestine',
+    Land: 'Palaestina',
     Code: 'PSE',
     Jahr: 2015,
     Lebenserwartung: 74.4,
@@ -1224,7 +1224,7 @@ export const scatterData = [
     Continent: 'North America',
   },
   {
-    Land: 'Papua New Guinea',
+    Land: 'Papua-Neuguinea',
     Code: 'PNG',
     Jahr: 2015,
     Lebenserwartung: 64.7,
@@ -1251,7 +1251,7 @@ export const scatterData = [
     Continent: 'South America',
   },
   {
-    Land: 'Philippines',
+    Land: 'Philippinen',
     Code: 'PHL',
     Jahr: 2015,
     Lebenserwartung: 71.3,
@@ -1260,7 +1260,7 @@ export const scatterData = [
     Continent: 'Asia',
   },
   {
-    Land: 'Poland',
+    Land: 'Polen',
     Code: 'POL',
     Jahr: 2015,
     Lebenserwartung: 77.4,
@@ -1287,7 +1287,7 @@ export const scatterData = [
     Continent: 'North America',
   },
   {
-    Land: 'Qatar',
+    Land: 'Katar',
     Code: 'QAT',
     Jahr: 2015,
     Lebenserwartung: 80.1,
@@ -1296,7 +1296,7 @@ export const scatterData = [
     Continent: 'Asia',
   },
   {
-    Land: 'Romania',
+    Land: 'Romaenien',
     Code: 'ROU',
     Jahr: 2015,
     Lebenserwartung: 74.8,
@@ -1305,7 +1305,7 @@ export const scatterData = [
     Continent: 'Europe',
   },
   {
-    Land: 'Russia',
+    Land: 'Russland',
     Code: 'RUS',
     Jahr: 2015,
     Lebenserwartung: 72.1,
@@ -1314,7 +1314,7 @@ export const scatterData = [
     Continent: 'Europe',
   },
   {
-    Land: 'Rwanda',
+    Land: 'Ruanda',
     Code: 'RWA',
     Jahr: 2015,
     Lebenserwartung: 65.3,
@@ -1323,7 +1323,7 @@ export const scatterData = [
     Continent: 'Africa',
   },
   {
-    Land: 'Saint Kitts and Nevis',
+    Land: 'Sankt Kitts und Nevis',
     Code: 'KNA',
     Jahr: 2015,
     Lebenserwartung: 70.8,
@@ -1332,7 +1332,7 @@ export const scatterData = [
     Continent: 'North America',
   },
   {
-    Land: 'Saint Lucia',
+    Land: 'Sankt Lucia',
     Code: 'LCA',
     Jahr: 2015,
     Lebenserwartung: 73.1,
@@ -1341,7 +1341,7 @@ export const scatterData = [
     Continent: 'North America',
   },
   {
-    Land: 'Saint Vincent and the Grenadines',
+    Land: 'Sankt Vincent und die Grenadinen',
     Code: 'VCT',
     Jahr: 2015,
     Lebenserwartung: 74.4,
@@ -1368,7 +1368,7 @@ export const scatterData = [
     Continent: 'Europe',
   },
   {
-    Land: 'Sao Tome and Principe',
+    Land: 'Sao Tome und Principe',
     Code: 'STP',
     Jahr: 2015,
     Lebenserwartung: 67.2,
@@ -1377,7 +1377,7 @@ export const scatterData = [
     Continent: 'Africa',
   },
   {
-    Land: 'Saudi Arabia',
+    Land: 'Saudi-Arabien',
     Code: 'SAU',
     Jahr: 2015,
     Lebenserwartung: 76.9,
@@ -1395,7 +1395,7 @@ export const scatterData = [
     Continent: 'Africa',
   },
   {
-    Land: 'Serbia',
+    Land: 'Serbien',
     Code: 'SRB',
     Jahr: 2015,
     Lebenserwartung: 75.8,
@@ -1404,7 +1404,7 @@ export const scatterData = [
     Continent: 'Europe',
   },
   {
-    Land: 'Seychelles',
+    Land: 'Seychellen',
     Code: 'SYC',
     Jahr: 2015,
     Lebenserwartung: 73.7,
@@ -1422,7 +1422,7 @@ export const scatterData = [
     Continent: 'Africa',
   },
   {
-    Land: 'Singapore',
+    Land: 'Singapur',
     Code: 'SGP',
     Jahr: 2015,
     Lebenserwartung: 82.8,
@@ -1431,7 +1431,7 @@ export const scatterData = [
     Continent: 'Asia',
   },
   {
-    Land: 'Sint Maarten (Dutch part)',
+    Land: 'Sint Maarten',
     Code: 'SXM',
     Jahr: 2015,
     Lebenserwartung: 77,
@@ -1440,7 +1440,7 @@ export const scatterData = [
     Continent: 'North America',
   },
   {
-    Land: 'Slovakia',
+    Land: 'Slowakei',
     Code: 'SVK',
     Jahr: 2015,
     Lebenserwartung: 76.6,
@@ -1449,7 +1449,7 @@ export const scatterData = [
     Continent: 'Europe',
   },
   {
-    Land: 'Slovenia',
+    Land: 'Slowenien',
     Code: 'SVN',
     Jahr: 2015,
     Lebenserwartung: 80.8,
@@ -1458,7 +1458,7 @@ export const scatterData = [
     Continent: 'Europe',
   },
   {
-    Land: 'Solomon Islands',
+    Land: 'Salomonen',
     Code: 'SLB',
     Jahr: 2015,
     Lebenserwartung: 69.6,
@@ -1476,7 +1476,7 @@ export const scatterData = [
     Continent: 'Africa',
   },
   {
-    Land: 'South Africa',
+    Land: 'Suedafrika',
     Code: 'ZAF',
     Jahr: 2015,
     Lebenserwartung: 63.9,
@@ -1485,7 +1485,7 @@ export const scatterData = [
     Continent: 'Africa',
   },
   {
-    Land: 'South Korea',
+    Land: 'Sued Korea',
     Code: 'KOR',
     Jahr: 2015,
     Lebenserwartung: 82.6,
@@ -1494,7 +1494,7 @@ export const scatterData = [
     Continent: 'Asia',
   },
   {
-    Land: 'Spain',
+    Land: 'Spanien',
     Code: 'ESP',
     Jahr: 2015,
     Lebenserwartung: 82.6,
@@ -1530,7 +1530,7 @@ export const scatterData = [
     Continent: 'South America',
   },
   {
-    Land: 'Sweden',
+    Land: 'Schweden',
     Code: 'SWE',
     Jahr: 2015,
     Lebenserwartung: 82.2,
@@ -1539,7 +1539,7 @@ export const scatterData = [
     Continent: 'Europe',
   },
   {
-    Land: 'Switzerland',
+    Land: 'Schweiz',
     Code: 'CHE',
     Jahr: 2015,
     Lebenserwartung: 82.8,
@@ -1548,7 +1548,7 @@ export const scatterData = [
     Continent: 'Europe',
   },
   {
-    Land: 'Tajikistan',
+    Land: 'Tadschikistan',
     Code: 'TJK',
     Jahr: 2015,
     Lebenserwartung: 69.3,
@@ -1557,7 +1557,7 @@ export const scatterData = [
     Continent: 'Asia',
   },
   {
-    Land: 'Tanzania',
+    Land: 'Tansania',
     Code: 'TZA',
     Jahr: 2015,
     Lebenserwartung: 64.7,
@@ -1593,7 +1593,7 @@ export const scatterData = [
     Continent: 'Oceania',
   },
   {
-    Land: 'Trinidad and Tobago',
+    Land: 'Trinidad und Tobago',
     Code: 'TTO',
     Jahr: 2015,
     Lebenserwartung: 74.5,
@@ -1602,7 +1602,7 @@ export const scatterData = [
     Continent: 'North America',
   },
   {
-    Land: 'Tunisia',
+    Land: 'Tunesien',
     Code: 'TUN',
     Jahr: 2015,
     Lebenserwartung: 75.7,
@@ -1611,7 +1611,7 @@ export const scatterData = [
     Continent: 'Africa',
   },
   {
-    Land: 'Turkey',
+    Land: 'Tuerkei',
     Code: 'TUR',
     Jahr: 2015,
     Lebenserwartung: 76.6,
@@ -1629,7 +1629,7 @@ export const scatterData = [
     Continent: 'Asia',
   },
   {
-    Land: 'Turks and Caicos Islands',
+    Land: 'Turks- und Caicosinseln',
     Code: 'TCA',
     Jahr: 2015,
     Lebenserwartung: 76.9,
@@ -1665,7 +1665,7 @@ export const scatterData = [
     Continent: 'Europe',
   },
   {
-    Land: 'United Arab Emirates',
+    Land: 'Vereinigte Arabische Emirate',
     Code: 'ARE',
     Jahr: 2015,
     Lebenserwartung: 79.2,
@@ -1674,7 +1674,7 @@ export const scatterData = [
     Continent: 'Asia',
   },
   {
-    Land: 'United Kingdom',
+    Land: 'Vereinigtes Koenigreich',
     Code: 'GBR',
     Jahr: 2015,
     Lebenserwartung: 80.9,
@@ -1683,7 +1683,7 @@ export const scatterData = [
     Continent: 'Europe',
   },
   {
-    Land: 'United States',
+    Land: 'Vereinigte Staaten',
     Code: 'USA',
     Jahr: 2015,
     Lebenserwartung: 78.9,
@@ -1701,7 +1701,7 @@ export const scatterData = [
     Continent: 'South America',
   },
   {
-    Land: 'Uzbekistan',
+    Land: 'Usbekistan',
     Code: 'UZB',
     Jahr: 2015,
     Lebenserwartung: 70.5,
@@ -1728,7 +1728,7 @@ export const scatterData = [
     Continent: 'Asia',
   },
   {
-    Land: 'Zambia',
+    Land: 'Sambia',
     Code: 'ZMB',
     Jahr: 2015,
     Lebenserwartung: 61.2,
@@ -1737,7 +1737,7 @@ export const scatterData = [
     Continent: 'Africa',
   },
   {
-    Land: 'Zimbabwe',
+    Land: 'Simbabwe',
     Code: 'ZWE',
     Jahr: 2015,
     Lebenserwartung: 59.6,
