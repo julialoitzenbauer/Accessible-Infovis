@@ -48,6 +48,10 @@ export class LineComponent implements OnInit {
   data: Array<Record<string, string | number>> = importData;
   @Input()
   yearlyDates: boolean = false;
+  @Input()
+  xAxisUnit: string = '';
+  @Input()
+  yAxisUnit: string = '';
 
   @ViewChild('menuButton') menuButton: ElementRef<HTMLElement> | undefined;
   @ViewChild('liveRegion') liveRegion: ElementRef<HTMLElement> | undefined;
@@ -69,6 +73,9 @@ export class LineComponent implements OnInit {
     | undefined;
   @ViewChild('markMenuList') markMenuList: ElementRef<HTMLElement> | undefined;
   @ViewChild('markMenuButton') markMenuButton:
+    | ElementRef<HTMLElement>
+    | undefined;
+  @ViewChild('ariaContainer') ariaContainer:
     | ElementRef<HTMLElement>
     | undefined;
 
@@ -718,9 +725,15 @@ export class LineComponent implements OnInit {
         .attr(
           'aria-label',
           (d: CleanData) =>
-            `${this.yAxisLabel}: ${d.measurment}, Linie ${
-              this.cleanData[idx].id
-            }${this.dotIsMarked(d, this.cleanData[idx].id) ? ', Makiert' : ''}`
+            `${this.yAxisLabel}: ${d.measurment}${
+              this.yAxisUnit ? ' ' + this.yAxisUnit : ''
+            }, Datum: ${
+              this.yearlyDates
+                ? new Date(d.date).getFullYear()
+                : new Date(d.date).toLocaleDateString('de')
+            }, Linie ${this.cleanData[idx].id}${
+              this.dotIsMarked(d, this.cleanData[idx].id) ? ', Makiert' : ''
+            }`
         )
         .attr('class', (d: CleanData) => {
           if (this.dotIsMarked(d, this.cleanData[idx].id)) {
