@@ -918,6 +918,7 @@ export class ScatterComponent implements OnInit {
           }
         }
       } else if (evt.key === 'Escape') {
+        (evt.target as HTMLElement).removeAttribute('tabindex');
         if (this.searchFieldInput?.nativeElement) {
           if (this.triggeredSearchElem) {
             this.triggeredSearchElem.focus();
