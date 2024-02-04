@@ -683,9 +683,10 @@ export class ScatterComponent implements OnInit {
     if (!this.svg) return;
     // Add X axis
     if (this.minX == null) this.minX = 0;
-    const threshold = (this.maxX - this.minX) * 0.1;
-    const minXVal = Math.floor(this.minX - threshold),
+    let threshold = (this.maxX - this.minX) * 0.1;
+    let minXVal = Math.floor(this.minX - threshold),
       maxXVal = Math.floor(this.maxX + threshold);
+    if (minXVal < 0) minXVal = 0;
     const x = d3
       .scaleLinear()
       // .ticks(Math.floor(this.minX - threshold), Math.floor(this.maxX + threshold), 10)
