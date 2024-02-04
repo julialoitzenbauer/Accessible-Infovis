@@ -21,9 +21,9 @@
     <li id="MenuItemSummary" role="menuitem" (keydown)="menuItemKeyDown($event, 1)">Zusammenfassung</li>
     <li id="MenuItemSearch" role="menuitem" aria-haspopup="true" [attr.aria-expanded]="searchMenuIsOpen" [attr.aria-controls]="menuId + '_SEARCH'" (keydown)="searchMenuKeyDown($event, 2)" #searchMenuButton>Suchen
         <ul *ngIf="searchMenuIsOpen" [id]="menuId + '_SEARCH'" #searchMenuList>
-            <li id="SearchMenuX" role="menuitem" (keydown)="searchMenuItemKeyDown($event, 0)">Suchen nach x-Achsen Wert</li>
-            <li id="SearchMenuY" role="menuitem" (keydown)="searchMenuItemKeyDown($event, 1)">Suchen nach y-Achsen Wert</li>
-            <li id="SearchMenuLabel" role="menuitem" (keydown)="searchMenuItemKeyDown($event, 2)">Suchen nach Label</li>
+            <li id="SearchMenuX" role="menuitem" (keydown)="searchMenuItemKeyDown($event, 0)">Suchen nach {{ xAxisKey }}</li>
+            <li id="SearchMenuY" role="menuitem" (keydown)="searchMenuItemKeyDown($event, 1)">Suchen nach {{ yAxisKey }}</li>
+            <li id="SearchMenuLabel" role="menuitem" (keydown)="searchMenuItemKeyDown($event, 2)">Suchen nach Datenpunkt-Name</li>
         </ul>
     </li>
     <li id="MenuItemSonification" role="menuitem" (keydown)="menuItemKeyDown($event, 3)">Sonification</li>
