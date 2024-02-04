@@ -169,7 +169,6 @@ export class LineComponent implements OnInit {
         case 5:
           if (this.figureElement?.nativeElement)
             this.figureElement.nativeElement.innerHTML = '';
-          this.cleanData = [];
           if (this.liveRegion?.nativeElement) {
             this.liveRegion.nativeElement.innerHTML = '';
             const descriptionTag = document.createElement('p');
@@ -344,6 +343,10 @@ export class LineComponent implements OnInit {
             this.liveRegion.nativeElement.appendChild(alertTag);
           }
         } else {
+          this.cleanData = [];
+          this.initCleanData();
+          this.createData();
+          let stillHasValues = false;
           for (const cd of this.cleanData) {
             cd.values = cd.values.filter((value: CleanData) => {
               const valueDate = new Date(value.date);
@@ -352,10 +355,45 @@ export class LineComponent implements OnInit {
               if (searchOperator === -1) return valueDate < searchDate;
               return valueDate == searchDate;
             });
+            if (cd.values?.length) {
+              stillHasValues = true;
+            }
           }
           if (this.figureElement?.nativeElement)
             this.figureElement.nativeElement.innerHTML = '';
           this.drawChart();
+          if (this.liveRegion?.nativeElement) {
+            this.liveRegion.nativeElement.innerHTML = '';
+            const descriptionTag = document.createElement('p');
+            descriptionTag.innerHTML = stillHasValues
+              ? 'Daten wurden erfolgreich gefiltert und werden nun angezeigt.'
+              : 'Die Suche ergab kein Ergebnis - es werden keine Daten angezeigt.';
+            this.liveRegion.nativeElement.appendChild(descriptionTag);
+          }
+        }
+      } else if (this.selectedSearchMenu === SEARCH_MENUS.LABEL) {
+        let newData = [];
+        this.cleanData = [];
+        this.initCleanData();
+        this.createData();
+        for (const cd of this.cleanData) {
+          if (cd.id.toUpperCase().startsWith(searchValue.toUpperCase())) {
+            newData.push(cd);
+          }
+        }
+        this.cleanData = newData;
+        if (this.figureElement?.nativeElement)
+          this.figureElement.nativeElement.innerHTML = '';
+        this.drawChart();
+        if (this.liveRegion?.nativeElement) {
+          this.liveRegion.nativeElement.innerHTML = '';
+          const descriptionTag = document.createElement('p');
+          descriptionTag.innerHTML = this.cleanData.length
+            ? `Daten wurden erfolgreich gefiltert, ${this.cleanData.length} ${
+                this.cleanData.length === 1 ? 'Linie wird' : 'Linien werden'
+              } angezeigt.`
+            : 'Die Suche ergab kein Ergebnis - es werden keine Daten angezeigt.';
+          this.liveRegion.nativeElement.appendChild(descriptionTag);
         }
       }
     }
@@ -452,6 +490,7 @@ export class LineComponent implements OnInit {
             this.figureElement.nativeElement.innerHTML = '';
           if (this.isFilteredByMarks) {
             this.cleanData = [];
+            this.initCleanData();
             this.createData();
           } else {
             this.cleanData = this.markedData;
@@ -525,6 +564,7 @@ export class LineComponent implements OnInit {
     const timeConv = d3.timeParse('%d-%b-%Y');
     this.maxY = -1;
     this.minY = -1;
+    this.dates = [];
     for (const d of this.data) {
       const currValues: Array<number> = [];
       let idx = 0;
@@ -573,7 +613,7 @@ export class LineComponent implements OnInit {
   }
 
   private createAxis(xScale: D3ScaleTime, yScale: D3ScaleLinear): void {
-    if (!this.svg) return;
+    if (!this.svg || !this.cleanData.length) return;
     const yaxis = d3
       .axisLeft(yScale)
       .ticks(this.cleanData[0].values.length)
