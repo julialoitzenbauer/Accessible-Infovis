@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { scatterData } from './data';
 
 @Component({
   selector: 'app-introduction',
@@ -8,6 +9,7 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class IntroductionComponent implements OnInit {
   testId: string = '';
+  scatterData = scatterData;
 
   constructor(private route: ActivatedRoute) {}
 

@@ -4,6 +4,8 @@
     <br>
     <a href="/introduction?testId=2">Einführung: Test 2</a>
     <br>
+    <a href="/introduction?testId=3">Einführung: Test 3</a>
+    <br>
     <br>
     <a href="/">Zurück</a>
 </ng-template>
@@ -137,6 +139,9 @@
     { date: '01-Jan-2022', Umsatz: 394.33 },
     { date: '01-Jan-2023', Umsatz: 383.29 },
     ]" xAxisKey="date" [yAxisKeys]="['Umsatz']" xAxisLabel="Datum" yAxisLabel="Umsatz" description="" [yearlyDates]="true"></app-line>
+</ng-template>
+<ng-template [ngIf]="testId === '3'">
+    <app-scatter title="BIP pro Kopf vs. Lebenserwartung, 2015" labelKey="Land" xAxisKey="BIP pro Kopf" yAxisKey="Lebenserwartung" [formatXAxisToInt]="true" [radius]="4" [data]="scatterData" [showLabel]="false"></app-scatter>
 </ng-template>
 <ng-template [ngIf]="!!testId">
     <a href="/introduction">Zurück</a>
