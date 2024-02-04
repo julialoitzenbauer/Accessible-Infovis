@@ -17,7 +17,7 @@
     role="menu"
     [attr.aria-labelledby]="menuId + '_BUTTON'"
     #menuList>
-    <li role="menuitem" (keydown)="menuItemKeyDown($event, 0)">Serielles Navigieren durch Daten</li>
+    <li role="menuitem" (keydown)="menuItemKeyDown($event, 0)">Navigieren durch Daten</li>
     <li role="menuitem" (keydown)="menuItemKeyDown($event, 1)">Zusammenfassung</li>
     <li id="MenuItemSearch" role="menuitem" aria-haspopup="true" [attr.aria-expanded]="searchMenuIsOpen" [attr.aria-controls]="menuId + '_SEARCH'" (keydown)="searchMenuKeyDown($event, 2)" #searchMenuButton>Suchen
         <ul *ngIf="searchMenuIsOpen" [id]="menuId + '_SEARCH'" #searchMenuList>
