@@ -37,6 +37,8 @@ export class BarComponent implements OnInit {
   title: string = 'Bar Chart';
   @Input()
   description: string = '';
+  @Input()
+  yAxisUnit: string = '';
 
   private cleanData: Array<CleanData> = [];
   private svg?: D3Selection;
@@ -168,7 +170,11 @@ export class BarComponent implements OnInit {
                   node.classList.add('marked');
                   node.setAttribute(
                     'aria-description',
-                    this.yAxisKey + ': ' + mark.yValue + ', Makiert'
+                    this.yAxisKey +
+                      ': ' +
+                      mark.yValue +
+                      (this.yAxisUnit ? ' ' + this.yAxisUnit : '') +
+                      ', Makiert'
                   );
                 }
               }
@@ -334,7 +340,11 @@ export class BarComponent implements OnInit {
                 node.classList.add('marked');
                 node.setAttribute(
                   'aria-description',
-                  this.yAxisKey + ': ' + mark.yValue + ', Makiert'
+                  this.yAxisKey +
+                    ': ' +
+                    mark.yValue +
+                    (this.yAxisUnit ? ' ' + this.yAxisUnit : '') +
+                    ', Makiert'
                 );
               }
             }
@@ -629,7 +639,11 @@ export class BarComponent implements OnInit {
         labelSpan.id = 'LABEL_' + obj.ID;
 
         const descriptionSpan = document.createElement('span');
-        descriptionSpan.innerHTML = this.yAxisKey + ': ' + obj.yValue;
+        descriptionSpan.innerHTML =
+          this.yAxisKey +
+          ': ' +
+          obj.yValue +
+          (this.yAxisUnit ? ' ' + this.yAxisUnit : '');
         descriptionSpan.id = 'DESCR_' + obj.ID;
 
         this.labelsContainer.nativeElement.appendChild(labelSpan);
