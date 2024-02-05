@@ -211,25 +211,28 @@ export class LineComponent implements OnInit {
   startSonification(): void {
     if (this.cleanData) {
       for (let dataIdx = 0; dataIdx < this.cleanData.length; ++dataIdx) {
-        this.playSoniForLine(this.cleanData[dataIdx].values);
+        this.playSoniForLine(
+          this.cleanData[dataIdx].values,
+          1 / this.cleanData.length
+        );
       }
     }
   }
 
-  playSoniForLine(values: Array<CleanData>) {
+  playSoniForLine(values: Array<CleanData>, gain: number = 1) {
     var context = new AudioContext();
     var osc = context.createOscillator();
-    // Sine is the default type. Also available: square, sawtooth and triangle waveforms.
+    var volume = context.createGain();
+    volume.connect(context.destination);
+    volume.gain.value = gain;
+
     osc.type = 'sine';
     var now = context.currentTime;
-    // Frequency in Hz.
-    // Set initial value. (you can use .value=freq if you want)
     const timePerNote = 5 / values.length;
     for (let valueIdx = 0; valueIdx < values.length - 1; ++valueIdx) {
       const note = this.calcSoniNote(values[valueIdx].measurment);
       const hzNote = Tone.Frequency(note).toFrequency();
       osc.frequency.setValueAtTime(hzNote, now + valueIdx * timePerNote);
-      // set a ramp to freq+100Hz over the next 4 seconds.
       const nextNote = this.calcSoniNote(values[valueIdx + 1].measurment);
       const nextHzNote = Tone.Frequency(nextNote).toFrequency();
       osc.frequency.linearRampToValueAtTime(
@@ -237,7 +240,7 @@ export class LineComponent implements OnInit {
         now + (valueIdx + 1) * timePerNote
       );
     }
-    osc.connect(context.destination);
+    osc.connect(volume);
     osc.start(now);
     osc.stop(now + 5);
   }
@@ -841,6 +844,8 @@ export class LineComponent implements OnInit {
               dots[dotIdx].setAttribute('class', '');
             }
           }
+        } else if (evt.key.toUpperCase() === 'S' && evt.shiftKey) {
+          this.playSoniForLine(this.cleanData[targetIdx].values);
         }
       }
     }
