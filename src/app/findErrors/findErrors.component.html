@@ -34,7 +34,8 @@
     { date: '01-Jan-2021', Neuzulassungen: 33366  },
     { date: '01-Jan-2022', Neuzulassungen: 34165  },
     { date: '01-Jan-2023', Neuzulassungen: 47621  },
-    ]" xAxisKey="date" [yAxisKeys]="['Neuzulassungen']" xAxisLabel="Datum" yAxisLabel="Neuzulassungen" description="" [yearlyDates]="true"></app-line>
+    ]" xAxisKey="date" [yAxisKeys]="['Neuzulassungen']" yAxisUnit="Autos" xAxisLabel="Datum" yAxisLabel="Neuzulassungen" description="" [yearlyDates]="true"
+    summary="In der Visualisierung werden die Anteile von Neuzulassungen von Elektroautos von 2008 bis 2023 abgebildet, wobei auf der x-Achse die Zeit und auf der y-Achse die Anzahl der Neuzulassungen dargestellt wird. Die Anzahl der Neuzulassungen stiegen zuerst nur leicht, bis sie 2016 begonnen sich stärker zu erhöhen. Von 2017 auf 2018 war die Steigung allerdings nur sehr schwach, sie stieg darauf hin aber wieder stark an."></app-line>
 </ng-template>
 <ng-template [ngIf]="testId === '2'">
     <p tabindex="0">In der nachfolgenden Visualisierung ist ersichtlich, dass die Neuzulassungen von Elektroautos in Österreich seit 2008 kontinuierlich gestiegen ist.</p>
@@ -45,11 +46,13 @@
     { Marke: 'Buitoni', Anteil: 8 },
     { Marke: 'Landleben', Anteil: 8 },
     { Marke: 'Fritsch', Anteil: 6 },
-    ]" yAxisKey="Anteil" labelKey="Marke"></app-bar>
+    ]" yAxisKey="Anteil" labelKey="Marke" yAxisUnit="Prozent" description="In der Visualisierung werden die beliebtesten Teigwarenmarken nach Kauf von dem Jahr 2023 abgebildet, wobei auf der y-Achse die Beliebtheit in Prozent dargestellt wird. Die Marken Recheis und Barilla waren dabei am beliebtesten, die Marke Fritsch am unbeliebtesten."></app-bar>
 </ng-template>
 <ng-template [ngIf]="testId === '3'">
     <p tabindex="0">In der nachfolgenden Visualisierung ist ersichtlich, dass je höher das BIP pro Kopf eines Landes ist, desto geringer ist der Anteil der Angestellten, die in der Agrikultur arbeiten.</p>
-    <app-scatter title="BIP pro Kopf vs. Angestellte in der Agrikultur in 2015" labelKey="Land" xAxisKey="BIP pro Kopf" yAxisKey="Angestellte in Agrikultur" [formatXAxisToInt]="true" [radius]="4" [data]="data3" [showLabel]="true"></app-scatter>
+    <app-scatter title="BIP pro Kopf vs. Angestellte in der Agrikultur in 2015" labelKey="Land" xAxisKey="BIP pro Kopf" yAxisKey="Angestellte in Agrikultur" [formatXAxisToInt]="true" [radius]="4" [data]="data3" [showLabel]="false"
+    xAxisUnit="internationale Dollar" yAxisUnit="Prozent" description="In der nachfolgenden Visualisierung werden die Angestellte im Bereich Agrikultur gegenüber dem BIP pro Kopf eines Landes gestellt, wobei das BIP pro Kopf auf der x-Achse und die Angestellten in der Agrikultur auf der y-Achse dargestellt werden. Daraus geht hervor, dass der Anteil der Beschäftigten im Bereich Agrikultur sinkt, je höher das BIP pro Kopf eines Landes ist."
+    ></app-scatter>
 </ng-template>
 <ng-template [ngIf]="testId === '4'">
     <p tabindex="0">In der nachfolgenden Visualisierung ist ersichtlich, dass das Bundesland Kärnten zu Jahresbeginn 2023 eine Einwohneranzahl von 568995 aufwies.</p>
@@ -63,7 +66,7 @@
     { Bundesland: 'Salzburg', 'Anzahl der Einwohner': 568468 },
     { Bundesland: 'Vorarlberg', 'Anzahl der Einwohner': 406398 },
     { Bundesland: 'Burgenland', 'Anzahl der Einwohner': 301311 },
-    ]" yAxisKey="Anzahl der Einwohner" labelKey="Bundesland"></app-bar>
+    ]" yAxisKey="Anzahl der Einwohner" labelKey="Bundesland" yAxisUnit="Personen" description="In der nachfolgenden Visualisierung wird die Anzahl an Einwohner für jedes Bundesland in Österreich zu Beginn des Jahres 2023 dargestellt, wobei die Anzahl an Einwohner auf der y-Achse dargestellt wird. Die meisten Einwohner hatte zum Jahresbeginn Wien (1982442 Einwohner), gefolgt von Niederösterreich (1718529 Einwohner). Die wenigsten Einwohner hatte das Burgenland (301311 Einwohner)."></app-bar>
 </ng-template>
 <ng-template [ngIf]="testId === '5'">
     <p tabindex="0">In der nachfolgenden Visualisierung ist ersichtlich, dass die Neuzulassungen von Elektroautos in Österreich seit 2008 kontinuierlich gestiegen ist.</p>
@@ -82,11 +85,12 @@
     { date: '01-Jan-2021', Umsatz: 114934  },
     { date: '01-Jan-2022', Umsatz: 113642  },
     { date: '01-Jan-2023', Umsatz: 131948  },
-    ]" xAxisKey="date" [yAxisKeys]="['Umsatz']" xAxisLabel="Datum" yAxisLabel="Werbeumsatz" description="" [yearlyDates]="true"></app-line>
+    ]" xAxisKey="date" [yAxisKeys]="['Umsatz']" xAxisLabel="Datum" yAxisLabel="Werbeumsatz" yAxisUnit="Millionen US-Dollar"  summary="In der nachfolgenden Visualisierung werden die Werbeumsätze von Meta weltweit von 2010 bis 2023 dargestellt, wobei die Zeit auf der x-Achse und die Umsätze auf der y-Achse dargestellt werden. Zu Beginn stiegen die Umsätze langsam, ab 2015 dann stärker an. Von 2021 auf 2022 gab es einen leichten Rückgang der Umsätze, allerdings stiegen sie im Jahr darauf wieder an. 2023 hatte Meta einen Werbeumsatz von 131948 Millionen US-Dollar." [yearlyDates]="true"></app-line>
 </ng-template>
 <ng-template [ngIf]="testId === '6'">
     <p tabindex="0">In der nachfolgenden Visualisierung ist ersichtlich, dass der Anteil der Raucher unter Erwachsenen im Jahr 2015 umso höher war, desto höher das BIP pro Kopf des Landes war (in internationalen $)</p>
-    <app-scatter title="BIP pro Kopf vs. Anteil der Raucher bei Erwachsenen, 2015" labelKey="Land" xAxisKey="BIP pro Kopf" yAxisKey="Raucher bei Erwachsenen" [formatXAxisToInt]="true" [radius]="4" [data]="data6" [showLabel]="false"></app-scatter>
+    <app-scatter title="BIP pro Kopf vs. Anteil der Raucher bei Erwachsenen, 2015" labelKey="Land" xAxisKey="BIP pro Kopf" yAxisKey="Raucher bei Erwachsenen" [formatXAxisToInt]="true" [radius]="4" [data]="data6" [showLabel]="false"
+    xAxisUnit="internationale Dollar" yAxisUnit="Prozent" description="In der folgenden Visualisierung wird das BIP pro Kopf von Ländern mit dem Anteil von Rauchern unter Erwachsenen gegenübergestellt, wobei der Anteil der Raucher auf der y-Achse und das BIP pro Kopf auf der x-Achse dargestellt werden. Es ist ersichtlich, dass es einen leichten Trend gibt, dass je höher das BIP pro Kopf eines Landes ist, desto niedriger wird der Anteil der Raucher unter Erwachsenen."></app-scatter>
 </ng-template>
 <ng-template [ngIf]="!!testId">
     <a href="/fehlerFinden">Zurück</a>

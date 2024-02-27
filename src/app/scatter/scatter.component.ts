@@ -58,7 +58,7 @@ export class ScatterComponent implements OnInit {
   @Input()
   yAxisUnit: string = '';
   @Input()
-  hideMenu: boolean = true;
+  hideMenu: boolean = false;
 
   @ViewChild('figureElement') figureElement:
     | ElementRef<HTMLElement>
@@ -945,6 +945,7 @@ export class ScatterComponent implements OnInit {
       }
     }
     evt.preventDefault();
+    evt.stopPropagation();
   }
 
   private createCleanData(): Record<number, Array<CleanData>> {

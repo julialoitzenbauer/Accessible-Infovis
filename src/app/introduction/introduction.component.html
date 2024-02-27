@@ -11,41 +11,41 @@
 </ng-template>
 <ng-template [ngIf]="testId === '1'">
     <div tabindex="0">In der nachfolgenden Visualisierung wird ein Balkendiagramm gezeigt. Um mit Balkendiagrammen zu interagieren, navigieren Sie zu der Visualisierung und drücken anschließen Enter. Danach gelangen Sie zu einem Interaktionsmenü, dass Ihnen mehrere
-        Interaktionsmöglichkeiten auflistet. Die einzelnen Interaktionsmöglichkeiten können Sie mit Hilfe von Enter aktivieren. Folgende Interaktionsmenüs existeren:
-        <ul>
-            <li>Navigieren durch die Daten
-                <ul>
-                    <li>Der Fokus wird direkt auf den ersten Datenpunkt in der Visualisierung gesetzt. Sie können mit den Pfeiltasten durch die Daten navigieren.</li>
-                    <li>Wenn Sie den Fokus auf einem Datenpunkt haben können Sie den Datenpunkt mit Hilfe von SHIFT+M makieren. Dieser Datenpunkt wird daraufhin in einer Liste gespeichert, die Sie anschließend filtern können.</li>
-                    <li>Beim Fokus auf einem Datenpunkt können Sie ebenfalls SHIFT+S drücken um die auditive Repräsentierung des Datenpunktes abzupielen.</li>
+        Interaktionsmöglichkeiten auflistet. Die einzelnen Interaktionsmöglichkeiten können Sie mit Hilfe von Enter aktivieren. Im nachfolgenden Menü werden die einzelnen Interaktionsmöglichkeiten erläutert.
+        <ul role="menu" aria-label="Visualisierungsinteraktionen" tabindex="0" (keydown)="onMenuKeyDown($event, 'bar')" #barMenu>
+            <li [attr.aria-expanded]="barNavMenuIsOpen" aria-haspopup="true" role="menuitem" aria-controls="barNavMenu" (keydown)="onMenuItemKeyDown($event, 'bar', 'barNavMenu')">Navigieren durch die Daten
+                <ul *ngIf="barNavMenuIsOpen" id="barNavMenu" #barNavMenu>
+                    <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'barNav')">Der Fokus wird direkt auf den ersten Datenpunkt in der Visualisierung gesetzt. Sie können mit den Pfeiltasten durch die Daten navigieren.</li>
+                    <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'barNav')">Wenn Sie den Fokus auf einem Datenpunkt haben können Sie den Datenpunkt mit Hilfe von SHIFT+M makieren. Dieser Datenpunkt wird daraufhin in einer Liste gespeichert, die Sie anschließend filtern können.</li>
+                    <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'barNav')">Beim Fokus auf einem Datenpunkt können Sie ebenfalls SHIFT+S drücken um die auditive Repräsentierung des Datenpunktes abzupielen.</li>
                 </ul>
             </li>
-            <li>Zusammenfassung
-                <ul>
-                    <li>Es wird eine Zusammenfassung über die Visualisierung ausgegeben: was für Daten werden gezeigt, welche Daten werden von den einzelnen Achsen repräsentiert, wie ist der Datenverlauf, usw.</li>
+            <li [attr.aria-expanded]="barSummaryMenuIsOpen" aria-haspopup="true" role="menuitem" aria-controls="barSummaryMenu" (keydown)="onMenuItemKeyDown($event, 'bar', 'barSummaryMenu')">Zusammenfassung
+                <ul *ngIf="barSummaryMenuIsOpen" id="barSummaryMenu" #barSummaryMenu>
+                    <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'barSummary')">Es wird eine Zusammenfassung über die Visualisierung ausgegeben: was für Daten werden gezeigt, welche Daten werden von den einzelnen Achsen repräsentiert, wie ist der Datenverlauf, usw.</li>
                 </ul>
             </li>
-            <li>Suchen
-                <ul>
-                    <li>Es öffnet sich ein Untermenü wo Sie auswählen können, ob Sie nach einem Wert auf der y-Achse oder einem Datenpunkt-Label suchen wollen</li>
-                    <li>Bei der Suche nach einem y-Wert können Sie die Symbole &lt; und &gt; verwenden oder nach einem exakten Wert suchen</li>
-                    <li>Bei der Suche nach einem Datenpunkt-Label verwenden Sie statt Umlauten bitte die ausgeschriebene Variante davon - statt ä schreiben Sie bitte ae</li>
+            <li [attr.aria-expanded]="barSearchMenuIsOpen" aria-haspopup="true" role="menuitem" aria-controls="barSearchMenu" (keydown)="onMenuItemKeyDown($event, 'bar', 'barSearchMenu')">Suchen
+                <ul *ngIf="barSearchMenuIsOpen" id="barSearchMenu" #barSearchMenu>
+                    <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'barSearch')">Es öffnet sich ein Untermenü wo Sie auswählen können, ob Sie nach einem Wert auf der y-Achse oder einem Datenpunkt-Label suchen wollen</li>
+                    <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'barSearch')">Bei der Suche nach einem y-Wert können Sie die Symbole &lt; und &gt; verwenden oder nach einem exakten Wert suchen</li>
+                    <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'barSearch')">Bei der Suche nach einem Datenpunkt-Label verwenden Sie statt Umlauten bitte die ausgeschriebene Variante davon - statt ä schreiben Sie bitte ae</li>
                 </ul>
             </li>
-            <li>
+            <li [attr.aria-expanded]="barSonificationMenuIsOpen" aria-haspopup="true" role="menuitem" aria-controls="barSonificationMenu" (keydown)="onMenuItemKeyDown($event, 'bar', 'barSonificationMenu')">
                 Sonification
-                <ul>
-                    <li>Es wird eine auditive Repräsentation der Daten abgespielt, mit deren Hilfe Sie den Datenverlauf auditiv hören können</li>
+                <ul *ngIf="barSonificationMenuIsOpen" id="barSonificationMenu" #barSonificationMenu>
+                    <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'barSonification')">Es wird eine auditive Repräsentation der Daten abgespielt, mit deren Hilfe Sie den Datenverlauf auditiv hören können</li>
                 </ul>
             </li>
-            <li>Makierungen
-                <ul>
-                    <li>Es öffnet sich ein weiteres Untermenü, in dem Sie auswählen können, ob Sie die aktuell gesetzten Makierungen löschen wollen oder ob Sie die abgebildeten Daten nach den makierten Datenpunkten filtern wollen.</li>
+            <li [attr.aria-expanded]="barMarkMenuIsOpen" aria-haspopup="true" role="menuitem" aria-controls="barMarkMenu" (keydown)="onMenuItemKeyDown($event, 'bar', 'barMarkMenu')">Makierungen
+                <ul *ngIf="barMarkMenuIsOpen" id="barMarkMenu" #barMarkMenu>
+                    <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'barMark')">Es öffnet sich ein weiteres Untermenü, in dem Sie auswählen können, ob Sie die aktuell gesetzten Makierungen löschen wollen oder ob Sie die abgebildeten Daten nach den makierten Datenpunkten filtern wollen.</li>
                 </ul>
             </li>
-            <li>Daten zurücksetzen
-                <ul>
-                    <li>Die Visualisierung wird auf den Ausgangszustand zurückgesetzt - alle Filterungen werden aufgehoben, doch makierte Datenpunkte bleiben erhalten.</li>
+            <li [attr.aria-expanded]="barResetMenuIsOpen" aria-haspopup="true" role="menuitem" aria-controls="barResetMenu" (keydown)="onMenuItemKeyDown($event, 'bar', 'barResetMenu')">Daten zurücksetzen
+                <ul *ngIf="barResetMenuIsOpen" id="barResetMenu" #barResetMenu>
+                    <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'barReset')">Die Visualisierung wird auf den Ausgangszustand zurückgesetzt - alle Filterungen werden aufgehoben, doch makierte Datenpunkte bleiben erhalten.</li>
                 </ul>
             </li>
         </ul>
@@ -79,41 +79,41 @@
 <ng-template [ngIf]="testId === '2'">
     <div tabindex="0">In der nachfolgenden Visualisierung wird ein Liniendiagramm gezeigt. Um mit Liniendiagrammen zu interagieren, navigieren Sie zu der Visualisierung und drücken anschließen Enter. Danach gelangen Sie zu einem Interaktionsmenü, dass Ihnen mehrere
         Interaktionsmöglichkeiten auflistet. Die einzelnen Interaktionsmöglichkeiten können Sie mit Hilfe von Enter aktivieren. Folgende Interaktionsmenüs existeren:
-        <ul>
-            <li>Navigieren durch die Daten
-                <ul>
-                    <li>Der Fokus wird direkt auf die erste Linie in der Visualisierung gesetzt. Sie können mit den Pfeiltasten nach unten und oben zu den anderen Linien navigieren.</li>
-                    <li>Mit Enter navigieren Sie in die Linie hinein, wobei der Fokus auf den ersten Datenpunkt der Linie gesetzt wird. Danach können Sie mit den Pfeiltasten nach links und rechts zu den übrigen Datenpunkten navigieren.</li>
-                    <li>Wenn Sie den Fokus auf einem Datenpunkt haben können Sie den Datenpunkt mit Hilfe von SHIFT+M makieren. Dieser Datenpunkt wird daraufhin in einer Liste gespeichert, die Sie anschließend filtern können.</li>
-                    <li>Beim Fokus auf einem Datenpunkt können Sie ebenfalls SHIFT+S drücken um die auditive Repräsentierung des Datenpunktes abzupielen.</li>
+        <ul role="menu" aria-label="Visualisierungsinteraktionen" tabindex="0" (keydown)="onMenuKeyDown($event, 'line')" #lineMenu>
+            <li [attr.aria-expanded]="lineNavMenuIsOpen" aria-haspopup="true" role="menuitem" aria-controls="lineNavMenu" (keydown)="onMenuItemKeyDown($event, 'line', 'lineNavMenu')">Navigieren durch die Daten
+                <ul *ngIf="lineNavMenuIsOpen" id="lineNavMenu" #lineNavMenu>
+                    <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'lineNav')">Der Fokus wird direkt auf die erste Linie in der Visualisierung gesetzt. Sie können mit den Pfeiltasten nach unten und oben zu den anderen Linien navigieren.</li>
+                    <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'lineNav')">Mit Enter navigieren Sie in die Linie hinein, wobei der Fokus auf den ersten Datenpunkt der Linie gesetzt wird. Danach können Sie mit den Pfeiltasten nach links und rechts zu den übrigen Datenpunkten navigieren.</li>
+                    <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'lineNav')">Wenn Sie den Fokus auf einem Datenpunkt haben können Sie den Datenpunkt mit Hilfe von SHIFT+M makieren. Dieser Datenpunkt wird daraufhin in einer Liste gespeichert, die Sie anschließend filtern können.</li>
+                    <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'lineNav')">Beim Fokus auf einem Datenpunkt können Sie ebenfalls SHIFT+S drücken um die auditive Repräsentierung des Datenpunktes abzupielen.</li>
                 </ul>
             </li>
-            <li>Zusammenfassung
-                <ul>
-                    <li>Es wird eine Zusammenfassung über die Visualisierung ausgegeben: was für Daten werden gezeigt, welche Daten werden von den einzelnen Achsen repräsentiert, wie ist der Datenverlauf, usw.</li>
+            <li [attr.aria-expanded]="lineSummaryMenuIsOpen" aria-haspopup="true" role="menuitem" aria-controls="lineSummaryMenu" (keydown)="onMenuItemKeyDown($event, 'line', 'lineSummaryMenu')">Zusammenfassung
+                <ul *ngIf="lineSummaryMenuIsOpen" id="lineSummaryMenu" #lineSummaryMenu>
+                    <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'lineSummary')">Es wird eine Zusammenfassung über die Visualisierung ausgegeben: was für Daten werden gezeigt, welche Daten werden von den einzelnen Achsen repräsentiert, wie ist der Datenverlauf, usw.</li>
                 </ul>
             </li>
-            <li>Suchen
-                <ul>
-                    <li>Es öffnet sich ein Untermenü wo Sie auswählen können, ob Sie nach einem Wert auf der x-Achse oder einem Linien-Label suchen wollen</li>
-                    <li>Bei der Suche nach einem x-Wert können Sie die Symbole &lt; und &gt; verwenden oder nach einem exakten Wert suchen</li>
-                    <li>Bei der Suche nach einem Linien-Label verwenden Sie statt Umlauten bitte die ausgeschriebene Variante davon - statt ä schreiben Sie bitte ae</li>
+            <li [attr.aria-expanded]="lineSearchMenuIsOpen" aria-haspopup="true" role="menuitem" aria-controls="lineSearchMenu" (keydown)="onMenuItemKeyDown($event, 'line', 'lineSearchMenu')">Suchen
+                <ul *ngIf="lineSearchMenuIsOpen" id="lineSearchMenu" #lineSearchMenu>
+                    <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'lineSearch')">Es öffnet sich ein Untermenü wo Sie auswählen können, ob Sie nach einem Wert auf der x-Achse oder einem Linien-Label suchen wollen</li>
+                    <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'lineSearch')">Bei der Suche nach einem x-Wert können Sie die Symbole &lt; und &gt; verwenden oder nach einem exakten Wert suchen</li>
+                    <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'lineSearch')">Bei der Suche nach einem Linien-Label verwenden Sie statt Umlauten bitte die ausgeschriebene Variante davon - statt ä schreiben Sie bitte ae</li>
                 </ul>
             </li>
-            <li>
+            <li [attr.aria-expanded]="lineSonificationMenuIsOpen" aria-haspopup="true" role="menuitem" aria-controls="lineSonificationMenu" (keydown)="onMenuItemKeyDown($event, 'line', 'lineSonificationMenu')">
                 Sonification
-                <ul>
-                    <li>Es wird eine auditive Repräsentation der Daten abgespielt, mit deren Hilfe Sie den Datenverlauf auditiv hören können</li>
+                <ul *ngIf="lineSonificationMenuIsOpen" id="lineSonificationMenu" #lineSonificationMenu>
+                    <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'lineSonification')">Es wird eine auditive Repräsentation der Daten abgespielt, mit deren Hilfe Sie den Datenverlauf auditiv hören können</li>
                 </ul>
             </li>
-            <li>Makierungen
-                <ul>
-                    <li>Es öffnet sich ein weiteres Untermenü, in dem Sie auswählen können, ob Sie die aktuell gesetzten Makierungen löschen wollen oder ob Sie die abgebildeten Daten nach den makierten Datenpunkten filtern wollen.</li>
+            <li [attr.aria-expanded]="lineMarkMenuIsOpen" aria-haspopup="true" role="menuitem" aria-controls="lineMarkMenu" (keydown)="onMenuItemKeyDown($event, 'line', 'lineMarkMenu')">Makierungen
+                <ul *ngIf="lineMarkMenuIsOpen" id="lineMarkMenu" #lineMarkMenu>
+                    <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'lineMark')">Es öffnet sich ein weiteres Untermenü, in dem Sie auswählen können, ob Sie die aktuell gesetzten Makierungen löschen wollen oder ob Sie die abgebildeten Daten nach den makierten Datenpunkten filtern wollen.</li>
                 </ul>
             </li>
-            <li>Daten zurücksetzen
-                <ul>
-                    <li>Die Visualisierung wird auf den Ausgangszustand zurückgesetzt - alle Filterungen werden aufgehoben, doch makierte Datenpunkte bleiben erhalten.</li>
+            <li [attr.aria-expanded]="lineResetMenuIsOpen" aria-haspopup="true" role="menuitem" aria-controls="lineResetMenu" (keydown)="onMenuItemKeyDown($event, 'line', 'lineResetMenu')">Daten zurücksetzen
+                <ul *ngIf="lineResetMenuIsOpen" id="lineResetMenu" #lineResetMenu>
+                    <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'lineReset')">Die Visualisierung wird auf den Ausgangszustand zurückgesetzt - alle Filterungen werden aufgehoben, doch makierte Datenpunkte bleiben erhalten.</li>
                 </ul>
             </li>
         </ul>
@@ -143,46 +143,47 @@
     summary="Die Visualisierung zeigt den Umsatz von Apple Inc. von 2004 bis 2023 in Milliarden US-Dollar, wobei die Zeit auf der x-Achse und der Umsatz auf der y-Achse dargestellt wird. Es ist ersichtlich, dass der Umsatz bis 2023 von 8.28 Milliarden US-Dollar auf 383.29 Milliarden US-Dollar anstieg. Bis 2015 stieg der Umsatz kontinuierlich, anschließend stieg der Umsatz insgesamt noch weiter, allerdings mit einigen Schwankungen nach unten."></app-line>
 </ng-template>
 <ng-template [ngIf]="testId === '3'">
-    <div tabindex="0">In der nachfolgenden Visualisierung wird ein Balkendiagramm gezeigt. Um mit Balkendiagrammen zu interagieren, navigieren Sie zu der Visualisierung und drücken anschließen Enter. Danach gelangen Sie zu einem Interaktionsmenü, dass Ihnen mehrere
+    <div tabindex="0">In der nachfolgenden Visualisierung wird ein Punktdiagramm gezeigt. Um mit Punktdiagrammen zu interagieren, navigieren Sie zu der Visualisierung und drücken anschließen Enter. Danach gelangen Sie zu einem Interaktionsmenü, dass Ihnen mehrere
         Interaktionsmöglichkeiten auflistet. Die einzelnen Interaktionsmöglichkeiten können Sie mit Hilfe von Enter aktivieren. Folgende Interaktionsmenüs existeren:
-        <ul>
-            <li>Navigieren durch die Daten
-                <ul>
-                    <li>Der Fokus wird auf den ersten Abschnitt der Datenpunkte gelegt. Dabei wird Ihnen ausgegeben, wie viele Datenpunkte sich in dieser Gruppierung befinden. Mit Enter können Sie in diese Gruppierung navigieren und anschließend können Sie durch die darin befindlichen Datenpunkte mit Pfeiltasten navigieren.</li>
+        <ul role="menu" aria-label="Visualisierungsinteraktionen" tabindex="0" (keydown)="onMenuKeyDown($event, 'scatter')" #scatterMenu>
+            <li [attr.aria-expanded]="scatterNavMenuIsOpen" aria-haspopup="true" role="menuitem" aria-controls="scatterNavMenu" (keydown)="onMenuItemKeyDown($event, 'scatter', 'scatterNavMenu')">Navigieren durch die Daten
+                <ul *ngIf="scatterNavMenuIsOpen" id="scatterNavMenu" #scatterNavMenu>
+                    <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'scatterNav')">Der Fokus wird auf den ersten Abschnitt der Datenpunkte gelegt. Dabei wird Ihnen ausgegeben, wie viele Datenpunkte sich in dieser Gruppierung befinden. Mit Enter können Sie in diese Gruppierung navigieren und anschließend können Sie durch die darin befindlichen Datenpunkte mit Pfeiltasten navigieren.</li>
                 </ul>
             </li>
-            <li>Zusammenfassung
-                <ul>
-                    <li>Es wird eine Zusammenfassung über die Visualisierung ausgegeben: was für Daten werden gezeigt, welche Daten werden von den einzelnen Achsen repräsentiert, wie ist der Datenverlauf, usw.</li>
+            <li [attr.aria-expanded]="scatterSummaryMenuIsOpen" aria-haspopup="true" role="menuitem" aria-controls="scatterSummaryMenu" (keydown)="onMenuItemKeyDown($event, 'scatter', 'scatterSummaryMenu')">Zusammenfassung
+                <ul *ngIf="scatterSummaryMenuIsOpen" id="scatterSummaryMenu" #scatterSummaryMenu>
+                    <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'scatterSummary')">Es wird eine Zusammenfassung über die Visualisierung ausgegeben: was für Daten werden gezeigt, welche Daten werden von den einzelnen Achsen repräsentiert, wie ist der Datenverlauf, usw.</li>
                 </ul>
             </li>
-            <li>Suchen
-                <ul>
-                    <li>Es öffnet sich ein Untermenü wo Sie auswählen können, ob Sie nach einem Wert auf der y-Achse, der x-Achse oder einem Datenpunkt-Namen suchen wollen</li>
-                    <li>Bei der Suche nach einem y-Wert können Sie die Symbole &lt; und &gt; verwenden oder nach einem exakten Wert suchen</li>
-                    <li>Bei der Suche nach einem x-Wert können Sie die Symbole &lt; und &gt; verwenden oder nach einem exakten Wert suchen</li>
-                    <li>Bei der Suche nach einem Datenpunkt-Namen verwenden Sie statt Umlauten bitte die ausgeschriebene Variante davon - statt ä schreiben Sie bitte ae</li>
+            <li [attr.aria-expanded]="scatterSearchMenuIsOpen" aria-haspopup="true" role="menuitem" aria-controls="scatterSearchMenu" (keydown)="onMenuItemKeyDown($event, 'scatter', 'scatterSearchMenu')">Suchen
+                <ul *ngIf="scatterSearchMenuIsOpen" id="scatterSearchMenu" #scatterSearchMenu>
+                    <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'scatterSearch')">Es öffnet sich ein Untermenü wo Sie auswählen können, ob Sie nach einem Wert auf der y-Achse, der x-Achse oder einem Datenpunkt-Namen suchen wollen</li>
+                    <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'scatterSearch')">Bei der Suche nach einem y-Wert können Sie die Symbole &lt; und &gt; verwenden oder nach einem exakten Wert suchen</li>
+                    <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'scatterSearch')">Bei der Suche nach einem x-Wert können Sie die Symbole &lt; und &gt; verwenden oder nach einem exakten Wert suchen</li>
+                    <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'scatterSearch')">Bei der Suche nach einem Datenpunkt-Namen verwenden Sie statt Umlauten bitte die ausgeschriebene Variante davon - statt ä schreiben Sie bitte ae</li>
                 </ul>
             </li>
-            <li>
+            <li [attr.aria-expanded]="scatterSonificationMenuIsOpen" aria-haspopup="true" role="menuitem" aria-controls="scatterSonificationMenu" (keydown)="onMenuItemKeyDown($event, 'scatter', 'scatterSonificationMenu')">
                 Sonification
-                <ul>
-                    <li>Es wird eine auditive Repräsentation der Daten abgespielt, mit deren Hilfe Sie den Datenverlauf auditiv hören können</li>
+                <ul *ngIf="scatterSonificationMenuIsOpen" id="scatterSonificationMenu" #scatterSonificationMenu>
+                    <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'scatterSonification')">Es wird eine auditive Repräsentation der Daten abgespielt, mit deren Hilfe Sie den Datenverlauf auditiv hören können</li>
                 </ul>
             </li>
-            <li>Makierungen
-                <ul>
-                    <li>Es öffnet sich ein weiteres Untermenü, in dem Sie auswählen können, ob Sie die aktuell gesetzten Makierungen löschen wollen oder ob Sie die abgebildeten Daten nach den makierten Datenpunkten filtern wollen.</li>
+            <li [attr.aria-expanded]="scatterMarkMenuIsOpen" aria-haspopup="true" role="menuitem" aria-controls="scatterMarkMenu" (keydown)="onMenuItemKeyDown($event, 'scatter', 'scatterMarkMenu')">Makierungen
+                <ul *ngIf="scatterMarkMenuIsOpen" id="scatterMarkMenu" #scatterMarkMenu>
+                    <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'scatterMark')">Es öffnet sich ein weiteres Untermenü, in dem Sie auswählen können, ob Sie die aktuell gesetzten Makierungen löschen wollen oder ob Sie die abgebildeten Daten nach den makierten Datenpunkten filtern wollen.</li>
                 </ul>
             </li>
-            <li>Daten zurücksetzen
-                <ul>
-                    <li>Die Visualisierung wird auf den Ausgangszustand zurückgesetzt - alle Filterungen werden aufgehoben, doch makierte Datenpunkte bleiben erhalten.</li>
+            <li [attr.aria-expanded]="scatterResetMenuIsOpen" aria-haspopup="true" role="menuitem" aria-controls="scatterResetMenu" (keydown)="onMenuItemKeyDown($event, 'scatter', 'scatterResetMenu')">Daten zurücksetzen
+                <ul *ngIf="scatterResetMenuIsOpen" id="scatterResetMenu" #scatterResetMenu>
+                    <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'scatterReset')">Die Visualisierung wird auf den Ausgangszustand zurückgesetzt - alle Filterungen werden aufgehoben, doch makierte Datenpunkte bleiben erhalten.</li>
                 </ul>
             </li>
         </ul>
     </div>
-    <app-scatter title="BIP pro Kopf vs. Lebenserwartung, 2015" labelKey="Land" xAxisKey="BIP pro Kopf" yAxisKey="Lebenserwartung" [formatXAxisToInt]="true" [radius]="4" [data]="scatterData" [showLabel]="false" xAxisUnit="internationale Dollar" yAxisUnit="Jahre" description="In der Visualisierung wird gezeigt, dass die durchschnittliche Lebenserwartung zumeist steigt, je höher das BIP pro Kopf des Landes ist. Das Land Swasiland ist das Land mit der niedrigsten Lebenserwartung (55 Jahre), das Land Hong-Kong ist das Land mit der höchsten Lebenserwartung (84.3 Jahre). Auf der y-Achse wird die Lebenserwartung in Jahre angezeigt, auf der x-Achse das BIP pro Kopf in internationale Dollar."></app-scatter>
+    <app-scatter title="BIP pro Kopf vs. Lebenserwartung, 2015" labelKey="Land" xAxisKey="BIP pro Kopf" yAxisKey="Lebenserwartung" [formatXAxisToInt]="true" [radius]="4" [data]="scatterData" [showLabel]="false" xAxisUnit="internationale Dollar" yAxisUnit="Jahre"
+    description="In der Visualisierung wird gezeigt, dass die durchschnittliche Lebenserwartung zumeist steigt, je höher das BIP pro Kopf des Landes ist. Das Land Swasiland ist das Land mit der niedrigsten Lebenserwartung (55 Jahre), das Land Hong-Kong ist das Land mit der höchsten Lebenserwartung (84.3 Jahre). Auf der y-Achse wird die Lebenserwartung in Jahre angezeigt, auf der x-Achse das BIP pro Kopf in internationale Dollar."></app-scatter>
 </ng-template>
 <ng-template [ngIf]="!!testId">
     <a href="/introduction">Zurück</a>
