@@ -403,7 +403,7 @@ export const testData3 = [
 
 export const testData6 = [
   {
-    Land: 'Albania',
+    Land: 'Albanien',
     Code: 'ALB',
     Jahr: 2015,
     'Raucher bei Erwachsenen': 25.1,
@@ -412,7 +412,7 @@ export const testData6 = [
     Continent: 'Europe',
   },
   {
-    Land: 'Austria',
+    Land: 'Oesterreich',
     Code: 'AUT',
     Jahr: 2015,
     'Raucher bei Erwachsenen': 31.2,
@@ -430,7 +430,7 @@ export const testData6 = [
     Continent: 'Europe',
   },
   {
-    Land: 'Belgium',
+    Land: 'Belgien',
     Code: 'BEL',
     Jahr: 2015,
     'Raucher bei Erwachsenen': 25.7,
@@ -439,7 +439,7 @@ export const testData6 = [
     Continent: 'Europe',
   },
   {
-    Land: 'Bosnia and Herzegovina',
+    Land: 'Bosnien und Herzegowina',
     Code: 'BIH',
     Jahr: 2015,
     'Raucher bei Erwachsenen': 37.7,
@@ -448,7 +448,7 @@ export const testData6 = [
     Continent: 'Europe',
   },
   {
-    Land: 'Bulgaria',
+    Land: 'Bulgarien',
     Code: 'BGR',
     Jahr: 2015,
     'Raucher bei Erwachsenen': 40.7,
@@ -457,7 +457,7 @@ export const testData6 = [
     Continent: 'Europe',
   },
   {
-    Land: 'Croatia',
+    Land: 'Kroatien',
     Code: 'HRV',
     Jahr: 2015,
     'Raucher bei Erwachsenen': 36.1,
@@ -466,7 +466,7 @@ export const testData6 = [
     Continent: 'Europe',
   },
   {
-    Land: 'Cyprus',
+    Land: 'Zypern',
     Code: 'CYP',
     Jahr: 2015,
     'Raucher bei Erwachsenen': 36.4,
@@ -475,7 +475,7 @@ export const testData6 = [
     Continent: 'Europe',
   },
   {
-    Land: 'Czechia',
+    Land: 'Tschechien',
     Code: 'CZE',
     Jahr: 2015,
     'Raucher bei Erwachsenen': 31.4,
@@ -484,7 +484,7 @@ export const testData6 = [
     Continent: 'Europe',
   },
   {
-    Land: 'Denmark',
+    Land: 'Daenemark',
     Code: 'DNK',
     Jahr: 2015,
     'Raucher bei Erwachsenen': 21.1,
@@ -493,7 +493,7 @@ export const testData6 = [
     Continent: 'Europe',
   },
   {
-    Land: 'Estonia',
+    Land: 'Estland',
     Code: 'EST',
     Jahr: 2015,
     'Raucher bei Erwachsenen': 33.3,
@@ -502,7 +502,7 @@ export const testData6 = [
     Continent: 'Europe',
   },
   {
-    Land: 'Finland',
+    Land: 'Finnland',
     Code: 'FIN',
     Jahr: 2015,
     'Raucher bei Erwachsenen': 24.5,
@@ -511,7 +511,7 @@ export const testData6 = [
     Continent: 'Europe',
   },
   {
-    Land: 'France',
+    Land: 'Frankreich',
     Code: 'FRA',
     Jahr: 2015,
     'Raucher bei Erwachsenen': 33.7,
@@ -520,7 +520,7 @@ export const testData6 = [
     Continent: 'Europe',
   },
   {
-    Land: 'Germany',
+    Land: 'Deutschland',
     Code: 'DEU',
     Jahr: 2015,
     'Raucher bei Erwachsenen': 24.9,
@@ -529,7 +529,7 @@ export const testData6 = [
     Continent: 'Europe',
   },
   {
-    Land: 'Greece',
+    Land: 'Griechenland',
     Code: 'GRC',
     Jahr: 2015,
     'Raucher bei Erwachsenen': 37.9,
@@ -538,7 +538,7 @@ export const testData6 = [
     Continent: 'Europe',
   },
   {
-    Land: 'Hungary',
+    Land: 'Ungarn',
     Code: 'HUN',
     Jahr: 2015,
     'Raucher bei Erwachsenen': 33.2,
@@ -547,7 +547,7 @@ export const testData6 = [
     Continent: 'Europe',
   },
   {
-    Land: 'Iceland',
+    Land: 'Island',
     Code: 'ISL',
     Jahr: 2015,
     'Raucher bei Erwachsenen': 15.2,
@@ -556,7 +556,7 @@ export const testData6 = [
     Continent: 'Europe',
   },
   {
-    Land: 'Ireland',
+    Land: 'Irland',
     Code: 'IRL',
     Jahr: 2015,
     'Raucher bei Erwachsenen': 23.8,
@@ -565,7 +565,7 @@ export const testData6 = [
     Continent: 'Europe',
   },
   {
-    Land: 'Italy',
+    Land: 'Italien',
     Code: 'ITA',
     Jahr: 2015,
     'Raucher bei Erwachsenen': 23.8,
@@ -574,7 +574,7 @@ export const testData6 = [
     Continent: 'Europe',
   },
   {
-    Land: 'Latvia',
+    Land: 'Lettland',
     Code: 'LVA',
     Jahr: 2015,
     'Raucher bei Erwachsenen': 38.5,
@@ -583,7 +583,7 @@ export const testData6 = [
     Continent: 'Europe',
   },
   {
-    Land: 'Lithuania',
+    Land: 'Litauen',
     Code: 'LTU',
     Jahr: 2015,
     'Raucher bei Erwachsenen': 34,
@@ -592,7 +592,7 @@ export const testData6 = [
     Continent: 'Europe',
   },
   {
-    Land: 'Luxembourg',
+    Land: 'Luxemburg',
     Code: 'LUX',
     Jahr: 2015,
     'Raucher bei Erwachsenen': 23.2,
@@ -610,7 +610,7 @@ export const testData6 = [
     Continent: 'Europe',
   },
   {
-    Land: 'Moldova',
+    Land: 'Moldau',
     Code: 'MDA',
     Jahr: 2015,
     'Raucher bei Erwachsenen': 27.9,
@@ -628,7 +628,7 @@ export const testData6 = [
     Continent: 'Europe',
   },
   {
-    Land: 'Netherlands',
+    Land: 'Niederlande',
     Code: 'NLD',
     Jahr: 2015,
     'Raucher bei Erwachsenen': 24.6,
@@ -637,7 +637,7 @@ export const testData6 = [
     Continent: 'Europe',
   },
   {
-    Land: 'Norway',
+    Land: 'Norwegen',
     Code: 'NOR',
     Jahr: 2015,
     'Raucher bei Erwachsenen': 20.7,
@@ -646,7 +646,7 @@ export const testData6 = [
     Continent: 'Europe',
   },
   {
-    Land: 'Poland',
+    Land: 'Polen',
     Code: 'POL',
     Jahr: 2015,
     'Raucher bei Erwachsenen': 27.2,
@@ -664,7 +664,7 @@ export const testData6 = [
     Continent: 'Europe',
   },
   {
-    Land: 'Romania',
+    Land: 'Rumaenien',
     Code: 'ROU',
     Jahr: 2015,
     'Raucher bei Erwachsenen': 29.7,
@@ -673,7 +673,7 @@ export const testData6 = [
     Continent: 'Europe',
   },
   {
-    Land: 'Russia',
+    Land: 'Russland',
     Code: 'RUS',
     Jahr: 2015,
     'Raucher bei Erwachsenen': 28.3,
@@ -682,7 +682,7 @@ export const testData6 = [
     Continent: 'Europe',
   },
   {
-    Land: 'Serbia',
+    Land: 'Serbien',
     Code: 'SRB',
     Jahr: 2015,
     'Raucher bei Erwachsenen': 40.9,
@@ -691,7 +691,7 @@ export const testData6 = [
     Continent: 'Europe',
   },
   {
-    Land: 'Slovakia',
+    Land: 'Slowakei',
     Code: 'SVK',
     Jahr: 2015,
     'Raucher bei Erwachsenen': 31.5,
@@ -700,7 +700,7 @@ export const testData6 = [
     Continent: 'Europe',
   },
   {
-    Land: 'Slovenia',
+    Land: 'Slowenien',
     Code: 'SVN',
     Jahr: 2015,
     'Raucher bei Erwachsenen': 22.7,
@@ -709,7 +709,7 @@ export const testData6 = [
     Continent: 'Europe',
   },
   {
-    Land: 'Spain',
+    Land: 'Spanien',
     Code: 'ESP',
     Jahr: 2015,
     'Raucher bei Erwachsenen': 29.7,
@@ -718,7 +718,7 @@ export const testData6 = [
     Continent: 'Europe',
   },
   {
-    Land: 'Sweden',
+    Land: 'Schweden',
     Code: 'SWE',
     Jahr: 2015,
     'Raucher bei Erwachsenen': 27.9,
@@ -727,7 +727,7 @@ export const testData6 = [
     Continent: 'Europe',
   },
   {
-    Land: 'Switzerland',
+    Land: 'Schweiz',
     Code: 'CHE',
     Jahr: 2015,
     'Raucher bei Erwachsenen': 26.2,
@@ -745,7 +745,7 @@ export const testData6 = [
     Continent: 'Europe',
   },
   {
-    Land: 'United Kingdom',
+    Land: 'Vereinigtes Koenigreich',
     Code: 'GBR',
     Jahr: 2015,
     'Raucher bei Erwachsenen': 19.3,
