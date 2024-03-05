@@ -309,7 +309,6 @@ export class ScatterComponent implements OnInit {
       target = 'CANCEL';
     }
     if (target) {
-      console.log(evt.key);
       if (
         evt.key === 'ArrowLeft' ||
         (evt.key === 'Tab' && evt.shiftKey && target === 'CANCEL')

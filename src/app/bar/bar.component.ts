@@ -553,7 +553,6 @@ export class BarComponent implements OnInit {
       }
       let noteLength = 5 / this.cleanData.length;
       if (noteLength > 1) noteLength = 1;
-      console.log(noteLength);
       const synth = new Tone.PolySynth(Tone.Synth).toDestination();
       let idx = 0;
       for (const note of notes) {

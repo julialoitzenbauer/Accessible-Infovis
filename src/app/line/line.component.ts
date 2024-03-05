@@ -788,16 +788,21 @@ export class LineComponent implements OnInit {
     }
   }
 
+  private getLineIdxById(id: string): number {
+    let targetIdx = -1;
+    for (let idx = 0; idx < this.cleanData.length; ++idx) {
+      if (this.cleanData[idx].id === id) {
+        targetIdx = idx;
+        break;
+      }
+    }
+    return targetIdx;
+  }
+
   private lineKeyDown(evt: KeyboardEvent): void {
     if (evt.target && this.figureElement?.nativeElement) {
       const targetId = (evt.target as HTMLElement).id;
-      let targetIdx = -1;
-      for (let idx = 0; idx < this.cleanData.length; ++idx) {
-        if (this.cleanData[idx].id === targetId) {
-          targetIdx = idx;
-          break;
-        }
-      }
+      const targetIdx = this.getLineIdxById(targetId);
       if (targetIdx != -1) {
         if (evt.key === 'ArrowDown' || evt.key === 'ArrowUp') {
           let newIdx = evt.key === 'ArrowDown' ? targetIdx + 1 : targetIdx - 1;
@@ -958,9 +963,43 @@ export class LineComponent implements OnInit {
             const synth = new Tone.PolySynth(Tone.Synth).toDestination();
             synth.triggerAttackRelease(note, '8n');
           }
+        } else if (evt.key === 'ArrowUp' || evt.key === 'ArrowDown') {
+          const targetLineIdx = this.getLineIdxById(currLineId);
+          if (targetLineIdx !== -1) {
+            let newLineIdx =
+              evt.key === 'ArrowUp' ? targetLineIdx - 1 : targetLineIdx + 1;
+            if (newLineIdx < 0) newLineIdx = this.cleanData.length - 1;
+            if (newLineIdx >= this.cleanData.length) newLineIdx = 0;
+            if (newLineIdx !== targetLineIdx) {
+              const currLine =
+                (this.figureElement.nativeElement.querySelector(
+                  '#' + currLineId
+                ) as HTMLElement) || null;
+              const newLine =
+                (this.figureElement.nativeElement.querySelector(
+                  '#' + this.cleanData[newLineIdx].id
+                ) as HTMLElement) || null;
+              if (currLine) {
+                currLine.removeAttribute('tabindex');
+                target.removeAttribute('tabindex');
+              }
+              if (newLine) {
+                newLine.setAttribute('tabindex', '0');
+                const newDot = this.getDotByLineIdAndIdx(
+                  this.cleanData[newLineIdx].id,
+                  currDotIdx
+                );
+                if (newDot) {
+                  newDot.setAttribute('tabindex', '0');
+                  newDot.focus();
+                }
+              }
+            }
+          }
         }
       }
     }
+    evt.preventDefault();
   }
 
   getLineIdOfDot(dot: HTMLElement): string | null {
