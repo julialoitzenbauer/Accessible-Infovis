@@ -53,7 +53,7 @@ export class LineComponent implements OnInit {
   @Input()
   yAxisUnit: string = '';
   @Input()
-  hideMenu: boolean = true;
+  hideMenu: boolean = false;
 
   @ViewChild('menuButton') menuButton: ElementRef<HTMLElement> | undefined;
   @ViewChild('liveRegion') liveRegion: ElementRef<HTMLElement> | undefined;
@@ -184,6 +184,7 @@ export class LineComponent implements OnInit {
             descriptionTag.innerHTML = 'Daten wurden zurückgesetzt';
             this.liveRegion.nativeElement.appendChild(descriptionTag);
           }
+          this.cleanData = [];
           this.initCleanData();
           this.createData();
           this.drawChart();
@@ -311,10 +312,12 @@ export class LineComponent implements OnInit {
       }
     } else if (evt.key === 'Enter' || evt.key === ' ') {
       if (idx === 0) {
-        this.searchMenuPlaceholder = 'Suchen nach x-Achsen Wert';
+        this.searchMenuPlaceholder = `Suchen nach ${
+          this.yearlyDates ? 'Jahr' : 'Datum'
+        }`;
         this.selectedSearchMenu = SEARCH_MENUS.X;
       } else if (idx === 1) {
-        this.searchMenuPlaceholder = 'Suchen nach Label';
+        this.searchMenuPlaceholder = `Suchen nach Linien-Name`;
         this.selectedSearchMenu = SEARCH_MENUS.LABEL;
       } else {
         this.searchMenuPlaceholder = '';
@@ -345,13 +348,19 @@ export class LineComponent implements OnInit {
           searchOperator = -1;
           searchValue = searchValue.substring(1);
         }
-        const searchDate = new Date(searchValue);
-        if (isNaN(searchDate.getDate())) {
+        let searchDate: Date;
+        if (this.yearlyDates) {
+          searchDate = new Date(parseInt(searchValue).toString());
+        } else {
+          searchDate = new Date(searchValue);
+        }
+        if (!searchDate || isNaN(searchDate.getDate())) {
           if (this.liveRegion?.nativeElement) {
             this.liveRegion.nativeElement.innerHTML = '';
             const alertTag = document.createElement('p');
-            alertTag.innerHTML =
-              'Ungültiges Datem zur Suche eingegeben. Versuchen Sie es mit dem Format "MM-TT-JJJJ"';
+            alertTag.innerHTML = `Ungültiges Datum zur Suche eingegeben. Versuchen Sie es mit dem Format ${
+              this.yearlyDates ? '"YYYY"' : '"MM-TT-JJJJ"'
+            }`;
             this.liveRegion.nativeElement.appendChild(alertTag);
           }
         } else {
@@ -359,10 +368,19 @@ export class LineComponent implements OnInit {
           this.initCleanData();
           this.createData();
           let stillHasValues = false;
+          searchDate.setHours(0, 0, 0, 0);
           for (const cd of this.cleanData) {
             cd.values = cd.values.filter((value: CleanData) => {
               const valueDate = new Date(value.date);
               if (isNaN(valueDate.getDate())) return false;
+              valueDate.setHours(0, 0, 0, 0);
+              if (this.yearlyDates) {
+                if (searchOperator === 1)
+                  return valueDate.getFullYear() > searchDate.getFullYear();
+                if (searchOperator === -1)
+                  return valueDate.getFullYear() < searchDate.getFullYear();
+                return valueDate.getFullYear() === searchDate.getFullYear();
+              }
               if (searchOperator === 1) return valueDate > searchDate;
               if (searchOperator === -1) return valueDate < searchDate;
               return valueDate == searchDate;

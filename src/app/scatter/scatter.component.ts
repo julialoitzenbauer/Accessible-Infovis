@@ -217,15 +217,15 @@ export class ScatterComponent implements OnInit {
       switch (targetIdx) {
         case 0:
           this.selectedSearchMenu = SEARCH_MENUS.X;
-          this.searchMenuPlaceholder = 'Suchen nach x-Achsen Wert';
+          this.searchMenuPlaceholder = `Suchen nach ${this.xAxisKey}`;
           break;
         case 1:
           this.selectedSearchMenu = SEARCH_MENUS.Y;
-          this.searchMenuPlaceholder = 'Suchen nach y-Achsen Wert';
+          this.searchMenuPlaceholder = `Suchen nach ${this.yAxisKey}`;
           break;
         case 2:
           this.selectedSearchMenu = SEARCH_MENUS.LABEL;
-          this.searchMenuPlaceholder = 'Suchen nach Label';
+          this.searchMenuPlaceholder = 'Suchen nach Datenpunkt-Name';
           break;
         default:
           this.selectedSearchMenu = null;
@@ -878,7 +878,7 @@ export class ScatterComponent implements OnInit {
                 );
                 tickContainer.setAttribute(
                   'aria-label',
-                  `Daten von ${tickValue} bis inklusive ${nextTickValue}. Beinhaltet ${
+                  `Daten von ${tickValue} bis inklusive ${nextTickValue}. Enthält ${
                     currTickData.length
                   } ${
                     currTickData.length === 1 ? 'Datenpunkt' : 'Datenpunkte'

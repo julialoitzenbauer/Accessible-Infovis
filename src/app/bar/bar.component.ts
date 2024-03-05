@@ -40,7 +40,7 @@ export class BarComponent implements OnInit {
   @Input()
   yAxisUnit: string = '';
   @Input()
-  hideMenu: boolean = true;
+  hideMenu: boolean = false;
 
   private cleanData: Array<CleanData> = [];
   private svg?: D3Selection;
@@ -281,10 +281,10 @@ export class BarComponent implements OnInit {
     } else if (evt.key === 'Enter' || evt.key === ' ') {
       if (idx === 0) {
         this.selectedSearchMenu = SEARCH_MENU.Y;
-        this.searchMenuPlaceholder = 'Suchen nach y-Achsen Wert';
+        this.searchMenuPlaceholder = `Suchen nach ${this.yAxisKey}`;
       } else if (idx === 1) {
         this.selectedSearchMenu = SEARCH_MENU.LABEL;
-        this.searchMenuPlaceholder = 'Suchen nach Label';
+        this.searchMenuPlaceholder = `Suchen nach ${this.labelKey}`;
       } else {
         this.selectedSearchMenu = null;
         this.searchMenuPlaceholder = '';
