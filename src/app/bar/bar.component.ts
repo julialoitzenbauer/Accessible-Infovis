@@ -328,6 +328,7 @@ export class BarComponent implements OnInit {
         }, 0);
       } else if (idx === 1) {
         this.cleanData = this.markedData;
+        this.createLabelsAndDescriptions();
         if (this.figureElement?.nativeElement) {
           this.figureElement.nativeElement.innerHTML = '';
           this.createSvg();
@@ -504,6 +505,7 @@ export class BarComponent implements OnInit {
         if (this.figureElement?.nativeElement) {
           if (this.cleanData.length) {
             this.cleanData = filteredData;
+            this.createLabelsAndDescriptions();
             this.figureElement.nativeElement.innerHTML = '';
             this.createSvg();
             this.drawBars();
@@ -527,6 +529,7 @@ export class BarComponent implements OnInit {
         if (this.figureElement?.nativeElement) {
           if (this.cleanData.length) {
             this.cleanData = filteredData;
+            this.createLabelsAndDescriptions();
             this.figureElement.nativeElement.innerHTML = '';
             this.createSvg();
             this.drawBars();
@@ -638,6 +641,32 @@ export class BarComponent implements OnInit {
       .on('keydown', this.barKeyDown.bind(this));
   }
 
+  private createLabelsAndDescriptions(): void {
+    if (this.labelsContainer?.nativeElement) {
+      this.labelsContainer.nativeElement.innerHTML = '';
+      for (let idx = 0; idx < this.cleanData.length; ++idx) {
+        const labelSpan = document.createElement('span');
+        labelSpan.innerHTML = this.cleanData[idx].label;
+        labelSpan.id = 'LABEL_' + this.cleanData[idx].ID;
+
+        const descriptionSpan = document.createElement('span');
+        descriptionSpan.innerHTML =
+          this.yAxisKey +
+          ': ' +
+          this.cleanData[idx].yValue +
+          (this.yAxisUnit ? ' ' + this.yAxisUnit : '') +
+          ', Balken ' +
+          (idx + 1) +
+          ' von ' +
+          this.cleanData.length;
+        descriptionSpan.id = 'DESCR_' + this.cleanData[idx].ID;
+
+        this.labelsContainer.nativeElement.appendChild(labelSpan);
+        this.labelsContainer.nativeElement.appendChild(descriptionSpan);
+      }
+    }
+  }
+
   private createCleanData(): void {
     this.cleanData = [];
     let minValue: number | undefined;
@@ -648,22 +677,6 @@ export class BarComponent implements OnInit {
         label: d[this.labelKey] as string,
         ID: d[this.labelKey] + '_' + d[this.yAxisKey],
       };
-      if (this.labelsContainer?.nativeElement) {
-        const labelSpan = document.createElement('span');
-        labelSpan.innerHTML = obj.label;
-        labelSpan.id = 'LABEL_' + obj.ID;
-
-        const descriptionSpan = document.createElement('span');
-        descriptionSpan.innerHTML =
-          this.yAxisKey +
-          ': ' +
-          obj.yValue +
-          (this.yAxisUnit ? ' ' + this.yAxisUnit : '');
-        descriptionSpan.id = 'DESCR_' + obj.ID;
-
-        this.labelsContainer.nativeElement.appendChild(labelSpan);
-        this.labelsContainer.nativeElement.appendChild(descriptionSpan);
-      }
 
       if (obj.yValue > this.maxY) this.maxY = obj.yValue;
       if (minValue == null || obj.yValue < minValue) {
@@ -676,6 +689,7 @@ export class BarComponent implements OnInit {
       }
       this.cleanData.push(obj);
     }
+    this.createLabelsAndDescriptions();
   }
 
   private focusBar(id: string) {
