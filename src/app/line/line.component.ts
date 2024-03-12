@@ -31,7 +31,7 @@ export class LineComponent implements OnInit {
   @Input()
   height: number = 400 - this.margin * 2;
   @Input()
-  title: string = 'Line Chart';
+  chartTitle: string = 'Line Chart';
   @Input()
   description: string = '';
   @Input()
@@ -77,7 +77,7 @@ export class LineComponent implements OnInit {
   @ViewChild('markMenuButton') markMenuButton:
     | ElementRef<HTMLElement>
     | undefined;
-  @ViewChild('ariaContainer') ariaContainer:
+  @ViewChild('figureContainer') figureContainer:
     | ElementRef<HTMLElement>
     | undefined;
 
@@ -133,9 +133,8 @@ export class LineComponent implements OnInit {
   }
 
   menuKeyDown(evt: KeyboardEvent): void {
-    if (evt.key === 'Escape' && this.svg) {
-      const node = this.svg.node();
-      if (node) node.focus();
+    if (evt.key === 'Escape' && this.figureContainer?.nativeElement) {
+      this.figureContainer.nativeElement.focus();
     } else if (
       evt.key === 'Enter' ||
       evt.key === ' ' ||
@@ -634,9 +633,6 @@ export class LineComponent implements OnInit {
           ' ' +
           (this.height + adj * 3)
       )
-      .attr('tabindex', '0')
-      .attr('aria-description', this.description)
-      .on('keydown', this.svgKeyDown.bind(this))
       .style('padding', padding)
       .style('margin', this.margin)
       .classed('svg-content', true) as any;
@@ -754,9 +750,11 @@ export class LineComponent implements OnInit {
               this.yearlyDates
                 ? new Date(d.date).getFullYear()
                 : new Date(d.date).toLocaleDateString('de')
-            }, Linie ${this.cleanData[idx].id}${
-              this.dotIsMarked(d, this.cleanData[idx].id) ? ', Makiert' : ''
-            }`
+            }${
+              this.cleanData.length > 1
+                ? ', Linie ' + this.cleanData[idx].id
+                : ''
+            }${this.dotIsMarked(d, this.cleanData[idx].id) ? ', Makiert' : ''}`
         )
         .attr('class', (d: CleanData) => {
           if (this.dotIsMarked(d, this.cleanData[idx].id)) {
@@ -768,7 +766,7 @@ export class LineComponent implements OnInit {
     }
   }
 
-  private svgKeyDown(evt: KeyboardEvent): void {
+  svgKeyDown(evt: KeyboardEvent): void {
     if (evt.key === 'Enter' && this.menuButton?.nativeElement) {
       this.menuButton.nativeElement.focus();
     }
