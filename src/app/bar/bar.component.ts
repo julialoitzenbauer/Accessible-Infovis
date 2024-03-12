@@ -49,6 +49,7 @@ export class BarComponent implements OnInit {
   private minId?: string;
   private focusedBar?: string;
   private selectedSearchMenu?: SEARCH_MENU | null;
+  isFilteredByMarks: boolean = false;
   markedData: Array<CleanData> = [];
   barId: string;
   menuId: string;
@@ -327,7 +328,13 @@ export class BarComponent implements OnInit {
           }
         }, 0);
       } else if (idx === 1) {
-        this.cleanData = this.markedData;
+        if (this.isFilteredByMarks) {
+          this.createCleanData();
+          this.isFilteredByMarks = false;
+        } else {
+          this.cleanData = this.markedData;
+          this.isFilteredByMarks = true;
+        }
         this.createLabelsAndDescriptions();
         if (this.figureElement?.nativeElement) {
           this.figureElement.nativeElement.innerHTML = '';

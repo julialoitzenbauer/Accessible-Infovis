@@ -31,7 +31,7 @@
     <li id="MenuItemMarks" role="menuitem" aria-haspopup="true" [attr.aria-expanded]="markMenuIsOpen" [attr.aria-controls]="menuId + '_MARKS'" (keydown)="markMenuKeyDown($event, 4)" #markMenuButton>Markierungen</li>
     <ul *ngIf="markMenuIsOpen" [id]="menuId + '_MARKS'" #markMenuList>
         <li role="menuitem" (keydown)="markMenuItemKeyDown($event, 0)">Gesetzte Makierungen löschen</li>
-        <li role="menuitem" (keydown)="markMenuItemKeyDown($event, 1)">Nach makierten Datenpunkten filtern</li>
+        <li role="menuitem" (keydown)="markMenuItemKeyDown($event, 1)">{{ isFilteredByMarks ? 'Filterung nach makierten Datenpunkten entfernen' : 'Nach makierten Datenpunkten filtern' }}</li>
     </ul>
     <li id="MenuItemReset" role="menuitem" (keydown)="menuItemKeyDown($event, 5)">Daten Zurücksetzen</li>
 </ul>

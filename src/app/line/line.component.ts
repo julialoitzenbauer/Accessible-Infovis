@@ -521,10 +521,11 @@ export class LineComponent implements OnInit {
             this.cleanData = [];
             this.initCleanData();
             this.createData();
+            this.isFilteredByMarks = false;
           } else {
             this.cleanData = this.markedData;
+            this.isFilteredByMarks = true;
           }
-          this.isFilteredByMarks = false;
           this.drawChart();
         }
       }
