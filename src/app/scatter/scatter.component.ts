@@ -38,7 +38,7 @@ export class ScatterComponent implements OnInit {
   @Input()
   data!: Array<Record<string, number | string>>;
   @Input()
-  title!: string;
+  chartTitle!: string;
   @Input()
   description?: string;
   @Input()
@@ -674,10 +674,6 @@ export class ScatterComponent implements OnInit {
   }
 
   private createSvg(): void {
-    if (this.figureContainer?.nativeElement) {
-      this.figureContainer.nativeElement.onkeydown = this.svgKeyDown.bind(this);
-      this.figureContainer.nativeElement.setAttribute('aria-label', this.title);
-    }
     this.svg = d3
       .select('figure#' + this.scatterId)
       .append('svg')
@@ -875,14 +871,37 @@ export class ScatterComponent implements OnInit {
                     (a: CleanData, b: CleanData) => a.yValue - b.yValue
                   )
                 );
-                tickContainer.setAttribute(
-                  'aria-label',
-                  `Daten von ${tickValue} bis inklusive ${nextTickValue}. Enthält ${
-                    currTickData.length
-                  } ${
-                    currTickData.length === 1 ? 'Datenpunkt' : 'Datenpunkte'
-                  }.`
-                );
+                if (currTickData.length) {
+                  let minTickY = Math.min(
+                    ...currTickData.map((item) => item.yValue)
+                  );
+                  let maxTickY = Math.max(
+                    ...currTickData.map((item) => item.yValue)
+                  );
+                  tickContainer.setAttribute(
+                    'aria-label',
+                    `Daten von ${tickValue} ${
+                      this.xAxisUnit
+                    } bis inklusive ${nextTickValue} ${this.xAxisUnit} ${
+                      this.xAxisKey
+                    } und von ${minTickY} ${this.yAxisUnit} bis ${maxTickY} ${
+                      this.yAxisUnit
+                    } ${this.yAxisKey}. Enthält ${currTickData.length} ${
+                      currTickData.length === 1 ? 'Datenpunkt' : 'Datenpunkte'
+                    }.`
+                  );
+                } else {
+                  tickContainer.setAttribute(
+                    'aria-label',
+                    `Daten von ${tickValue} ${
+                      this.xAxisUnit
+                    } bis inklusive ${nextTickValue} ${this.xAxisUnit} ${
+                      this.xAxisKey
+                    }. Enthält ${currTickData.length} ${
+                      currTickData.length === 1 ? 'Datenpunkt' : 'Datenpunkte'
+                    }.`
+                  );
+                }
                 tickContainer.setAttribute(
                   'aria-description',
                   'Drücken Sie Enter um in die Daten zu navigieren'
@@ -1258,7 +1277,7 @@ export class ScatterComponent implements OnInit {
     }
   }
 
-  private svgKeyDown(evt: KeyboardEvent): void {
+  svgKeyDown(evt: KeyboardEvent): void {
     if (evt.key === 'Enter') {
       if (this.menuButton?.nativeElement) {
         this.menuButton.nativeElement.tabIndex = 0;

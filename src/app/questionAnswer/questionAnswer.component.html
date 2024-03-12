@@ -24,7 +24,7 @@
     description="In der Visualisierungen werden die Wahlergebnisse der Nationalratswahl 2019 gezeigt, wobei die Ergebnisse der einzelnen Parteien auf der y-Achse dargestellt werden. Die Partei ÖVP gewann die Wahl mit 37.5 Prozent, die SPÖ erzielte den zweiten Platz mit 21.2 Prozent. Die KPÖ wird als die Partei mit dem niedrigsten Wahlergebnis angeführt (0.7 Prozent), wobei einige Klein-parteien gesammelt als 'Andere' angeführt werden, diese erreichten aufsummiert ein Ergebnis von nur 0.5 Prozent."></app-bar>
 </ng-template>
 <ng-template [ngIf]="testId === '2'">
-    <app-line title="Wahlergebnisse von ÖVP und SPÖ von 1970 bis 2019" [data]="[
+    <app-line chartTitle="Wahlergebnisse von ÖVP und SPÖ von 1970 bis 2019" [data]="[
     { date: '01-Mar-1970', SPOE: 48.42, OEVP: 44.69  },
     { date: '10-Oct-1971', SPOE: 50.04, OEVP: 43.11  },
     { date: '05-Oct-1975', SPOE: 50.42, OEVP: 42.95  },
@@ -45,7 +45,7 @@
     yAxisUnit="Prozent" summary="In der Visualisierung werden die Wahlergebnisse bei Nationalratswahlen von SPÖ und ÖVP von 1970 bis 2019 abgebildet, wobei auf der x-Achse die Zeit und auf der y-Achse das Wahlergebnis in Prozent abgebildet wird. Die SPÖ hatte von 1970 bis 2002 ein höheres Wahlergebnis, allerdings sank das Wahlergebnis der SPÖ bis 2019 mit Ausnahme einiger Schwankungen beinahe kontinuierlich. Die Wahlergebnisse der ÖVP weisen gerade in späteren Zeiten allerdings eine höhere Schwankung als die der SPÖ auf. 2019 hatte die ÖVP (37.46 Prozent) schlussendlich ein höheres Ergebnis als die SPÖ (21.18 Prozent)" [yearlyDates]="true"></app-line>
 </ng-template>
 <ng-template [ngIf]="testId === '3'">
-    <app-scatter title="Wahlkampfkosten vs. Wahlergebnisse der Parteien bei der Nationalratswahl 2013" labelKey="Partei" xAxisKey="Wahlkampfkosten" yAxisKey="Wahlergebnis" [formatXAxisToInt]="true" [radius]="4" [data]="[
+    <app-scatter chartTitle="Wahlkampfkosten vs. Wahlergebnisse der Parteien bei der Nationalratswahl 2013" labelKey="Partei" xAxisKey="Wahlkampfkosten" yAxisKey="Wahlergebnis" [formatXAxisToInt]="true" [radius]="4" [data]="[
     { Partei: 'BZOE', Wahlkampfkosten: 2771857, Wahlergebnis: 3.53 },
     { Partei: 'FPOE', Wahlkampfkosten: 6505889, Wahlergebnis: 20.51 },
     { Partei: 'GRUENE', Wahlkampfkosten: 5393042, Wahlergebnis: 12.42 },

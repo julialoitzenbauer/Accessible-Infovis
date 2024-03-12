@@ -17,7 +17,7 @@
 </ng-template>
 <ng-template [ngIf]="testId === '1'">
     <p tabindex="0">In der nachfolgenden Visualisierung ist ersichtlich, dass die Neuzulassungen von Elektroautos in Österreich seit 2008 kontinuierlich gestiegen ist.</p>
-    <app-line title="Anzahl der Neuzulassungen von Elektroautos in Österreich von 2008 bis 2023" [data]="[
+    <app-line chartTitle="Anzahl der Neuzulassungen von Elektroautos in Österreich von 2008 bis 2023" [data]="[
     { date: '01-Jan-2008', Neuzulassungen: 2  },
     { date: '01-Jan-2009', Neuzulassungen: 39  },
     { date: '01-Jan-2010', Neuzulassungen: 112  },
@@ -50,7 +50,7 @@
 </ng-template>
 <ng-template [ngIf]="testId === '3'">
     <p tabindex="0">In der nachfolgenden Visualisierung ist ersichtlich, dass je höher das BIP pro Kopf eines Landes ist, desto geringer ist der Anteil der Angestellten, die in der Agrikultur arbeiten.</p>
-    <app-scatter title="BIP pro Kopf vs. Angestellte in der Agrikultur in 2015" labelKey="Land" xAxisKey="BIP pro Kopf" yAxisKey="Angestellte in Agrikultur" [formatXAxisToInt]="true" [radius]="4" [data]="data3" [showLabel]="false"
+    <app-scatter chartTitle="BIP pro Kopf vs. Angestellte in der Agrikultur in 2015" labelKey="Land" xAxisKey="BIP pro Kopf" yAxisKey="Angestellte in Agrikultur" [formatXAxisToInt]="true" [radius]="4" [data]="data3" [showLabel]="false"
     xAxisUnit="internationale Dollar" yAxisUnit="Prozent" description="In der nachfolgenden Visualisierung werden die Angestellte im Bereich Agrikultur gegenüber dem BIP pro Kopf eines Landes gestellt, wobei das BIP pro Kopf auf der x-Achse und die Angestellten in der Agrikultur auf der y-Achse dargestellt werden. Daraus geht hervor, dass der Anteil der Beschäftigten im Bereich Agrikultur sinkt, je höher das BIP pro Kopf eines Landes ist."
     ></app-scatter>
 </ng-template>
@@ -70,7 +70,7 @@
 </ng-template>
 <ng-template [ngIf]="testId === '5'">
     <p tabindex="0">In der nachfolgenden Visualisierung ist ersichtlich, dass die Neuzulassungen von Elektroautos in Österreich seit 2008 kontinuierlich gestiegen ist.</p>
-    <app-line title="Werbeumsätze von Meta weltweit in den Jahren 2010 bis 2023 (in Millionen US-Dollar)" [data]="[
+    <app-line chartTitle="Werbeumsätze von Meta weltweit in den Jahren 2010 bis 2023 (in Millionen US-Dollar)" [data]="[
     { date: '01-Jan-2010', Umsatz: 1868  },
     { date: '01-Jan-2011', Umsatz: 3154  },
     { date: '01-Jan-2012', Umsatz: 4279  },
@@ -89,7 +89,7 @@
 </ng-template>
 <ng-template [ngIf]="testId === '6'">
     <p tabindex="0">In der nachfolgenden Visualisierung ist ersichtlich, dass der Anteil der Raucher unter Erwachsenen im Jahr 2015 umso höher war, desto höher das BIP pro Kopf des Landes war (in internationalen $)</p>
-    <app-scatter title="BIP pro Kopf vs. Anteil der Raucher bei Erwachsenen, 2015" labelKey="Land" xAxisKey="BIP pro Kopf" yAxisKey="Raucher bei Erwachsenen" [formatXAxisToInt]="true" [radius]="4" [data]="data6" [showLabel]="false"
+    <app-scatter chartTitle="BIP pro Kopf vs. Anteil der Raucher bei Erwachsenen, 2015" labelKey="Land" xAxisKey="BIP pro Kopf" yAxisKey="Raucher bei Erwachsenen" [formatXAxisToInt]="true" [radius]="4" [data]="data6" [showLabel]="false"
     xAxisUnit="internationale Dollar" yAxisUnit="Prozent" description="In der folgenden Visualisierung wird das BIP pro Kopf von Ländern mit dem Anteil von Rauchern unter Erwachsenen gegenübergestellt, wobei der Anteil der Raucher auf der y-Achse und das BIP pro Kopf auf der x-Achse dargestellt werden. Es ist ersichtlich, dass es einen leichten Trend gibt, dass je höher das BIP pro Kopf eines Landes ist, desto niedriger wird der Anteil der Raucher unter Erwachsenen."></app-scatter>
 </ng-template>
 <ng-template [ngIf]="!!testId">

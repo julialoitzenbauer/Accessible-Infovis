@@ -44,7 +44,6 @@
     <input class="button" type="submit" [value]="getCurrNumberOfMarks() + ' Markierungen löschen'" (keydown)="markFormButtonKeyDown($event, 0)" #deleteMarksButton>
     <input class="button" type="submit" value="Abbrechen" (keydown)="markFormButtonKeyDown($event, 1)" #cancelDeleteMarksButton>
 </form>
-<span class="hidden" id="containerDescription">Drücken Sie 'Enter' um mit der Visualisierung zu interagieren</span>
-<div #figureContainer tabindex="0" [attr.aria-label]="chartTitle + ', Drücken Sie Enter um mit der Visualisierung zu interagieren'" aria-describedby="containerDescription" (keydown)="svgKeyDown($event)">
+<div #figureContainer tabindex="0" [attr.aria-label]="chartTitle + ', Drücken Sie Enter um mit der Visualisierung zu interagieren'" (keydown)="svgKeyDown($event)">
     <figure [id]="lineId" #figureElement></figure>
 </div>

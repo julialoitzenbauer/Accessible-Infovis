@@ -1,4 +1,4 @@
-<h2>{{ title }}</h2>
+<h2>{{ chartTitle }}</h2>
 <button
     [ngClass]="{hidden: hideMenu}"
     [id]="menuId + '_BUTTON'"
@@ -45,8 +45,8 @@
     <input class="button" type="submit" [value]="currNumberOfMarks + ' Markierungen löschen'" (keydown)="markFormButtonKeyDown($event)" #deleteMarksButton>
     <input class="button" type="submit" value="Abbrechen" (keydown)="markFormButtonKeyDown($event)" #cancelDeleteMarksButton>
 </form>
-<p style="position: absolute; left: -10000px;" id="SVG_DESCR">Drücken Sie Enter um mit der Visualisierung zu interagieren</p>
-<div #figureContainer tabindex="0" aria-describedby="SVG_DESCR">
+<p style="position: absolute; left: -10000px;" id="SVG_DESCR"></p>
+<div #figureContainer tabindex="0" [attr.aria-label]="chartTitle + ', Drücken Sie Enter um mit der Visualisierung zu interagieren'" (keydown)="svgKeyDown($event)">
     <figure [id]="scatterId" id="" #figureElement style="position: relative">
     </figure>
 </div>
