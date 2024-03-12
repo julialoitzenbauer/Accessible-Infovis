@@ -103,6 +103,7 @@ export class ScatterComponent implements OnInit {
   private keys: Array<number> = [];
   private currTickIdx: number | null = null;
   private triggeredSearchElem: HTMLElement | null = null;
+  private soniIsPlaying: boolean = false;
   isFilteredByMarks: boolean = false;
   scatterId: string;
   menuIsOpen: boolean;
@@ -573,7 +574,7 @@ export class ScatterComponent implements OnInit {
   }
 
   private async startSonification(): Promise<void> {
-    if (this.cleanData && this.minX != null) {
+    if (this.cleanData && this.minX != null && !this.soniIsPlaying) {
       const notes: Record<number, Array<string>> = {};
       const xAxisSpan = this.maxX - this.minX;
       for (const key of this.keys) {
@@ -597,6 +598,10 @@ export class ScatterComponent implements OnInit {
         delay += noteKeys[idx];
         synth.triggerAttackRelease(dataNotes, '8n', delay);
       }
+      this.soniIsPlaying = true;
+      setTimeout(() => {
+        this.soniIsPlaying = false;
+      }, 5000);
     }
   }
 

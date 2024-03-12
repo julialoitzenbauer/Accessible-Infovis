@@ -49,6 +49,7 @@ export class BarComponent implements OnInit {
   private minId?: string;
   private focusedBar?: string;
   private selectedSearchMenu?: SEARCH_MENU | null;
+  private soniIsPlaying: boolean = false;
   isFilteredByMarks: boolean = false;
   markedData: Array<CleanData> = [];
   barId: string;
@@ -556,7 +557,7 @@ export class BarComponent implements OnInit {
   }
 
   private playSonification(): void {
-    if (this.cleanData.length) {
+    if (this.cleanData.length && !this.soniIsPlaying) {
       const notes: Array<string> = [];
       for (const cd of this.cleanData) {
         notes.push(this.calcSoniNote(cd.yValue));
@@ -575,6 +576,10 @@ export class BarComponent implements OnInit {
           delay
         );
       }
+      this.soniIsPlaying = true;
+      setTimeout(() => {
+        this.soniIsPlaying = false;
+      }, 5000);
     }
   }
 

@@ -86,6 +86,7 @@ export class LineComponent implements OnInit {
   private minY: number = -1;
   private cleanData: Array<CleanDataObj> = [];
   private markedData: Array<CleanDataObj> = [];
+  private soniIsPlaying: boolean = false;
   dates: Array<Date> = [];
   maxMeasurement: number = -1;
   lineId: string;
@@ -209,13 +210,17 @@ export class LineComponent implements OnInit {
   }
 
   startSonification(): void {
-    if (this.cleanData) {
+    if (this.cleanData && !this.soniIsPlaying) {
       for (let dataIdx = 0; dataIdx < this.cleanData.length; ++dataIdx) {
         this.playSoniForLine(
           this.cleanData[dataIdx].values,
           1 / this.cleanData.length
         );
       }
+      this.soniIsPlaying = true;
+      setTimeout(() => {
+        this.soniIsPlaying = false;
+      }, 5000);
     }
   }
 
@@ -867,7 +872,13 @@ export class LineComponent implements OnInit {
             }
           }
         } else if (evt.key.toUpperCase() === 'S' && evt.shiftKey) {
-          this.playSoniForLine(this.cleanData[targetIdx].values);
+          if (!this.soniIsPlaying) {
+            this.playSoniForLine(this.cleanData[targetIdx].values);
+            this.soniIsPlaying = true;
+            setTimeout(() => {
+              this.soniIsPlaying = false;
+            }, 5000);
+          }
         }
       }
     }
