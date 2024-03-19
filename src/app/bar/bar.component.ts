@@ -40,7 +40,7 @@ export class BarComponent implements OnInit {
   @Input()
   yAxisUnit: string = '';
   @Input()
-  hideMenu: boolean = false;
+  hideMenu: boolean = true;
 
   private cleanData: Array<CleanData> = [];
   private svg?: D3Selection;
