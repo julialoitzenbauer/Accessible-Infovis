@@ -10,47 +10,9 @@
     <a href="/">Zurück</a>
 </ng-template>
 <ng-template [ngIf]="testId === '1'">
-    <div tabindex="0">In der nachfolgenden Visualisierung wird ein Balkendiagramm gezeigt. Um mit Balkendiagrammen zu interagieren, navigieren Sie zu der Visualisierung und drücken Sie anschließend Enter. Danach gelangen Sie zu einem Interaktionsmenü, das Ihnen mehrere
-        Interaktionsmöglichkeiten auflistet. Die einzelnen Interaktionsmöglichkeiten können Sie mit Hilfe von Enter aktivieren. Im nachfolgenden Menü werden die einzelnen Interaktionsmöglichkeiten erläutert.
+    <div tabindex="0">In der nachfolgenden Visualisierung wird ein Balkendiagramm gezeigt. Um mit Balkendiagrammen zu interagieren, navigieren Sie zu der Schaltfläche "Visualisierungsinteraktionen". Wenn Sie die Schaltfläche aktivieren,
+        öffnet sich eine Liste, die Ihnen mehrere Interaktionsmöglichkeiten bietet.
     </div>
-    <ul role="menu" aria-label="Visualisierungsinteraktionen" tabindex="0" (keydown)="onMenuKeyDown($event, 'bar')" #barMenu>
-        <li [attr.aria-expanded]="barNavMenuIsOpen" aria-haspopup="true" role="menuitem" aria-controls="barNavMenu" (keydown)="onMenuItemKeyDown($event, 'bar', 'barNavMenu')">Navigieren durch die Daten
-            <ul *ngIf="barNavMenuIsOpen" id="barNavMenu" #barNavMenu>
-                <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'barNav')">Der Fokus wird direkt auf den ersten Datenpunkt in der Visualisierung gesetzt. Sie können mit den Pfeiltasten Links und Rechts durch die Daten navigieren.</li>
-                <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'barNav')">Wenn Sie den Fokus auf einem Datenpunkt haben können Sie den Datenpunkt mit Hilfe von SHIFT+M makieren. Dieser Datenpunkt wird daraufhin in einer Liste gespeichert, nach der Sie anschließend in einem seperaten Interaktionsmenü filtern können.</li>
-                <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'barNav')">Drücken Sie SHIFT+S während sich der Fokus auf einem Datenpunkt befindet, wird die auditive Repräsentation dieses Datenpunktes abgespielt.</li>
-                <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'barNav')">Drücken Sie ESCAPE um wieder zurück zum Interaktionsmenü zu gelangen.</li>
-            </ul>
-        </li>
-        <li [attr.aria-expanded]="barSummaryMenuIsOpen" aria-haspopup="true" role="menuitem" aria-controls="barSummaryMenu" (keydown)="onMenuItemKeyDown($event, 'bar', 'barSummaryMenu')">Zusammenfassung
-            <ul *ngIf="barSummaryMenuIsOpen" id="barSummaryMenu" #barSummaryMenu>
-                <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'barSummary')">Es wird eine Zusammenfassung über die Visualisierung ausgegeben: was für Daten werden gezeigt, welche Daten werden von den einzelnen Achsen repräsentiert, wie ist der Datenverlauf, usw.</li>
-            </ul>
-        </li>
-        <li [attr.aria-expanded]="barSearchMenuIsOpen" aria-haspopup="true" role="menuitem" aria-controls="barSearchMenu" (keydown)="onMenuItemKeyDown($event, 'bar', 'barSearchMenu')">Suchen
-            <ul *ngIf="barSearchMenuIsOpen" id="barSearchMenu" #barSearchMenu>
-                <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'barSearch')">Es öffnet sich ein Untermenü wo Sie auswählen können, ob Sie nach einem Wert auf der y-Achse oder einem Datenpunkt-Label suchen wollen</li>
-                <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'barSearch')">Bei der Suche nach einem y-Wert können Sie die Symbole &lt; und &gt; verwenden oder nach einem exakten Wert suchen</li>
-                <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'barSearch')">Bei der Suche nach einem Datenpunkt-Label verwenden Sie statt Umlauten bitte die ausgeschriebene Variante davon - statt ä schreiben Sie bitte ae</li>
-            </ul>
-        </li>
-        <li [attr.aria-expanded]="barSonificationMenuIsOpen" aria-haspopup="true" role="menuitem" aria-controls="barSonificationMenu" (keydown)="onMenuItemKeyDown($event, 'bar', 'barSonificationMenu')">
-            Sonification
-            <ul *ngIf="barSonificationMenuIsOpen" id="barSonificationMenu" #barSonificationMenu>
-                <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'barSonification')">Die Daten werden in einer auditiven Darstellung wiedergegeben, die es Ihnen ermöglicht, den Verlauf der Daten akustisch wahrzunehmen.</li>
-            </ul>
-        </li>
-        <li [attr.aria-expanded]="barMarkMenuIsOpen" aria-haspopup="true" role="menuitem" aria-controls="barMarkMenu" (keydown)="onMenuItemKeyDown($event, 'bar', 'barMarkMenu')">Makierungen
-            <ul *ngIf="barMarkMenuIsOpen" id="barMarkMenu" #barMarkMenu>
-                <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'barMark')">Es öffnet sich ein weiteres Untermenü, in dem Sie auswählen können, ob Sie die aktuell gesetzten Makierungen löschen wollen oder ob Sie die abgebildeten Daten nach den makierten Datenpunkten filtern wollen.</li>
-            </ul>
-        </li>
-        <li [attr.aria-expanded]="barResetMenuIsOpen" aria-haspopup="true" role="menuitem" aria-controls="barResetMenu" (keydown)="onMenuItemKeyDown($event, 'bar', 'barResetMenu')">Daten zurücksetzen
-            <ul *ngIf="barResetMenuIsOpen" id="barResetMenu" #barResetMenu>
-                <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'barReset')">Die Visualisierung wird auf den Ausgangszustand zurückgesetzt - alle Filterungen werden aufgehoben, doch makierte Datenpunkte bleiben erhalten.</li>
-            </ul>
-        </li>
-    </ul>
     <app-bar title="Anteil der Pkw-Neuzulassungen in Österreich nach Automarke im Dezember 2023" [data]="[
     { Automarke: 'Hyundai', 'Anteil an Neuzulassungen': 14.8 },
     { Automarke: 'VW', 'Anteil an Neuzulassungen': 14.4 },
@@ -192,5 +154,7 @@
     description="In der Visualisierung wird gezeigt, dass die durchschnittliche Lebenserwartung zumeist steigt, je höher das BIP pro Kopf des Landes ist. Das Land Swasiland ist das Land mit der niedrigsten Lebenserwartung (55 Jahre), das Land Hong-Kong ist das Land mit der höchsten Lebenserwartung (84.3 Jahre). Auf der y-Achse wird die Lebenserwartung in Jahre angezeigt, auf der x-Achse das BIP pro Kopf in internationale Dollar."></app-scatter>
 </ng-template>
 <ng-template [ngIf]="!!testId">
-    <a href="/introduction">Zurück</a>
+    <div>
+        <a href="/introduction">Zurück</a>
+    </div>
 </ng-template>

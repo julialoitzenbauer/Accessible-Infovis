@@ -1,35 +1,37 @@
 <h3>{{ title }}</h3>
 <div role="log" aria-live="assertive" aria-relevant="all" #liveRegion></div>
-<div id="labels" #labelsContainer></div>
+<div id="labels" aria-hidden="true" #labelsContainer></div>
 <button
     [id]="menuId + '_BUTTON'"
     [ngClass]="{hidden: hideMenu}"
-    tabindex="-1"
-    type="menu"
+    tabindex="0"
+    type="button"
     aria-haspopup="true"
     [attr.aria-controls]="menuId"
     [attr.aria-expanded]="menuIsOpen"
     (keydown)="menuKeyDown($event)"
+    (click)="menuClick($event)"
     #menuButton>
     Visualisierungs-Interaktionen
 </button>
-<ul *ngIf="menuIsOpen"
-    [ngClass]="{hidden: hideMenu}"
+<ul
+    [ngClass]="{hidden: hideMenu, open: menuIsOpen}"
     [id]="menuId"
     role="menu"
+    [attr.aria-hidden]="!menuIsOpen"
     [attr.aria-labelledby]="menuId + '_BUTTON'"
     #menuList>
     <li role="menuitem" (keydown)="menuItemKeyDown($event, 0)">Navigieren durch Daten</li>
     <li role="menuitem" (keydown)="menuItemKeyDown($event, 1)">Zusammenfassung</li>
     <li id="MenuItemSearch" role="menuitem" aria-haspopup="true" [attr.aria-expanded]="searchMenuIsOpen" [attr.aria-controls]="menuId + '_SEARCH'" (keydown)="searchMenuKeyDown($event, 2)" #searchMenuButton>Suchen
-        <ul *ngIf="searchMenuIsOpen" [id]="menuId + '_SEARCH'" #searchMenuList>
+        <ul *ngIf="searchMenuIsOpen" [ngClass]="{open: menuIsOpen}" [id]="menuId + '_SEARCH'" #searchMenuList>
             <li id="SearchMenuY" role="menuitem" (keydown)="searchMenuItemKeyDown($event, 0)">Suchen nach {{ yAxisKey }}</li>
             <li id="SearchMenuLabel" role="menuitem" (keydown)="searchMenuItemKeyDown($event, 1)">Suchen nach {{ labelKey }}</li>
         </ul>
     </li>
     <li id="MenuItemSonification" role="menuitem" (keydown)="menuItemKeyDown($event, 3)">Sonification</li>
     <li id="MenuItemMarks" role="menuitem" aria-haspopup="true" [attr.aria-expanded]="markMenuIsOpen" [attr.aria-controls]="menuId + '_MARKS'" (keydown)="markMenuKeyDown($event, 4)" #markMenuButton>Markierungen</li>
-    <ul *ngIf="markMenuIsOpen" [id]="menuId + '_MARKS'" #markMenuList>
+    <ul *ngIf="markMenuIsOpen" [ngClass]="{open: menuIsOpen}" [id]="menuId + '_MARKS'" #markMenuList>
         <li role="menuitem" (keydown)="markMenuItemKeyDown($event, 0)">Gesetzte Makierungen löschen</li>
         <li role="menuitem" (keydown)="markMenuItemKeyDown($event, 1)">{{ isFilteredByMarks ? 'Filterung nach makierten Datenpunkten entfernen' : 'Nach makierten Datenpunkten filtern' }}</li>
     </ul>
@@ -40,8 +42,8 @@
     <input id="search" type="text" [placeholder]="searchMenuPlaceholder" #searchFieldInput (keydown)="searchFieldInputKeyDown($event)">
     <input class="button" type="submit" value="Suchen" #searchFieldSubmitBtn (keydown)="searchFieldButtonKeyDown($event)">
 </form>
-<form *ngIf="showDeleteMarksForm" [ngClass]="{hidden: hideMenu}">
-    <input class="button" type="submit" [value]="markedData.length + ' Markierungen löschen'" (keydown)="markFormButtonKeyDown($event)" #deleteMarksButton>
-    <input class="button" type="submit" value="Abbrechen" (keydown)="markFormButtonKeyDown($event)" #cancelDeleteMarksButton>
+<form *ngIf="showDeleteMarksForm" [ngClass]="{hidden: hideMenu}" (submit)="$event.preventDefault()">
+    <input class="button" type="submit" [value]="markedData.length + ' Markierungen löschen'" (click)="deleteMarksButtonClick()" (keydown)="markFormButtonKeyDown($event)" #deleteMarksButton>
+    <input class="button" type="submit" value="Abbrechen" (keydown)="markFormButtonKeyDown($event)" (click)="cancelDeleteMarksButtonClick()" #cancelDeleteMarksButton>
 </form>
-<figure [id]="barId" #figureElement></figure>
+<figure aria-hidden="true" [id]="barId" #figureElement></figure>
