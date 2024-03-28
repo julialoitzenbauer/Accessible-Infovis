@@ -152,6 +152,19 @@ export class ScatterComponent implements OnInit {
     evt.preventDefault();
   }
 
+  menuClick(): void {
+    this.menuIsOpen = true;
+    setTimeout(() => {
+      const list = this.menuList;
+      if (list?.nativeElement) {
+        const menuItems = list.nativeElement.querySelectorAll('li');
+        const itemIdx = 0;
+        menuItems[itemIdx].tabIndex = 0;
+        menuItems[itemIdx].focus();
+      }
+    }, 0);
+  }
+
   menuItemKeyDown(evt: KeyboardEvent, targetIdx: number): void {
     if (evt.key === 'ArrowDown' || evt.key === 'ArrowUp') {
       this.navInMenuList(MENU_TYPES.BASE_MENU, evt);
@@ -347,6 +360,24 @@ export class ScatterComponent implements OnInit {
       }
     }
     evt.preventDefault();
+  }
+
+  deleteMarksButtonClick(): void {
+    this.markedData = {};
+        this.currNumberOfMarks = 0;
+        const dots = this.svg?.selectAll('circle')?.nodes();
+        if (dots?.length) {
+          for (const dot of dots) {
+            if (dot) {
+              (dot as HTMLElement).classList.remove('marked');
+            }
+          }
+        }
+        this.closeDeleteMarksForm();
+  }
+
+  cancelDeleteMarksButtonClick(): void {
+    this.closeDeleteMarksForm();
   }
 
   searchFieldInputKeyDown(evt: KeyboardEvent): void {
@@ -776,6 +807,7 @@ export class ScatterComponent implements OnInit {
       .attr('cy', (d: CleanData) => y(d.yValue))
       .attr('r', this.radius)
       .attr('class', 'scatterCircle')
+      .attr('role', 'menuitem')
       .style('opacity', 0.5)
       .attr('tabindex', '-1')
       .attr('aria-label', (d: CleanData) => d.label)
@@ -851,6 +883,7 @@ export class ScatterComponent implements OnInit {
               tickContainer.style.bottom =
                 figureRect.bottom - xAxis.getBoundingClientRect().top + 'px';
               tickContainer.setAttribute('data-tickContainer', idx.toString());
+              tickContainer.setAttribute('role', 'menuitem');
               tickContainer.onkeydown = this.onTickContainerKeyDown.bind(this);
               this.figureElement.nativeElement.appendChild(tickContainer);
               if (this.cleanData && this.keys?.length) {

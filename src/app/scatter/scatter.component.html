@@ -2,27 +2,29 @@
 <button
     [ngClass]="{hidden: hideMenu}"
     [id]="menuId + '_BUTTON'"
-    tabindex="-1"
-    type="menu"
+    tabindex="0"
+    type="button"
     aria-haspopup="true"
     [attr.aria-controls]="menuId"
     [attr.aria-expanded]="menuIsOpen"
     (keydown)="menuKeyDown($event)"
+    (click)="menuClick()"
     #menuButton>
     Visualisierungs-Interaktionen
 </button>
 <div role="log" aria-live="assertive" aria-relevant="all" #liveRegion>
 </div>
-<ul *ngIf="menuIsOpen"
-    [ngClass]="{hidden: hideMenu}"
+<ul
+    [ngClass]="{hidden: hideMenu, open: menuIsOpen}"
     [id]="menuId"
     role="menu"
     [attr.aria-labelledby]="menuId + '_BUTTON'"
+    [attr.aria-hidden]="!menuIsOpen"
     #menuList>
     <li id="MenuItemNavigate" role="menuitem" (keydown)="menuItemKeyDown($event, 0)">Navigieren durch Daten</li>
     <li id="MenuItemSummary" role="menuitem" (keydown)="menuItemKeyDown($event, 1)">Zusammenfassung</li>
     <li id="MenuItemSearch" role="menuitem" aria-haspopup="true" [attr.aria-expanded]="searchMenuIsOpen" [attr.aria-controls]="menuId + '_SEARCH'" (keydown)="searchMenuKeyDown($event, 2)" #searchMenuButton>Suchen
-        <ul *ngIf="searchMenuIsOpen" [id]="menuId + '_SEARCH'" #searchMenuList>
+        <ul *ngIf="searchMenuIsOpen" [ngClass]="{open: menuIsOpen}" [id]="menuId + '_SEARCH'" #searchMenuList>
             <li id="SearchMenuX" role="menuitem" (keydown)="searchMenuItemKeyDown($event, 0)">Suchen nach {{ xAxisKey }}</li>
             <li id="SearchMenuY" role="menuitem" (keydown)="searchMenuItemKeyDown($event, 1)">Suchen nach {{ yAxisKey }}</li>
             <li id="SearchMenuLabel" role="menuitem" (keydown)="searchMenuItemKeyDown($event, 2)">Suchen nach Datenpunkt-Name</li>
@@ -30,7 +32,7 @@
     </li>
     <li id="MenuItemSonification" role="menuitem" (keydown)="menuItemKeyDown($event, 3)">Sonification</li>
     <li id="MenuItemMarks" role="menuitem" aria-haspopup="true" [attr.aria-expanded]="markMenuIsOpen" [attr.aria-controls]="menuId + '_MARKS'" (keydown)="markMenuKeyDown($event, 4)" #markMenuButton>Markierungen</li>
-    <ul *ngIf="markMenuIsOpen" [id]="menuId + '_MARKS'" #markMenuList>
+    <ul *ngIf="markMenuIsOpen" [ngClass]="{open: menuIsOpen}" [id]="menuId + '_MARKS'" #markMenuList>
         <li role="menuitem" (keydown)="markMenuItemKeyDown($event, 0)">Gesetzte Markierungen löschen</li>
         <li role="menuitem" (keydown)="markMenuItemKeyDown($event, 1)">{{ isFilteredByMarks ? 'Filterung nach markierten Datenpunkten entfernen' : 'Nach markierten Datenpunkten filtern' }}</li>
     </ul>
@@ -41,12 +43,11 @@
     <input id="search" type="text" [placeholder]="searchMenuPlaceholder" #searchFieldInput (keydown)="searchFieldInputKeyDown($event)">
     <input class="button" type="submit" value="Suchen" (keydown)="searchFieldButtonKeyDown($event)">
 </form>
-<form *ngIf="showDeleteMarksForm" [ngClass]="{hidden: hideMenu}">
-    <input class="button" type="submit" [value]="currNumberOfMarks + ' Markierungen löschen'" (keydown)="markFormButtonKeyDown($event)" #deleteMarksButton>
-    <input class="button" type="submit" value="Abbrechen" (keydown)="markFormButtonKeyDown($event)" #cancelDeleteMarksButton>
+<form *ngIf="showDeleteMarksForm" (submit)="$event.preventDefault()" [ngClass]="{hidden: hideMenu}">
+    <input class="button" type="submit" [value]="currNumberOfMarks + ' Markierungen löschen'" (keydown)="markFormButtonKeyDown($event)" (click)="deleteMarksButtonClick()" #deleteMarksButton>
+    <input class="button" type="submit" value="Abbrechen" (keydown)="markFormButtonKeyDown($event)" (click)="cancelDeleteMarksButtonClick()" #cancelDeleteMarksButton>
 </form>
-<p style="position: absolute; left: -10000px;" id="SVG_DESCR"></p>
-<div #figureContainer tabindex="0" [attr.aria-label]="chartTitle + ', Drücken Sie Enter um mit der Visualisierung zu interagieren'" (keydown)="svgKeyDown($event)">
+<div #figureContainer aria-hidden="true" [attr.aria-label]="chartTitle + ', Drücken Sie Enter um mit der Visualisierung zu interagieren'" (keydown)="svgKeyDown($event)">
     <figure [id]="scatterId" id="" #figureElement style="position: relative">
     </figure>
 </div>
