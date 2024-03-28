@@ -297,7 +297,7 @@ export class ScatterComponent implements OnInit {
       this.liveRegion.nativeElement.innerHTML = '';
       const descriptionTag = document.createElement('p');
       descriptionTag.innerHTML =
-        'Nur die makierten Datenpunkte werden angezeigt.';
+        'Nur die markierten Datenpunkte werden angezeigt.';
       this.liveRegion.nativeElement.appendChild(descriptionTag);
     }
   }
@@ -1070,7 +1070,7 @@ export class ScatterComponent implements OnInit {
             this.markedData[cleanDataToMark.xValue] = [cleanDataToMark];
             target.setAttribute(
               'aria-label',
-              cleanDataToMark.label + ', makiert'
+              cleanDataToMark.label + ', markiert'
             );
           } else {
             if (
@@ -1090,7 +1090,7 @@ export class ScatterComponent implements OnInit {
               this.markedData[cleanDataToMark.xValue].push(cleanDataToMark);
               target.setAttribute(
                 'aria-label',
-                cleanDataToMark.label + ', makiert'
+                cleanDataToMark.label + ', markiert'
               );
             }
           }

@@ -189,7 +189,7 @@ export class BarComponent implements OnInit {
                       ': ' +
                       mark.yValue +
                       (this.yAxisUnit ? ' ' + this.yAxisUnit : '') +
-                      ', Makiert'
+                      ', Markiert'
                   );
                 }
               }
@@ -366,7 +366,7 @@ export class BarComponent implements OnInit {
                     ': ' +
                     mark.yValue +
                     (this.yAxisUnit ? ' ' + this.yAxisUnit : '') +
-                    ', Makiert'
+                    ', Markiert'
                 );
               }
             }
@@ -406,7 +406,7 @@ export class BarComponent implements OnInit {
         if (this.liveRegion?.nativeElement) {
           this.liveRegion.nativeElement.innerHTML = '';
           this.liveRegion.nativeElement.innerHTML =
-            '<p>Makierte Daten wurden gelöscht</p>';
+            '<p>Markierte Daten wurden gelöscht</p>';
         }
       }
     } else if (
@@ -446,7 +446,7 @@ export class BarComponent implements OnInit {
         if (this.liveRegion?.nativeElement) {
           this.liveRegion.nativeElement.innerHTML = '';
           this.liveRegion.nativeElement.innerHTML =
-            '<p>Makierte Daten wurden gelöscht</p>';
+            '<p>Markierte Daten wurden gelöscht</p>';
         }
   }
 
@@ -822,13 +822,13 @@ export class BarComponent implements OnInit {
                   descriptionTag.innerHTML = this.yAxisKey + ': ' + bar.yValue;
                 } else {
                   descriptionTag.innerHTML =
-                    this.yAxisKey + ': ' + bar.yValue + ', Makiert';
+                    this.yAxisKey + ': ' + bar.yValue + ', Markiert';
                   node.classList.add('marked');
                 }
               }
               if (this.liveRegion?.nativeElement) {
                 this.liveRegion.nativeElement.innerHTML = '';
-                this.liveRegion.nativeElement.innerHTML = `<p>Makierung wurde ${
+                this.liveRegion.nativeElement.innerHTML = `<p>Markierung wurde ${
                   remove ? 'entfernt' : 'hinzugefügt'
                 }</p>`;
               }

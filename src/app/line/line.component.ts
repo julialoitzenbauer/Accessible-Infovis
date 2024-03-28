@@ -796,7 +796,7 @@ export class LineComponent implements OnInit {
               this.cleanData.length > 1
                 ? ', Linie ' + this.cleanData[idx].id
                 : ''
-            }${this.dotIsMarked(d, this.cleanData[idx].id) ? ', Makiert' : ''}`
+            }${this.dotIsMarked(d, this.cleanData[idx].id) ? ', Markiert' : ''}`
         )
         .attr('class', (d: CleanData) => {
           if (this.dotIsMarked(d, this.cleanData[idx].id)) {
@@ -994,7 +994,7 @@ export class LineComponent implements OnInit {
             target?.setAttribute('class', 'markedDot');
             target?.setAttribute(
               'aria-label',
-              `${this.yAxisLabel}: ${markedDotData.measurment}, Linie ${lineData.id}, Makiert`
+              `${this.yAxisLabel}: ${markedDotData.measurment}, Linie ${lineData.id}, Markiert`
             );
           } else {
             target?.setAttribute('class', '');

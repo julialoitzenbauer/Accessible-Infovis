@@ -36,12 +36,12 @@
     { Automarke: 'Nissan', 'Anteil an Neuzulassungen': 1.3 },
     { Automarke: 'Sonstige', 'Anteil an Neuzulassungen': 8.8 },
     ]" yAxisKey="Anteil an Neuzulassungen" labelKey="Automarke" yAxisUnit="Prozent"
-    description="In der Visualisierungen werden die Anteile der Neuzulassungen nach Automarken in Prozent in Dezember 2023 angezeigt, wobei der Anteil in Prozent auf der y-Achse angezeigt wird. Die Marke Hyundai wurde mit 14.8 Prozent am häufigsten zugelassen, dicht gefolgt von VW mit 14.4 Prozent. Den dritten Platz teilen sich BMW und Skoda mit jeweils 8.8 Prozent. Die übrigen Automarken weisen alle einen Marktanteil von unter fünf Prozent auf."></app-bar>
+    description="In der Visualisierung werden die Anteile der Neuzulassungen nach Automarken in Prozent in Dezember 2023 angezeigt, wobei der Anteil in Prozent auf der y-Achse angezeigt wird. Die Marke Hyundai wurde mit 14.8 Prozent am häufigsten zugelassen, dicht gefolgt von VW mit 14.4 Prozent. Den dritten Platz teilen sich BMW und Skoda mit jeweils 8.8 Prozent. Die übrigen Automarken weisen alle einen Marktanteil von unter fünf Prozent auf."></app-bar>
 </ng-template>
 
 <ng-template [ngIf]="testId === '2'">
-    <div tabindex="0">In der nachfolgenden Visualisierung wird ein Liniendiagramm gezeigt. Um mit Liniendiagrammen zu interagieren, navigieren Sie zu der Visualisierung und drücken Sie anschließend Enter. Danach gelangen Sie zu einem Interaktionsmenü, das Ihnen mehrere
-        Interaktionsmöglichkeiten auflistet. Die einzelnen Interaktionsmöglichkeiten können Sie mit Hilfe von Enter aktivieren. Im nachfolgenden Menü werden die einzelnen Interaktionsmöglichkeiten erläutert.
+    <div tabindex="0">In der nachfolgenden Visualisierung wird ein Liniendiagramm gezeigt. Um mit Liniendiagrammen zu interagieren, navigieren Sie zu der Schaltfläche "Visualisierungsinteraktionen". Wenn Sie die Schaltfläche aktivieren,
+        öffnet sich eine Liste, die Ihnen mehrere Interaktionsmöglichkeiten bietet.
     </div>
     <app-line chartTitle="Umsatz von Apple Inc. weltweit in den Geschäftsjahren von 2004 bis 2023 (in Milliarden US-Dollar)" [data]="[
     { date: '01-Jan-2004', Umsatz: 8.28  },
@@ -68,48 +68,9 @@
     summary="Die Visualisierung zeigt den Umsatz von Apple Inc. von 2004 bis 2023 in Milliarden US-Dollar, wobei die Zeit auf der x-Achse und der Umsatz auf der y-Achse dargestellt wird. Es ist ersichtlich, dass der Umsatz bis 2023 von 8.28 Milliarden US-Dollar auf 383.29 Milliarden US-Dollar anstieg. Bis 2015 stieg der Umsatz kontinuierlich, anschließend stieg der Umsatz insgesamt noch weiter, allerdings mit einigen Schwankungen nach unten."></app-line>
 </ng-template>
 <ng-template [ngIf]="testId === '3'">
-    <div tabindex="0">In der nachfolgenden Visualisierung wird ein Punktdiagramm gezeigt. Um mit Punktdiagrammen zu interagieren, navigieren Sie zu der Visualisierung und drücken Sie anschließend Enter. Danach gelangen Sie zu einem Interaktionsmenü, das Ihnen mehrere
-        Interaktionsmöglichkeiten auflistet. Die einzelnen Interaktionsmöglichkeiten können Sie mit Hilfe von Enter aktivieren. Im nachfolgenden Menü werden die einzelnen Interaktionsmöglichkeiten erläutert.
+    <div tabindex="0">In der nachfolgenden Visualisierung wird ein Punkt-Diagramm gezeigt. Um mit Punkt-Diagrammen zu interagieren, navigieren Sie zu der Schaltfläche "Visualisierungsinteraktionen". Wenn Sie die Schaltfläche aktivieren,
+        öffnet sich eine Liste, die Ihnen mehrere Interaktionsmöglichkeiten bietet.
     </div>
-    <ul role="menu" aria-label="Visualisierungsinteraktionen" tabindex="0" (keydown)="onMenuKeyDown($event, 'scatter')" #scatterMenu>
-        <li [attr.aria-expanded]="scatterNavMenuIsOpen" aria-haspopup="true" role="menuitem" aria-controls="scatterNavMenu" (keydown)="onMenuItemKeyDown($event, 'scatter', 'scatterNavMenu')">Navigieren durch die Daten
-            <ul *ngIf="scatterNavMenuIsOpen" id="scatterNavMenu" #scatterNavMenu>
-                <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'scatterNav')">Der Fokus wird auf den ersten Abschnitt der Datenpunkte gelegt. Dabei wird Ihnen ausgegeben, wie viele Datenpunkte sich in dieser Gruppierung befinden. Mit Hilfe der Pfeiltasten nach Links und Rechts können Sie zwischen den einzelnen Gruppen navigieren.</li>
-                <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'scatterNav')">Befindet sich der Fokus auf einer Gruppe von Datenpunkten, gelangen Sie mit ESCAPE zurück zum Interaktionsmenü.</li>
-                <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'scatterNav')">Befindet sich der Fokus auf einer Gruppe von Datenpunkten, können Sie mit Hilfe von ENTER in diese Gruppe navigieren, wobei der Fokus auf den ersten Datenpunkt in dieser Gruppe gesetzt wird.</li>
-                <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'scatterNav')">Befindet sich der Fokus auf einem Datenpunkt innerhalb einer Gruppe, so gelangen Sie mit ESCAPE zurück zu der Gruppe selbst.</li>
-            </ul>
-        </li>
-        <li [attr.aria-expanded]="scatterSummaryMenuIsOpen" aria-haspopup="true" role="menuitem" aria-controls="scatterSummaryMenu" (keydown)="onMenuItemKeyDown($event, 'scatter', 'scatterSummaryMenu')">Zusammenfassung
-            <ul *ngIf="scatterSummaryMenuIsOpen" id="scatterSummaryMenu" #scatterSummaryMenu>
-                <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'scatterSummary')">Es wird eine Zusammenfassung über die Visualisierung ausgegeben: was für Daten werden gezeigt, welche Daten werden von den einzelnen Achsen repräsentiert, wie ist der Datenverlauf, usw.</li>
-            </ul>
-        </li>
-        <li [attr.aria-expanded]="scatterSearchMenuIsOpen" aria-haspopup="true" role="menuitem" aria-controls="scatterSearchMenu" (keydown)="onMenuItemKeyDown($event, 'scatter', 'scatterSearchMenu')">Suchen
-            <ul *ngIf="scatterSearchMenuIsOpen" id="scatterSearchMenu" #scatterSearchMenu>
-                <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'scatterSearch')">Es öffnet sich ein Untermenü wo Sie auswählen können, ob Sie nach einem Wert auf der y-Achse, der x-Achse oder einem Datenpunkt-Namen suchen wollen</li>
-                <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'scatterSearch')">Bei der Suche nach einem y-Wert können Sie die Symbole &lt; und &gt; verwenden oder nach einem exakten Wert suchen</li>
-                <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'scatterSearch')">Bei der Suche nach einem x-Wert können Sie die Symbole &lt; und &gt; verwenden oder nach einem exakten Wert suchen</li>
-                <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'scatterSearch')">Bei der Suche nach einem Datenpunkt-Namen verwenden Sie statt Umlauten bitte die ausgeschriebene Variante davon - statt ä schreiben Sie bitte ae</li>
-            </ul>
-        </li>
-        <li [attr.aria-expanded]="scatterSonificationMenuIsOpen" aria-haspopup="true" role="menuitem" aria-controls="scatterSonificationMenu" (keydown)="onMenuItemKeyDown($event, 'scatter', 'scatterSonificationMenu')">
-            Sonification
-            <ul *ngIf="scatterSonificationMenuIsOpen" id="scatterSonificationMenu" #scatterSonificationMenu>
-                <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'scatterSonification')">Die Daten werden in einer auditiven Darstellung wiedergegeben, die es Ihnen ermöglicht, den Verlauf der Daten akustisch wahrzunehmen.</li>
-            </ul>
-        </li>
-        <li [attr.aria-expanded]="scatterMarkMenuIsOpen" aria-haspopup="true" role="menuitem" aria-controls="scatterMarkMenu" (keydown)="onMenuItemKeyDown($event, 'scatter', 'scatterMarkMenu')">Makierungen
-            <ul *ngIf="scatterMarkMenuIsOpen" id="scatterMarkMenu" #scatterMarkMenu>
-                <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'scatterMark')">Es öffnet sich ein weiteres Untermenü, in dem Sie auswählen können, ob Sie die aktuell gesetzten Makierungen löschen wollen oder ob Sie die abgebildeten Daten nach den makierten Datenpunkten filtern wollen.</li>
-            </ul>
-        </li>
-        <li [attr.aria-expanded]="scatterResetMenuIsOpen" aria-haspopup="true" role="menuitem" aria-controls="scatterResetMenu" (keydown)="onMenuItemKeyDown($event, 'scatter', 'scatterResetMenu')">Daten zurücksetzen
-            <ul *ngIf="scatterResetMenuIsOpen" id="scatterResetMenu" #scatterResetMenu>
-                <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'scatterReset')">Die Visualisierung wird auf den Ausgangszustand zurückgesetzt - alle Filterungen werden aufgehoben, doch makierte Datenpunkte bleiben erhalten.</li>
-            </ul>
-        </li>
-    </ul>
     <app-scatter chartTitle="BIP pro Kopf vs. Lebenserwartung, 2015" labelKey="Land" xAxisKey="BIP pro Kopf" yAxisKey="Lebenserwartung" [formatXAxisToInt]="true" [radius]="4" [data]="scatterData" [showLabel]="false" xAxisUnit="internationale Dollar" yAxisUnit="Jahre"
     description="In der Visualisierung wird gezeigt, dass die durchschnittliche Lebenserwartung zumeist steigt, je höher das BIP pro Kopf des Landes ist. Das Land Swasiland ist das Land mit der niedrigsten Lebenserwartung (55 Jahre), das Land Hong-Kong ist das Land mit der höchsten Lebenserwartung (84.3 Jahre). Auf der y-Achse wird die Lebenserwartung in Jahre angezeigt, auf der x-Achse das BIP pro Kopf in internationale Dollar."></app-scatter>
 </ng-template>
