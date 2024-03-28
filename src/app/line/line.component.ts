@@ -3,7 +3,7 @@ import * as d3 from 'd3';
 import * as Tone from 'tone';
 import { D3ScaleLinear, D3ScaleTime, D3Selection } from 'src/types';
 import { IDGenerator } from './IDGenerator';
-import { CleanData, CleanDataObj, CleanDotData } from './lineTypes';
+import { CleanData, CleanDataObj } from './lineTypes';
 import { data as importData } from './testData';
 import {
   MAX_MIDI_NOTE,
@@ -156,6 +156,18 @@ export class LineComponent implements OnInit {
       }, 0);
     }
     evt.preventDefault();
+  }
+
+  menuClick() {
+    this.menuIsOpen = true;
+      setTimeout(() => {
+        if (this.menuList?.nativeElement) {
+          const items = this.menuList.nativeElement.querySelectorAll('li');
+          let itemIdx = 0;
+          items[itemIdx].setAttribute('tabindex', '0');
+          items[itemIdx].focus();
+        }
+      }, 0);
   }
 
   menuItemKeyDown(evt: KeyboardEvent, targetIdx: number): void {
@@ -578,6 +590,28 @@ export class LineComponent implements OnInit {
     }
   }
 
+  deleteMarksButtonClick(): void {
+    const numberOfMarks = this.getCurrNumberOfMarks();
+      this.markedData = [];
+      if (this.figureElement?.nativeElement)
+        this.figureElement.nativeElement.innerHTML = '';
+      if (this.liveRegion?.nativeElement) {
+        this.liveRegion.nativeElement.innerHTML = '';
+        const descriptionTag = document.createElement('p');
+        descriptionTag.innerHTML = `${numberOfMarks} Markierungen wurden gelöscht.`;
+        this.liveRegion.nativeElement.appendChild(descriptionTag);
+      }
+      this.drawChart();
+  }
+
+  cancelDeleteMarksButtonClick(): void {
+    if (this.markMenuList?.nativeElement) {
+      const items = this.markMenuList.nativeElement.querySelectorAll('li');
+      items[0].focus();
+      this.showDeleteMarksForm = false;
+    }
+  }
+
   getCurrNumberOfMarks(): number {
     let markSum = 0;
     for (let idx = 0; idx < this.markedData.length; ++idx) {
@@ -703,6 +737,7 @@ export class LineComponent implements OnInit {
       .append('g')
       .attr('id', (d: CleanDataObj) => d.id)
       .attr('aria-label', (d: CleanDataObj) => 'Linie ' + d.id)
+      .attr('role', 'menuitem')
       .attr(
         'aria-description',
         'Drücken Sie "Enter" um in die Linie zu navigieren'
@@ -747,6 +782,7 @@ export class LineComponent implements OnInit {
         .attr('r', 3)
         .attr('data-lineid', this.cleanData[idx].id)
         .attr('data-dotIdx', (d: CleanData, dotIdx: number) => dotIdx)
+        .attr('role', 'menuitem')
         .attr(
           'aria-label',
           (d: CleanData) =>
@@ -804,6 +840,7 @@ export class LineComponent implements OnInit {
   }
 
   private lineKeyDown(evt: KeyboardEvent): void {
+    console.log('KEY DOWN');
     if (evt.target && this.figureElement?.nativeElement) {
       const targetId = (evt.target as HTMLElement).id;
       const targetIdx = this.getLineIdxById(targetId);

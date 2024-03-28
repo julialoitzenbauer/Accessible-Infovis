@@ -43,46 +43,6 @@
     <div tabindex="0">In der nachfolgenden Visualisierung wird ein Liniendiagramm gezeigt. Um mit Liniendiagrammen zu interagieren, navigieren Sie zu der Visualisierung und drücken Sie anschließend Enter. Danach gelangen Sie zu einem Interaktionsmenü, das Ihnen mehrere
         Interaktionsmöglichkeiten auflistet. Die einzelnen Interaktionsmöglichkeiten können Sie mit Hilfe von Enter aktivieren. Im nachfolgenden Menü werden die einzelnen Interaktionsmöglichkeiten erläutert.
     </div>
-    <ul role="menu" aria-label="Visualisierungsinteraktionen" tabindex="0" (keydown)="onMenuKeyDown($event, 'line')" #lineMenu>
-        <li [attr.aria-expanded]="lineNavMenuIsOpen" aria-haspopup="true" role="menuitem" aria-controls="lineNavMenu" (keydown)="onMenuItemKeyDown($event, 'line', 'lineNavMenu')">Navigieren durch die Daten
-            <ul *ngIf="lineNavMenuIsOpen" id="lineNavMenu" #lineNavMenu>
-                <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'lineNav')">Der Fokus wird direkt auf die erste Linie in der Visualisierung gesetzt. Sie können mit den Pfeiltasten nach unten und oben zu den anderen Linien navigieren.</li>
-                <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'lineNav')">Steht der Fokus auf einer Linie, kann mit Hilfe von ESCAPE zum Interaktionsmenü navigiert werden. Mit Hilfe von SHIFT+M können alle Datenpunkte innerhalb der Linie makiert werden, SHIFT+S gibt eine auditive Repräsentation der Linie wider.</li>
-                <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'lineNav')">Mit Enter navigieren Sie in die fokussierte Linie hinein, wobei der Fokus auf den ersten Datenpunkt der Linie gesetzt wird. Danach können Sie mit den Pfeiltasten nach links und rechts zu den übrigen Datenpunkten navigieren.</li>
-                <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'lineNav')">Befindet sich der Fokus auf einem Datenpunkt innerhalb einer Linie, kann mit Hilfe von ESCAPE zur Linie selbst zurück navigiert werden.</li>
-                <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'lineNav')">Wenn Sie den Fokus auf einem Datenpunkt haben können Sie den Datenpunkt mit Hilfe von SHIFT+M makieren. Dieser Datenpunkt wird daraufhin in einer Liste gespeichert, die Sie anschließend filtern können.</li>
-                <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'lineNav')">Beim Fokus auf einem Datenpunkt können Sie ebenfalls SHIFT+S drücken um die auditive Repräsentierung des Datenpunktes abzupielen.</li>
-            </ul>
-        </li>
-        <li [attr.aria-expanded]="lineSummaryMenuIsOpen" aria-haspopup="true" role="menuitem" aria-controls="lineSummaryMenu" (keydown)="onMenuItemKeyDown($event, 'line', 'lineSummaryMenu')">Zusammenfassung
-            <ul *ngIf="lineSummaryMenuIsOpen" id="lineSummaryMenu" #lineSummaryMenu>
-                <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'lineSummary')">Es wird eine Zusammenfassung über die Visualisierung ausgegeben: was für Daten werden gezeigt, welche Daten werden von den einzelnen Achsen repräsentiert, wie ist der Datenverlauf, usw.</li>
-            </ul>
-        </li>
-        <li [attr.aria-expanded]="lineSearchMenuIsOpen" aria-haspopup="true" role="menuitem" aria-controls="lineSearchMenu" (keydown)="onMenuItemKeyDown($event, 'line', 'lineSearchMenu')">Suchen
-            <ul *ngIf="lineSearchMenuIsOpen" id="lineSearchMenu" #lineSearchMenu>
-                <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'lineSearch')">Es öffnet sich ein Untermenü wo Sie auswählen können, ob Sie nach einem Datum oder einem Linien-Label suchen wollen</li>
-                <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'lineSearch')">Bei der Suche nach einem Datum können Sie die Symbole &lt; und &gt; verwenden oder Sie können nach einem exakten Wert suchen</li>
-                <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'lineSearch')">Bei der Suche nach einem Linien-Label verwenden Sie statt Umlauten bitte die ausgeschriebene Variante davon - statt ä schreiben Sie bitte ae</li>
-            </ul>
-        </li>
-        <li [attr.aria-expanded]="lineSonificationMenuIsOpen" aria-haspopup="true" role="menuitem" aria-controls="lineSonificationMenu" (keydown)="onMenuItemKeyDown($event, 'line', 'lineSonificationMenu')">
-            Sonification
-            <ul *ngIf="lineSonificationMenuIsOpen" id="lineSonificationMenu" #lineSonificationMenu>
-                <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'lineSonification')">Die Daten werden in einer auditiven Darstellung wiedergegeben, die es Ihnen ermöglicht, den Verlauf der Daten akustisch wahrzunehmen.</li>
-            </ul>
-        </li>
-        <li [attr.aria-expanded]="lineMarkMenuIsOpen" aria-haspopup="true" role="menuitem" aria-controls="lineMarkMenu" (keydown)="onMenuItemKeyDown($event, 'line', 'lineMarkMenu')">Makierungen
-            <ul *ngIf="lineMarkMenuIsOpen" id="lineMarkMenu" #lineMarkMenu>
-                <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'lineMark')">Es öffnet sich ein weiteres Untermenü, in dem Sie auswählen können, ob Sie die aktuell gesetzten Makierungen löschen wollen oder ob Sie die abgebildeten Daten nach den makierten Datenpunkten filtern wollen.</li>
-            </ul>
-        </li>
-        <li [attr.aria-expanded]="lineResetMenuIsOpen" aria-haspopup="true" role="menuitem" aria-controls="lineResetMenu" (keydown)="onMenuItemKeyDown($event, 'line', 'lineResetMenu')">Daten zurücksetzen
-            <ul *ngIf="lineResetMenuIsOpen" id="lineResetMenu" #lineResetMenu>
-                <li role="menuitem" (keydown)="onMenuItemKeyDown($event, 'lineReset')">Die Visualisierung wird auf den Ausgangszustand zurückgesetzt - alle Filterungen werden aufgehoben, doch makierte Datenpunkte bleiben erhalten.</li>
-            </ul>
-        </li>
-    </ul>
     <app-line chartTitle="Umsatz von Apple Inc. weltweit in den Geschäftsjahren von 2004 bis 2023 (in Milliarden US-Dollar)" [data]="[
     { date: '01-Jan-2004', Umsatz: 8.28  },
     { date: '01-Jan-2005', Umsatz: 13.93 },
