@@ -371,9 +371,19 @@ export class BarComponent implements OnInit {
               }
             }
           }
+          if (this.liveRegion?.nativeElement) {
+            let notification = this.isFilteredByMarks
+              ? `Es ${this.markedData.length === 1 ? 'wird' : 'werden'} nun ${this.markedData.length} ${this.markedData.length === 1 ? 'markierter Datenpunkt' : 'markierte Datenpunkte'} in der Visualisierung angezeigt.`
+              : 'Es werden nun wieder alle Datenpunkte angezeigt.';
+            const descriptionTag = document.createElement('p');
+            descriptionTag.innerHTML = notification;
+            this.liveRegion.nativeElement.innerHTML = '';
+            this.liveRegion.nativeElement.appendChild(descriptionTag);
+          }
         }
       }
     }
+
     evt.preventDefault();
   }
 
@@ -406,7 +416,7 @@ export class BarComponent implements OnInit {
         if (this.liveRegion?.nativeElement) {
           this.liveRegion.nativeElement.innerHTML = '';
           this.liveRegion.nativeElement.innerHTML =
-            '<p>Markierte Daten wurden gelöscht</p>';
+            '<p>Markierungen wurden gelöscht.</p>';
         }
       }
     } else if (
@@ -446,7 +456,7 @@ export class BarComponent implements OnInit {
         if (this.liveRegion?.nativeElement) {
           this.liveRegion.nativeElement.innerHTML = '';
           this.liveRegion.nativeElement.innerHTML =
-            '<p>Markierte Daten wurden gelöscht</p>';
+            '<p>Markierungen wurden gelöscht.</p>';
         }
   }
 

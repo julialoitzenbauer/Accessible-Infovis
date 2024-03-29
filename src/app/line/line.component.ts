@@ -544,6 +544,15 @@ export class LineComponent implements OnInit {
             this.isFilteredByMarks = true;
           }
           this.drawChart();
+          if (this.liveRegion?.nativeElement) {
+            let notification = this.isFilteredByMarks
+              ? `Es ${this.getCurrNumberOfMarks() === 1 ? 'wird' : 'werden'} nun ${this.getCurrNumberOfMarks()} ${this.getCurrNumberOfMarks() === 1 ? 'markierter Datenpunkt' : 'markierte Datenpunkte'} in der Visualisierung angezeigt.`
+              : 'Es werden nun wieder alle Datenpunkte angezeigt.';
+            const descriptionTag = document.createElement('p');
+            descriptionTag.innerHTML = notification;
+            this.liveRegion.nativeElement.innerHTML = '';
+            this.liveRegion.nativeElement.appendChild(descriptionTag);
+          }
         }
       }
     }
@@ -840,7 +849,6 @@ export class LineComponent implements OnInit {
   }
 
   private lineKeyDown(evt: KeyboardEvent): void {
-    console.log('KEY DOWN');
     if (evt.target && this.figureElement?.nativeElement) {
       const targetId = (evt.target as HTMLElement).id;
       const targetIdx = this.getLineIdxById(targetId);

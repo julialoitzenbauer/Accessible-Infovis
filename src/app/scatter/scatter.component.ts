@@ -364,6 +364,7 @@ export class ScatterComponent implements OnInit {
 
   deleteMarksButtonClick(): void {
     this.markedData = {};
+    let notification = `${this.currNumberOfMarks} ${this.currNumberOfMarks === 1 ? 'Markierung wurde' : 'Markierungen wurden'} gelöscht.`;
         this.currNumberOfMarks = 0;
         const dots = this.svg?.selectAll('circle')?.nodes();
         if (dots?.length) {
@@ -374,6 +375,12 @@ export class ScatterComponent implements OnInit {
           }
         }
         this.closeDeleteMarksForm();
+        if (this.liveRegion?.nativeElement) {
+          this.liveRegion.nativeElement.innerHTML = '';
+          const descriptionTag = document.createElement('p');
+          descriptionTag.innerHTML = notification;
+          this.liveRegion.nativeElement.appendChild(descriptionTag);
+        }
   }
 
   cancelDeleteMarksButtonClick(): void {
