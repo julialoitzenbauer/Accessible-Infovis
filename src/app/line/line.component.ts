@@ -3,7 +3,7 @@ import * as d3 from 'd3';
 import * as Tone from 'tone';
 import { D3ScaleLinear, D3ScaleTime, D3Selection } from 'src/types';
 import { IDGenerator } from './IDGenerator';
-import { CleanData, CleanDataObj, CleanDotData } from './lineTypes';
+import { CleanData, CleanDataObj } from './lineTypes';
 import { data as importData } from './testData';
 import {
   MAX_MIDI_NOTE,
@@ -156,6 +156,18 @@ export class LineComponent implements OnInit {
       }, 0);
     }
     evt.preventDefault();
+  }
+
+  menuClick() {
+    this.menuIsOpen = true;
+      setTimeout(() => {
+        if (this.menuList?.nativeElement) {
+          const items = this.menuList.nativeElement.querySelectorAll('li');
+          let itemIdx = 0;
+          items[itemIdx].setAttribute('tabindex', '0');
+          items[itemIdx].focus();
+        }
+      }, 0);
   }
 
   menuItemKeyDown(evt: KeyboardEvent, targetIdx: number): void {
@@ -532,6 +544,15 @@ export class LineComponent implements OnInit {
             this.isFilteredByMarks = true;
           }
           this.drawChart();
+          if (this.liveRegion?.nativeElement) {
+            let notification = this.isFilteredByMarks
+              ? `Es ${this.getCurrNumberOfMarks() === 1 ? 'wird' : 'werden'} nun ${this.getCurrNumberOfMarks()} ${this.getCurrNumberOfMarks() === 1 ? 'markierter Datenpunkt' : 'markierte Datenpunkte'} in der Visualisierung angezeigt.`
+              : 'Es werden nun wieder alle Datenpunkte angezeigt.';
+            const descriptionTag = document.createElement('p');
+            descriptionTag.innerHTML = notification;
+            this.liveRegion.nativeElement.innerHTML = '';
+            this.liveRegion.nativeElement.appendChild(descriptionTag);
+          }
         }
       }
     }
@@ -575,6 +596,28 @@ export class LineComponent implements OnInit {
         this.cancelDeleteMarksButton.nativeElement.focus();
       else if (idx === 1 && this.deleteMarksButton?.nativeElement)
         this.deleteMarksButton.nativeElement.focus();
+    }
+  }
+
+  deleteMarksButtonClick(): void {
+    const numberOfMarks = this.getCurrNumberOfMarks();
+      this.markedData = [];
+      if (this.figureElement?.nativeElement)
+        this.figureElement.nativeElement.innerHTML = '';
+      if (this.liveRegion?.nativeElement) {
+        this.liveRegion.nativeElement.innerHTML = '';
+        const descriptionTag = document.createElement('p');
+        descriptionTag.innerHTML = `${numberOfMarks} Markierungen wurden gelöscht.`;
+        this.liveRegion.nativeElement.appendChild(descriptionTag);
+      }
+      this.drawChart();
+  }
+
+  cancelDeleteMarksButtonClick(): void {
+    if (this.markMenuList?.nativeElement) {
+      const items = this.markMenuList.nativeElement.querySelectorAll('li');
+      items[0].focus();
+      this.showDeleteMarksForm = false;
     }
   }
 
@@ -703,6 +746,7 @@ export class LineComponent implements OnInit {
       .append('g')
       .attr('id', (d: CleanDataObj) => d.id)
       .attr('aria-label', (d: CleanDataObj) => 'Linie ' + d.id)
+      .attr('role', 'menuitem')
       .attr(
         'aria-description',
         'Drücken Sie "Enter" um in die Linie zu navigieren'
@@ -747,6 +791,7 @@ export class LineComponent implements OnInit {
         .attr('r', 3)
         .attr('data-lineid', this.cleanData[idx].id)
         .attr('data-dotIdx', (d: CleanData, dotIdx: number) => dotIdx)
+        .attr('role', 'menuitem')
         .attr(
           'aria-label',
           (d: CleanData) =>
@@ -760,7 +805,7 @@ export class LineComponent implements OnInit {
               this.cleanData.length > 1
                 ? ', Linie ' + this.cleanData[idx].id
                 : ''
-            }${this.dotIsMarked(d, this.cleanData[idx].id) ? ', Makiert' : ''}`
+            }${this.dotIsMarked(d, this.cleanData[idx].id) ? ', Markiert' : ''}`
         )
         .attr('class', (d: CleanData) => {
           if (this.dotIsMarked(d, this.cleanData[idx].id)) {
@@ -957,7 +1002,7 @@ export class LineComponent implements OnInit {
             target?.setAttribute('class', 'markedDot');
             target?.setAttribute(
               'aria-label',
-              `${this.yAxisLabel}: ${markedDotData.measurment}, Linie ${lineData.id}, Makiert`
+              `${this.yAxisLabel}: ${markedDotData.measurment}, Linie ${lineData.id}, Markiert`
             );
           } else {
             target?.setAttribute('class', '');

@@ -10,6 +10,14 @@
     fill: white;
 }
 
+ul.open {
+    display: block;
+}
+
+ul:not(.open) {
+    display: none;
+}
+
 [role="log"], #labels, .hidden {
     position: absolute;
     left: -999999px;

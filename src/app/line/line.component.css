@@ -36,6 +36,14 @@
     left: -10000px;
 }
 
+ul.open {
+    display: block;
+}
+
+ul:not(.open) {
+    display: none;
+}
+
 [role="log"] {
     position: absolute;
     left: -999999px;

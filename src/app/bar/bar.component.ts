@@ -131,7 +131,18 @@ export class BarComponent implements OnInit {
     } else if (evt.key === 'Escape') {
       this.focusSvg(true);
     }
-    evt.preventDefault();
+  }
+
+  menuClick(evt: Event): void {
+    this.menuIsOpen = true;
+      setTimeout(() => {
+        if (this.menuList?.nativeElement) {
+          const items = this.menuList.nativeElement.querySelectorAll('li');
+          let idx = 0;
+          items[idx].setAttribute('tabindex', '0');
+          items[idx].focus();
+        }
+      }, 0);
   }
 
   menuItemKeyDown(evt: KeyboardEvent, targetIdx: number): void {
@@ -178,7 +189,7 @@ export class BarComponent implements OnInit {
                       ': ' +
                       mark.yValue +
                       (this.yAxisUnit ? ' ' + this.yAxisUnit : '') +
-                      ', Makiert'
+                      ', Markiert'
                   );
                 }
               }
@@ -355,14 +366,24 @@ export class BarComponent implements OnInit {
                     ': ' +
                     mark.yValue +
                     (this.yAxisUnit ? ' ' + this.yAxisUnit : '') +
-                    ', Makiert'
+                    ', Markiert'
                 );
               }
             }
           }
+          if (this.liveRegion?.nativeElement) {
+            let notification = this.isFilteredByMarks
+              ? `Es ${this.markedData.length === 1 ? 'wird' : 'werden'} nun ${this.markedData.length} ${this.markedData.length === 1 ? 'markierter Datenpunkt' : 'markierte Datenpunkte'} in der Visualisierung angezeigt.`
+              : 'Es werden nun wieder alle Datenpunkte angezeigt.';
+            const descriptionTag = document.createElement('p');
+            descriptionTag.innerHTML = notification;
+            this.liveRegion.nativeElement.innerHTML = '';
+            this.liveRegion.nativeElement.appendChild(descriptionTag);
+          }
         }
       }
     }
+
     evt.preventDefault();
   }
 
@@ -395,7 +416,7 @@ export class BarComponent implements OnInit {
         if (this.liveRegion?.nativeElement) {
           this.liveRegion.nativeElement.innerHTML = '';
           this.liveRegion.nativeElement.innerHTML =
-            '<p>Makierte Daten wurden gelöscht</p>';
+            '<p>Markierungen wurden gelöscht.</p>';
         }
       }
     } else if (
@@ -422,6 +443,29 @@ export class BarComponent implements OnInit {
       }
     }
     evt.preventDefault();
+  }
+
+  deleteMarksButtonClick(): void {
+    this.markedData = [];
+        this.createCleanData();
+        if (this.figureElement?.nativeElement) {
+          this.figureElement.nativeElement.innerHTML = '';
+          this.createSvg();
+          this.drawBars();
+        }
+        if (this.liveRegion?.nativeElement) {
+          this.liveRegion.nativeElement.innerHTML = '';
+          this.liveRegion.nativeElement.innerHTML =
+            '<p>Markierungen wurden gelöscht.</p>';
+        }
+  }
+
+  cancelDeleteMarksButtonClick(): void {
+    this.showDeleteMarksForm = false;
+        if (this.markMenuList?.nativeElement) {
+          const items = this.markMenuList.nativeElement.querySelectorAll('li');
+          items[0].focus();
+        }
   }
 
   searchFieldInputKeyDown(evt: KeyboardEvent): void {
@@ -601,7 +645,8 @@ export class BarComponent implements OnInit {
       .append('svg')
       .on('keydown', this.svgKeyDown.bind(this))
       .attr('id', 'SVG_' + this.barId)
-      .attr('tabindex', '0')
+      .attr('tabindex', '-1')
+      .attr('aria-hidden', 'true')
       .attr('width', this.width + this.margin * 2)
       .attr('height', this.height + this.margin * 2)
       .append('g')
@@ -650,6 +695,7 @@ export class BarComponent implements OnInit {
       .attr('id', (d: CleanData) => d.ID)
       .attr('aria-labelledby', (d: CleanData) => 'LABEL_' + d.ID)
       .attr('aria-describedby', (d: CleanData) => 'DESCR_' + d.ID)
+      .attr("role", "menuitem")
       .on('keydown', this.barKeyDown.bind(this));
   }
 
@@ -786,13 +832,13 @@ export class BarComponent implements OnInit {
                   descriptionTag.innerHTML = this.yAxisKey + ': ' + bar.yValue;
                 } else {
                   descriptionTag.innerHTML =
-                    this.yAxisKey + ': ' + bar.yValue + ', Makiert';
+                    this.yAxisKey + ': ' + bar.yValue + ', Markiert';
                   node.classList.add('marked');
                 }
               }
               if (this.liveRegion?.nativeElement) {
                 this.liveRegion.nativeElement.innerHTML = '';
-                this.liveRegion.nativeElement.innerHTML = `<p>Makierung wurde ${
+                this.liveRegion.nativeElement.innerHTML = `<p>Markierung wurde ${
                   remove ? 'entfernt' : 'hinzugefügt'
                 }</p>`;
               }
