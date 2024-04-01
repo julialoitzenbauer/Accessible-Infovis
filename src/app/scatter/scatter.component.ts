@@ -58,7 +58,7 @@ export class ScatterComponent implements OnInit {
   @Input()
   yAxisUnit: string = '';
   @Input()
-  hideMenu: boolean = true;
+  hideMenu: boolean = false;
 
   @ViewChild('figureElement') figureElement:
     | ElementRef<HTMLElement>
@@ -181,6 +181,10 @@ export class ScatterComponent implements OnInit {
     evt.preventDefault();
   }
 
+  menuItemClick(evt: Event): void {
+    this.triggerMenuItem(evt);
+  }
+
   searchMenuKeyDown(evt: KeyboardEvent, targetIdx: number): void {
     if (evt.key === 'Enter' || evt.key === ' ') {
       this.searchMenuIsOpen = !this.searchMenuIsOpen;
@@ -197,6 +201,26 @@ export class ScatterComponent implements OnInit {
     evt.preventDefault();
   }
 
+  searchMenuClick(): void {
+    this.searchMenuIsOpen = !this.searchMenuIsOpen;
+    if (this.searchMenuIsOpen) {
+      setTimeout(() => {
+        const list = this.searchMenuList;
+        if (list?.nativeElement) {
+          const menuItems = list.nativeElement.querySelectorAll('li');
+          const itemIdx = 0;
+          menuItems[itemIdx].tabIndex = 0;
+          menuItems[itemIdx].focus();
+        }
+      }, 0);
+    } else {
+      if (this.searchMenuButton?.nativeElement) {
+        this.searchMenuButton.nativeElement.setAttribute('tabindex', '0');
+        this.searchMenuButton.nativeElement.focus();
+      }
+    }
+  }
+
   markMenuKeyDown(evt: KeyboardEvent, targetIdx: number): void {
     if (evt.key === 'Enter' || evt.key === ' ') {
       this.markMenuIsOpen = true;
@@ -211,6 +235,26 @@ export class ScatterComponent implements OnInit {
       this.focusNextMenuItemByLetter(MENU_TYPES.BASE_MENU, evt.key, targetIdx);
     }
     evt.preventDefault();
+  }
+
+  markMenuClick(): void {
+    this.markMenuIsOpen = !this.markMenuIsOpen;
+    if (this.markMenuIsOpen) {
+      setTimeout(() => {
+        const list = this.markMenuList;
+        if (list?.nativeElement) {
+          const menuItems = list.nativeElement.querySelectorAll('li');
+          const itemIdx = 0;
+          menuItems[itemIdx].tabIndex = 0;
+          menuItems[itemIdx].focus();
+        }
+      }, 0);
+    } else {
+      if (this.markMenuButton?.nativeElement) {
+        this.markMenuButton.nativeElement.setAttribute('tabindex', '0');
+        this.markMenuButton.nativeElement.focus();
+      }
+    }
   }
 
   searchMenuItemKeyDown(evt: KeyboardEvent, targetIdx: number): void {
@@ -254,6 +298,30 @@ export class ScatterComponent implements OnInit {
     evt.preventDefault();
   }
 
+  searchMenuItemClick(targetIdx: number): void {
+    switch (targetIdx) {
+      case 0:
+        this.selectedSearchMenu = SEARCH_MENUS.X;
+        this.searchMenuPlaceholder = `Suchen nach ${this.xAxisKey}`;
+        break;
+      case 1:
+        this.selectedSearchMenu = SEARCH_MENUS.Y;
+        this.searchMenuPlaceholder = `Suchen nach ${this.yAxisKey}`;
+        break;
+      case 2:
+        this.selectedSearchMenu = SEARCH_MENUS.LABEL;
+        this.searchMenuPlaceholder = 'Suchen nach Datenpunkt-Name';
+        break;
+      default:
+        this.selectedSearchMenu = null;
+        this.searchMenuPlaceholder = '';
+        break;
+    }
+    if (this.selectedSearchMenu != null) {
+      this.triggerSearchMenuItem();
+    }
+  }
+
   markMenuItemKeyDown(evt: KeyboardEvent, targetIdx: number) {
     if (evt.key === 'ArrowDown' || evt.key === 'ArrowUp') {
       this.navInMenuList(MENU_TYPES.MARK_MENU, evt);
@@ -289,6 +357,31 @@ export class ScatterComponent implements OnInit {
       this.focusNextMenuItemByLetter(MENU_TYPES.MARK_MENU, evt.key, targetIdx);
     }
     evt.preventDefault();
+  }
+
+  markMenuItemClick(targetIdx: number): void {
+    switch (targetIdx) {
+      case 0:
+        this.showDeleteMarksForm = true;
+        setTimeout(() => {
+          if (this.deleteMarksButton?.nativeElement) {
+            this.deleteMarksButton.nativeElement.focus();
+          }
+        }, 0);
+        break;
+      case 1:
+        if (this.isFilteredByMarks) {
+          this.cleanData = this.createCleanData();
+          if (this.figureElement?.nativeElement)
+            this.figureElement.nativeElement.innerHTML = '';
+          this.createSvg();
+          this.drawPlot();
+          this.isFilteredByMarks = false;
+        } else {
+          this.filterByMarks();
+        }
+        break;
+    }
   }
 
   filterByMarks(): void {
@@ -364,23 +457,25 @@ export class ScatterComponent implements OnInit {
 
   deleteMarksButtonClick(): void {
     this.markedData = {};
-    let notification = `${this.currNumberOfMarks} ${this.currNumberOfMarks === 1 ? 'Markierung wurde' : 'Markierungen wurden'} gelöscht.`;
-        this.currNumberOfMarks = 0;
-        const dots = this.svg?.selectAll('circle')?.nodes();
-        if (dots?.length) {
-          for (const dot of dots) {
-            if (dot) {
-              (dot as HTMLElement).classList.remove('marked');
-            }
-          }
+    let notification = `${this.currNumberOfMarks} ${
+      this.currNumberOfMarks === 1 ? 'Markierung wurde' : 'Markierungen wurden'
+    } gelöscht.`;
+    this.currNumberOfMarks = 0;
+    const dots = this.svg?.selectAll('circle')?.nodes();
+    if (dots?.length) {
+      for (const dot of dots) {
+        if (dot) {
+          (dot as HTMLElement).classList.remove('marked');
         }
-        this.closeDeleteMarksForm();
-        if (this.liveRegion?.nativeElement) {
-          this.liveRegion.nativeElement.innerHTML = '';
-          const descriptionTag = document.createElement('p');
-          descriptionTag.innerHTML = notification;
-          this.liveRegion.nativeElement.appendChild(descriptionTag);
-        }
+      }
+    }
+    this.closeDeleteMarksForm();
+    if (this.liveRegion?.nativeElement) {
+      this.liveRegion.nativeElement.innerHTML = '';
+      const descriptionTag = document.createElement('p');
+      descriptionTag.innerHTML = notification;
+      this.liveRegion.nativeElement.appendChild(descriptionTag);
+    }
   }
 
   cancelDeleteMarksButtonClick(): void {
@@ -520,10 +615,6 @@ export class ScatterComponent implements OnInit {
         currSelectedSearchListItem.focus();
       }
     }
-    /* this.cleanData = this.createCleanData();
-      if (this.figureElement?.nativeElement) this.figureElement.nativeElement.innerHTML = '';
-      this.createSvg();
-      this.drawPlot(); */
   }
 
   private enterMenuList(menuType: MENU_TYPES, evt: KeyboardEvent): void {
@@ -572,7 +663,7 @@ export class ScatterComponent implements OnInit {
     }
   }
 
-  private triggerMenuItem(evt: KeyboardEvent): void {
+  private triggerMenuItem(evt: Event): void {
     const target = evt.target as HTMLElement | null;
     if (target) {
       switch (target.id) {

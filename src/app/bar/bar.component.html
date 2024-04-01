@@ -21,21 +21,21 @@
     [attr.aria-hidden]="!menuIsOpen"
     [attr.aria-labelledby]="menuId + '_BUTTON'"
     #menuList>
-    <li role="menuitem" (keydown)="menuItemKeyDown($event, 0)">Navigieren durch Daten</li>
-    <li role="menuitem" (keydown)="menuItemKeyDown($event, 1)">Zusammenfassung</li>
-    <li id="MenuItemSearch" role="menuitem" aria-haspopup="true" [attr.aria-expanded]="searchMenuIsOpen" [attr.aria-controls]="menuId + '_SEARCH'" (keydown)="searchMenuKeyDown($event, 2)" #searchMenuButton>Suchen
+    <li role="menuitem" (keydown)="menuItemKeyDown($event, 0)" (click)="menuItemClick(0)">Navigieren durch Daten</li>
+    <li role="menuitem" (keydown)="menuItemKeyDown($event, 1)" (click)="menuItemClick(1)">Zusammenfassung</li>
+    <li id="MenuItemSearch" role="menuitem" aria-haspopup="true" [attr.aria-expanded]="searchMenuIsOpen" [attr.aria-controls]="menuId + '_SEARCH'" (keydown)="searchMenuKeyDown($event, 2)" (click)="searchMenuClick()" #searchMenuButton>Suchen
         <ul *ngIf="searchMenuIsOpen" [ngClass]="{open: menuIsOpen}" [id]="menuId + '_SEARCH'" #searchMenuList>
-            <li id="SearchMenuY" role="menuitem" (keydown)="searchMenuItemKeyDown($event, 0)">Suchen nach {{ yAxisKey }}</li>
-            <li id="SearchMenuLabel" role="menuitem" (keydown)="searchMenuItemKeyDown($event, 1)">Suchen nach {{ labelKey }}</li>
+            <li id="SearchMenuY" role="menuitem" (keydown)="searchMenuItemKeyDown($event, 0)" (click)="searchMenuItemClick(0)">Suchen nach {{ yAxisKey }}</li>
+            <li id="SearchMenuLabel" role="menuitem" (keydown)="searchMenuItemKeyDown($event, 1)" (click)="searchMenuItemClick(1)">Suchen nach {{ labelKey }}</li>
         </ul>
     </li>
-    <li id="MenuItemSonification" role="menuitem" (keydown)="menuItemKeyDown($event, 3)">Sonification</li>
-    <li id="MenuItemMarks" role="menuitem" aria-haspopup="true" [attr.aria-expanded]="markMenuIsOpen" [attr.aria-controls]="menuId + '_MARKS'" (keydown)="markMenuKeyDown($event, 4)" #markMenuButton>Markierungen</li>
+    <li id="MenuItemSonification" role="menuitem" (keydown)="menuItemKeyDown($event, 3)" (click)="menuItemClick(3)">Sonification</li>
+    <li id="MenuItemMarks" role="menuitem" aria-haspopup="true" [attr.aria-expanded]="markMenuIsOpen" [attr.aria-controls]="menuId + '_MARKS'" (keydown)="markMenuKeyDown($event, 4)" (click)="markMenuClick()" #markMenuButton>Markierungen</li>
     <ul *ngIf="markMenuIsOpen" [ngClass]="{open: menuIsOpen}" [id]="menuId + '_MARKS'" #markMenuList>
-        <li role="menuitem" (keydown)="markMenuItemKeyDown($event, 0)">Gesetzte Markierungen löschen</li>
-        <li role="menuitem" (keydown)="markMenuItemKeyDown($event, 1)">{{ isFilteredByMarks ? 'Filterung nach markierten Datenpunkten entfernen' : 'Nach markierten Datenpunkten filtern' }}</li>
+        <li role="menuitem" (keydown)="markMenuItemKeyDown($event, 0)" (click)="markMenuItemClick(0)">Gesetzte Markierungen löschen</li>
+        <li role="menuitem" (keydown)="markMenuItemKeyDown($event, 1)" (click)="markMenuItemClick(1)">{{ isFilteredByMarks ? 'Filterung nach markierten Datenpunkten entfernen' : 'Nach markierten Datenpunkten filtern' }}</li>
     </ul>
-    <li id="MenuItemReset" role="menuitem" (keydown)="menuItemKeyDown($event, 5)">Daten Zurücksetzen</li>
+    <li id="MenuItemReset" role="menuitem" (keydown)="menuItemKeyDown($event, 5)" (click)="menuItemClick(5)">Daten Zurücksetzen</li>
 </ul>
 <form *ngIf="showSearchform" [ngClass]="{hidden: hideMenu}" (submit)="triggerSearch($event)">
     <label class="search-label" for="search">{{ searchMenuPlaceholder }}</label>

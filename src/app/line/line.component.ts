@@ -53,7 +53,7 @@ export class LineComponent implements OnInit {
   @Input()
   yAxisUnit: string = '';
   @Input()
-  hideMenu: boolean = true;
+  hideMenu: boolean = false;
 
   @ViewChild('menuButton') menuButton: ElementRef<HTMLElement> | undefined;
   @ViewChild('liveRegion') liveRegion: ElementRef<HTMLElement> | undefined;
@@ -61,6 +61,9 @@ export class LineComponent implements OnInit {
     | ElementRef<HTMLElement>
     | undefined;
   @ViewChild('menuList') menuList: ElementRef<HTMLElement> | undefined;
+  @ViewChild('searchMenuButton') searchMenuButton:
+    | ElementRef<HTMLElement>
+    | undefined;
   @ViewChild('searchMenuList') searchMenuList:
     | ElementRef<HTMLElement>
     | undefined;
@@ -160,14 +163,14 @@ export class LineComponent implements OnInit {
 
   menuClick() {
     this.menuIsOpen = true;
-      setTimeout(() => {
-        if (this.menuList?.nativeElement) {
-          const items = this.menuList.nativeElement.querySelectorAll('li');
-          let itemIdx = 0;
-          items[itemIdx].setAttribute('tabindex', '0');
-          items[itemIdx].focus();
-        }
-      }, 0);
+    setTimeout(() => {
+      if (this.menuList?.nativeElement) {
+        const items = this.menuList.nativeElement.querySelectorAll('li');
+        let itemIdx = 0;
+        items[itemIdx].setAttribute('tabindex', '0');
+        items[itemIdx].focus();
+      }
+    }, 0);
   }
 
   menuItemKeyDown(evt: KeyboardEvent, targetIdx: number): void {
@@ -219,6 +222,39 @@ export class LineComponent implements OnInit {
       }
     }
     evt.preventDefault();
+  }
+
+  menuItemClick(targetIdx: number): void {
+    switch (targetIdx) {
+      case 0:
+        this.focusLine(0);
+        break;
+      case 1:
+        if (this.liveRegion?.nativeElement) {
+          this.liveRegion.nativeElement.innerHTML = '';
+          const descriptionTag = document.createElement('p');
+          descriptionTag.innerHTML = this.summary;
+          this.liveRegion.nativeElement.appendChild(descriptionTag);
+        }
+        break;
+      case 3:
+        this.startSonification();
+        break;
+      case 5:
+        if (this.figureElement?.nativeElement)
+          this.figureElement.nativeElement.innerHTML = '';
+        if (this.liveRegion?.nativeElement) {
+          this.liveRegion.nativeElement.innerHTML = '';
+          const descriptionTag = document.createElement('p');
+          descriptionTag.innerHTML = 'Daten wurden zurückgesetzt';
+          this.liveRegion.nativeElement.appendChild(descriptionTag);
+        }
+        this.cleanData = [];
+        this.initCleanData();
+        this.createData();
+        this.drawChart();
+        break;
+    }
   }
 
   startSonification(): void {
@@ -308,6 +344,25 @@ export class LineComponent implements OnInit {
     evt.preventDefault();
   }
 
+  searchMenuClick(): void {
+    this.searchMenuIsOpen = !this.searchMenuIsOpen;
+    if (this.searchMenuIsOpen) {
+      setTimeout(() => {
+        if (this.searchMenuList?.nativeElement) {
+          const items =
+            this.searchMenuList.nativeElement.querySelectorAll('li');
+          items[0].setAttribute('tabindex', '0');
+          items[0].focus();
+        }
+      }, 0);
+    } else {
+      if (this.searchMenuButton?.nativeElement) {
+        this.searchMenuButton.nativeElement.setAttribute('tabindex', '0');
+        this.searchMenuButton.nativeElement.focus();
+      }
+    }
+  }
+
   searchMenuItemKeyDown(evt: KeyboardEvent, idx: number): void {
     if (evt.key === 'ArrowUp' || evt.key === 'ArrowDown') {
       if (this.searchMenuList?.nativeElement) {
@@ -350,6 +405,29 @@ export class LineComponent implements OnInit {
     }
     evt.preventDefault();
     evt.stopPropagation();
+  }
+
+  searchMenuItemClick(idx: number): void {
+    if (idx === 0) {
+      this.searchMenuPlaceholder = `Suchen nach ${
+        this.yearlyDates ? 'Jahr' : 'Datum'
+      }`;
+      this.selectedSearchMenu = SEARCH_MENUS.X;
+    } else if (idx === 1) {
+      this.searchMenuPlaceholder = `Suchen nach Linien-Name`;
+      this.selectedSearchMenu = SEARCH_MENUS.LABEL;
+    } else {
+      this.searchMenuPlaceholder = '';
+      this.selectedSearchMenu = null;
+    }
+    if (this.selectedSearchMenu != null && this.searchMenuPlaceholder) {
+      this.showSearchform = true;
+      setTimeout(() => {
+        if (this.searchFieldInput?.nativeElement) {
+          this.searchFieldInput.nativeElement.focus();
+        }
+      }, 0);
+    }
   }
 
   triggerSearch(evt: Event): void {
@@ -508,6 +586,24 @@ export class LineComponent implements OnInit {
     evt.preventDefault();
   }
 
+  markMenuClick(): void {
+    this.markMenuIsOpen = !this.markMenuIsOpen;
+    if (this.markMenuIsOpen) {
+      setTimeout(() => {
+        if (this.markMenuList?.nativeElement) {
+          const items = this.markMenuList.nativeElement.querySelectorAll('li');
+          items[0].setAttribute('tabindex', '0');
+          items[0].focus();
+        }
+      }, 0);
+    } else {
+      if (this.markMenuButton?.nativeElement) {
+        this.markMenuButton.nativeElement.setAttribute('tabindex', '0');
+        this.markMenuButton.nativeElement.focus();
+      }
+    }
+  }
+
   markMenuItemKeyDown(evt: KeyboardEvent, idx: number): void {
     if (this.markMenuList?.nativeElement) {
       if (evt.key === 'ArrowDown' || evt.key === 'ArrowUp') {
@@ -546,7 +642,13 @@ export class LineComponent implements OnInit {
           this.drawChart();
           if (this.liveRegion?.nativeElement) {
             let notification = this.isFilteredByMarks
-              ? `Es ${this.getCurrNumberOfMarks() === 1 ? 'wird' : 'werden'} nun ${this.getCurrNumberOfMarks()} ${this.getCurrNumberOfMarks() === 1 ? 'markierter Datenpunkt' : 'markierte Datenpunkte'} in der Visualisierung angezeigt.`
+              ? `Es ${
+                  this.getCurrNumberOfMarks() === 1 ? 'wird' : 'werden'
+                } nun ${this.getCurrNumberOfMarks()} ${
+                  this.getCurrNumberOfMarks() === 1
+                    ? 'markierter Datenpunkt'
+                    : 'markierte Datenpunkte'
+                } in der Visualisierung angezeigt.`
               : 'Es werden nun wieder alle Datenpunkte angezeigt.';
             const descriptionTag = document.createElement('p');
             descriptionTag.innerHTML = notification;
@@ -557,6 +659,45 @@ export class LineComponent implements OnInit {
       }
     }
     evt.preventDefault();
+  }
+
+  markMenuItemClick(idx: number): void {
+    if (idx === 0) {
+      this.showDeleteMarksForm = true;
+      setTimeout(() => {
+        if (this.deleteMarksButton?.nativeElement) {
+          this.deleteMarksButton.nativeElement.focus();
+        }
+      }, 0);
+    } else if (idx === 1) {
+      if (this.figureElement?.nativeElement)
+        this.figureElement.nativeElement.innerHTML = '';
+      if (this.isFilteredByMarks) {
+        this.cleanData = [];
+        this.initCleanData();
+        this.createData();
+        this.isFilteredByMarks = false;
+      } else {
+        this.cleanData = this.markedData;
+        this.isFilteredByMarks = true;
+      }
+      this.drawChart();
+      if (this.liveRegion?.nativeElement) {
+        let notification = this.isFilteredByMarks
+          ? `Es ${
+              this.getCurrNumberOfMarks() === 1 ? 'wird' : 'werden'
+            } nun ${this.getCurrNumberOfMarks()} ${
+              this.getCurrNumberOfMarks() === 1
+                ? 'markierter Datenpunkt'
+                : 'markierte Datenpunkte'
+            } in der Visualisierung angezeigt.`
+          : 'Es werden nun wieder alle Datenpunkte angezeigt.';
+        const descriptionTag = document.createElement('p');
+        descriptionTag.innerHTML = notification;
+        this.liveRegion.nativeElement.innerHTML = '';
+        this.liveRegion.nativeElement.appendChild(descriptionTag);
+      }
+    }
   }
 
   markFormButtonKeyDown(evt: KeyboardEvent, idx: number): void {
@@ -601,16 +742,16 @@ export class LineComponent implements OnInit {
 
   deleteMarksButtonClick(): void {
     const numberOfMarks = this.getCurrNumberOfMarks();
-      this.markedData = [];
-      if (this.figureElement?.nativeElement)
-        this.figureElement.nativeElement.innerHTML = '';
-      if (this.liveRegion?.nativeElement) {
-        this.liveRegion.nativeElement.innerHTML = '';
-        const descriptionTag = document.createElement('p');
-        descriptionTag.innerHTML = `${numberOfMarks} Markierungen wurden gelöscht.`;
-        this.liveRegion.nativeElement.appendChild(descriptionTag);
-      }
-      this.drawChart();
+    this.markedData = [];
+    if (this.figureElement?.nativeElement)
+      this.figureElement.nativeElement.innerHTML = '';
+    if (this.liveRegion?.nativeElement) {
+      this.liveRegion.nativeElement.innerHTML = '';
+      const descriptionTag = document.createElement('p');
+      descriptionTag.innerHTML = `${numberOfMarks} Markierungen wurden gelöscht.`;
+      this.liveRegion.nativeElement.appendChild(descriptionTag);
+    }
+    this.drawChart();
   }
 
   cancelDeleteMarksButtonClick(): void {
