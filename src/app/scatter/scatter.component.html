@@ -51,4 +51,4 @@
     <figure [id]="scatterId" id="" #figureElement style="position: relative">
     </figure>
 </div>
-<app-dialog title="Zusammenfassung" [content]="description || ''" [isHidden]="summaryIsHidden" (hidden)="summaryIsHidden = $event; focusSummaryMenu()"></app-dialog>
+<app-dialog dialogTitle="Zusammenfassung" [content]="description || ''" [isHidden]="summaryIsHidden" (hidden)="summaryIsHidden = $event; focusSummaryMenu()"></app-dialog>

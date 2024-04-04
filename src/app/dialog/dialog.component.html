@@ -1,6 +1,6 @@
-<div id="dialog3" role="dialog" aria-labelledby="dialog3_label" aria-describedby="dialog3_desc" aria-modal="true" [ngClass]="{ hiddenDialog: isHidden }" (keydown)="dialogKeyDown($event)">
+<div id="dialog3" role="dialog" aria-labelledby="dialog3_label" aria-describedby="dialog3_desc" aria-modal="true" [ngClass]="{ hiddenDialog: isHidden }" [attr.aria-hidden]="isHidden" (keydown)="dialogKeyDown($event)">
     <div tabindex="0" #dialogContent>
-        <h2 id="dialog3_label" class="dialog_label">{{ title }}</h2>
+        <h2 id="dialog3_label" class="dialog_label">{{ dialogTitle }}</h2>
         <p id="dialog3_desc" class="dialog_desc">
           {{ content }}
         </p>

@@ -16,7 +16,7 @@ import {
 })
 export class DialogComponent implements OnChanges {
   @Input()
-  title: String = '';
+  dialogTitle: String = '';
   @Input()
   content: String = '';
   @Input()

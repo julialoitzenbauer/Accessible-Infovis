@@ -50,4 +50,4 @@
 <div #figureContainer aria-hidden="true" [attr.aria-label]="chartTitle + ', Drücken Sie Enter um mit der Visualisierung zu interagieren'" (keydown)="svgKeyDown($event)">
     <figure [id]="lineId" #figureElement></figure>
 </div>
-<app-dialog title="Zusammenfassung" [content]="summary" [isHidden]="summaryIsHidden" (hidden)="summaryIsHidden = $event; focusSummaryMenu()"></app-dialog>
+<app-dialog dialogTitle="Zusammenfassung" [content]="summary" [isHidden]="summaryIsHidden" (hidden)="summaryIsHidden = $event; focusSummaryMenu()"></app-dialog>

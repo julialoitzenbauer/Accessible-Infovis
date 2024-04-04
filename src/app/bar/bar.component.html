@@ -47,4 +47,4 @@
     <input class="button" type="submit" value="Abbrechen" (keydown)="markFormButtonKeyDown($event)" (click)="cancelDeleteMarksButtonClick()" #cancelDeleteMarksButton>
 </form>
 <figure aria-hidden="true" [id]="barId" #figureElement></figure>
-<app-dialog title="Zusammenfassung" [content]="description" [isHidden]="summaryIsHidden" (hidden)="summaryIsHidden = $event; focusSummaryMenu()"></app-dialog>
+<app-dialog dialogTitle="Zusammenfassung" [content]="description" [isHidden]="summaryIsHidden" (hidden)="summaryIsHidden = $event; focusSummaryMenu()"></app-dialog>
