@@ -22,7 +22,7 @@
     [attr.aria-hidden]="!menuIsOpen"
     #menuList>
     <li id="MenuItemNavigate" role="menuitem" (keydown)="menuItemKeyDown($event, 0)">Navigieren durch Daten</li>
-    <li id="MenuItemSummary" role="menuitem" (keydown)="menuItemKeyDown($event, 1)">Zusammenfassung</li>
+    <li id="MenuItemSummary" role="menuitem" (keydown)="menuItemKeyDown($event, 1)" #summaryMenu>Zusammenfassung</li>
     <li id="MenuItemSearch" role="menuitem" aria-haspopup="true" [attr.aria-expanded]="searchMenuIsOpen" [attr.aria-controls]="menuId + '_SEARCH'" (keydown)="searchMenuKeyDown($event, 2)" #searchMenuButton>Suchen
         <ul *ngIf="searchMenuIsOpen" [ngClass]="{open: menuIsOpen}" [id]="menuId + '_SEARCH'" #searchMenuList>
             <li id="SearchMenuX" role="menuitem" (keydown)="searchMenuItemKeyDown($event, 0)">Suchen nach {{ yearlyDates ? 'Jahr' : 'Datum' }}</li>
@@ -50,3 +50,4 @@
 <div #figureContainer aria-hidden="true" [attr.aria-label]="chartTitle + ', Drücken Sie Enter um mit der Visualisierung zu interagieren'" (keydown)="svgKeyDown($event)">
     <figure [id]="lineId" #figureElement></figure>
 </div>
+<app-dialog title="Zusammenfassung" [content]="summary" [isHidden]="summaryIsHidden" (hidden)="summaryIsHidden = $event; focusSummaryMenu()"></app-dialog>

@@ -11,6 +11,7 @@ import { routes } from './app-routing.module';
 import { QuestionAnswerComponent } from './questionAnswer/questionAnswer.component';
 import { FindErrorsComponent } from './findErrors/findErrors.component';
 import { IntroductionComponent } from './introduction/introduction.component';
+import { DialogComponent } from './dialog/dialog.component';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import { IntroductionComponent } from './introduction/introduction.component';
     QuestionAnswerComponent,
     FindErrorsComponent,
     IntroductionComponent,
+    DialogComponent,
   ],
   imports: [BrowserModule, AppRoutingModule],
   providers: [provideRoutes(routes)],

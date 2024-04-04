@@ -80,6 +80,7 @@ export class LineComponent implements OnInit {
   @ViewChild('figureContainer') figureContainer:
     | ElementRef<HTMLElement>
     | undefined;
+  @ViewChild('summaryMenu') summaryMenu: ElementRef<HTMLElement> | undefined;
 
   private svg?: D3Selection;
   private maxY: number = -1;
@@ -99,6 +100,7 @@ export class LineComponent implements OnInit {
   markMenuIsOpen: boolean = false;
   isFilteredByMarks: boolean = false;
   showDeleteMarksForm: boolean = false;
+  summaryIsHidden: boolean = true;
 
   constructor() {
     this.lineId = IDGenerator.getId();
@@ -160,14 +162,14 @@ export class LineComponent implements OnInit {
 
   menuClick() {
     this.menuIsOpen = true;
-      setTimeout(() => {
-        if (this.menuList?.nativeElement) {
-          const items = this.menuList.nativeElement.querySelectorAll('li');
-          let itemIdx = 0;
-          items[itemIdx].setAttribute('tabindex', '0');
-          items[itemIdx].focus();
-        }
-      }, 0);
+    setTimeout(() => {
+      if (this.menuList?.nativeElement) {
+        const items = this.menuList.nativeElement.querySelectorAll('li');
+        let itemIdx = 0;
+        items[itemIdx].setAttribute('tabindex', '0');
+        items[itemIdx].focus();
+      }
+    }, 0);
   }
 
   menuItemKeyDown(evt: KeyboardEvent, targetIdx: number): void {
@@ -177,12 +179,7 @@ export class LineComponent implements OnInit {
           this.focusLine(0);
           break;
         case 1:
-          if (this.liveRegion?.nativeElement) {
-            this.liveRegion.nativeElement.innerHTML = '';
-            const descriptionTag = document.createElement('p');
-            descriptionTag.innerHTML = this.summary;
-            this.liveRegion.nativeElement.appendChild(descriptionTag);
-          }
+          this.summaryIsHidden = false;
           break;
         case 3:
           this.startSonification();
@@ -219,6 +216,12 @@ export class LineComponent implements OnInit {
       }
     }
     evt.preventDefault();
+  }
+
+  focusSummaryMenu() {
+    if (this.summaryMenu?.nativeElement) {
+      this.summaryMenu.nativeElement.focus();
+    }
   }
 
   startSonification(): void {
@@ -546,7 +549,13 @@ export class LineComponent implements OnInit {
           this.drawChart();
           if (this.liveRegion?.nativeElement) {
             let notification = this.isFilteredByMarks
-              ? `Es ${this.getCurrNumberOfMarks() === 1 ? 'wird' : 'werden'} nun ${this.getCurrNumberOfMarks()} ${this.getCurrNumberOfMarks() === 1 ? 'markierter Datenpunkt' : 'markierte Datenpunkte'} in der Visualisierung angezeigt.`
+              ? `Es ${
+                  this.getCurrNumberOfMarks() === 1 ? 'wird' : 'werden'
+                } nun ${this.getCurrNumberOfMarks()} ${
+                  this.getCurrNumberOfMarks() === 1
+                    ? 'markierter Datenpunkt'
+                    : 'markierte Datenpunkte'
+                } in der Visualisierung angezeigt.`
               : 'Es werden nun wieder alle Datenpunkte angezeigt.';
             const descriptionTag = document.createElement('p');
             descriptionTag.innerHTML = notification;
@@ -601,16 +610,16 @@ export class LineComponent implements OnInit {
 
   deleteMarksButtonClick(): void {
     const numberOfMarks = this.getCurrNumberOfMarks();
-      this.markedData = [];
-      if (this.figureElement?.nativeElement)
-        this.figureElement.nativeElement.innerHTML = '';
-      if (this.liveRegion?.nativeElement) {
-        this.liveRegion.nativeElement.innerHTML = '';
-        const descriptionTag = document.createElement('p');
-        descriptionTag.innerHTML = `${numberOfMarks} Markierungen wurden gelöscht.`;
-        this.liveRegion.nativeElement.appendChild(descriptionTag);
-      }
-      this.drawChart();
+    this.markedData = [];
+    if (this.figureElement?.nativeElement)
+      this.figureElement.nativeElement.innerHTML = '';
+    if (this.liveRegion?.nativeElement) {
+      this.liveRegion.nativeElement.innerHTML = '';
+      const descriptionTag = document.createElement('p');
+      descriptionTag.innerHTML = `${numberOfMarks} Markierungen wurden gelöscht.`;
+      this.liveRegion.nativeElement.appendChild(descriptionTag);
+    }
+    this.drawChart();
   }
 
   cancelDeleteMarksButtonClick(): void {

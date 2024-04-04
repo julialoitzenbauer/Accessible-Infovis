@@ -22,7 +22,7 @@
     [attr.aria-labelledby]="menuId + '_BUTTON'"
     #menuList>
     <li role="menuitem" (keydown)="menuItemKeyDown($event, 0)">Navigieren durch Daten</li>
-    <li role="menuitem" (keydown)="menuItemKeyDown($event, 1)">Zusammenfassung</li>
+    <li role="menuitem" (keydown)="menuItemKeyDown($event, 1)" #summaryMenu>Zusammenfassung</li>
     <li id="MenuItemSearch" role="menuitem" aria-haspopup="true" [attr.aria-expanded]="searchMenuIsOpen" [attr.aria-controls]="menuId + '_SEARCH'" (keydown)="searchMenuKeyDown($event, 2)" #searchMenuButton>Suchen
         <ul *ngIf="searchMenuIsOpen" [ngClass]="{open: menuIsOpen}" [id]="menuId + '_SEARCH'" #searchMenuList>
             <li id="SearchMenuY" role="menuitem" (keydown)="searchMenuItemKeyDown($event, 0)">Suchen nach {{ yAxisKey }}</li>
@@ -47,3 +47,4 @@
     <input class="button" type="submit" value="Abbrechen" (keydown)="markFormButtonKeyDown($event)" (click)="cancelDeleteMarksButtonClick()" #cancelDeleteMarksButton>
 </form>
 <figure aria-hidden="true" [id]="barId" #figureElement></figure>
+<app-dialog title="Zusammenfassung" [content]="description" [isHidden]="summaryIsHidden" (hidden)="summaryIsHidden = $event; focusSummaryMenu()"></app-dialog>

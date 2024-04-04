@@ -60,6 +60,7 @@ export class BarComponent implements OnInit {
   searchMenuPlaceholder: string;
   markMenuIsOpen: boolean;
   showDeleteMarksForm: boolean;
+  summaryIsHidden: boolean = true;
 
   @ViewChild('figureElement') figureElement:
     | ElementRef<HTMLElement>
@@ -92,6 +93,7 @@ export class BarComponent implements OnInit {
   @ViewChild('labelsContainer') labelsContainer:
     | ElementRef<HTMLElement>
     | undefined;
+  @ViewChild('summaryMenu') summaryMenu: ElementRef<HTMLElement> | undefined;
 
   constructor() {
     this.barId = IDGenerator.getId();
@@ -135,14 +137,14 @@ export class BarComponent implements OnInit {
 
   menuClick(evt: Event): void {
     this.menuIsOpen = true;
-      setTimeout(() => {
-        if (this.menuList?.nativeElement) {
-          const items = this.menuList.nativeElement.querySelectorAll('li');
-          let idx = 0;
-          items[idx].setAttribute('tabindex', '0');
-          items[idx].focus();
-        }
-      }, 0);
+    setTimeout(() => {
+      if (this.menuList?.nativeElement) {
+        const items = this.menuList.nativeElement.querySelectorAll('li');
+        let idx = 0;
+        items[idx].setAttribute('tabindex', '0');
+        items[idx].focus();
+      }
+    }, 0);
   }
 
   menuItemKeyDown(evt: KeyboardEvent, targetIdx: number): void {
@@ -154,12 +156,7 @@ export class BarComponent implements OnInit {
           }
           break;
         case 1:
-          if (this.liveRegion?.nativeElement) {
-            this.liveRegion.nativeElement.innerHTML = '';
-            const descriptionTag = document.createElement('p');
-            descriptionTag.innerText = this.description || '';
-            this.liveRegion.nativeElement.appendChild(descriptionTag);
-          }
+          this.summaryIsHidden = false;
           break;
         case 3:
           this.playSonification();
@@ -214,6 +211,12 @@ export class BarComponent implements OnInit {
       }
     }
     evt.preventDefault();
+  }
+
+  focusSummaryMenu(): void {
+    if (this.summaryMenu?.nativeElement) {
+      this.summaryMenu.nativeElement.focus();
+    }
   }
 
   searchMenuKeyDown(evt: KeyboardEvent, idx: number): void {
@@ -373,7 +376,13 @@ export class BarComponent implements OnInit {
           }
           if (this.liveRegion?.nativeElement) {
             let notification = this.isFilteredByMarks
-              ? `Es ${this.markedData.length === 1 ? 'wird' : 'werden'} nun ${this.markedData.length} ${this.markedData.length === 1 ? 'markierter Datenpunkt' : 'markierte Datenpunkte'} in der Visualisierung angezeigt.`
+              ? `Es ${this.markedData.length === 1 ? 'wird' : 'werden'} nun ${
+                  this.markedData.length
+                } ${
+                  this.markedData.length === 1
+                    ? 'markierter Datenpunkt'
+                    : 'markierte Datenpunkte'
+                } in der Visualisierung angezeigt.`
               : 'Es werden nun wieder alle Datenpunkte angezeigt.';
             const descriptionTag = document.createElement('p');
             descriptionTag.innerHTML = notification;
@@ -447,25 +456,25 @@ export class BarComponent implements OnInit {
 
   deleteMarksButtonClick(): void {
     this.markedData = [];
-        this.createCleanData();
-        if (this.figureElement?.nativeElement) {
-          this.figureElement.nativeElement.innerHTML = '';
-          this.createSvg();
-          this.drawBars();
-        }
-        if (this.liveRegion?.nativeElement) {
-          this.liveRegion.nativeElement.innerHTML = '';
-          this.liveRegion.nativeElement.innerHTML =
-            '<p>Markierungen wurden gelöscht.</p>';
-        }
+    this.createCleanData();
+    if (this.figureElement?.nativeElement) {
+      this.figureElement.nativeElement.innerHTML = '';
+      this.createSvg();
+      this.drawBars();
+    }
+    if (this.liveRegion?.nativeElement) {
+      this.liveRegion.nativeElement.innerHTML = '';
+      this.liveRegion.nativeElement.innerHTML =
+        '<p>Markierungen wurden gelöscht.</p>';
+    }
   }
 
   cancelDeleteMarksButtonClick(): void {
     this.showDeleteMarksForm = false;
-        if (this.markMenuList?.nativeElement) {
-          const items = this.markMenuList.nativeElement.querySelectorAll('li');
-          items[0].focus();
-        }
+    if (this.markMenuList?.nativeElement) {
+      const items = this.markMenuList.nativeElement.querySelectorAll('li');
+      items[0].focus();
+    }
   }
 
   searchFieldInputKeyDown(evt: KeyboardEvent): void {
@@ -695,7 +704,7 @@ export class BarComponent implements OnInit {
       .attr('id', (d: CleanData) => d.ID)
       .attr('aria-labelledby', (d: CleanData) => 'LABEL_' + d.ID)
       .attr('aria-describedby', (d: CleanData) => 'DESCR_' + d.ID)
-      .attr("role", "menuitem")
+      .attr('role', 'menuitem')
       .on('keydown', this.barKeyDown.bind(this));
   }
 

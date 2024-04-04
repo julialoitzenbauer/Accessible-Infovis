@@ -1,28 +1,3 @@
-:host ::ng-deep .bar {
-    fill: cyan;
-}
-
-:host ::ng-deep .bar.current {
-    fill: red;
-}
-
-:host ::ng-deep .bar.marked {
-    fill: white;
-}
-
-ul.open {
-    display: block;
-}
-
-ul:not(.open) {
-    display: none;
-}
-
-[role="log"], #labels, .hidden {
-    position: absolute;
-    left: -999999px;
-}
-
 [role="dialog"] {
     box-sizing: border-box;
     padding: 15px;
@@ -39,6 +14,10 @@ ul:not(.open) {
     width: 50%;
     min-height: auto;
     box-shadow: 0 19px 38px rgb(0 0 0 / 12%), 0 15px 12px rgb(0 0 0 / 22%);
+  }
+
+  .hiddenDialog {
+    display: none;
   }
 
   .dialog_label {

@@ -1,0 +1,11 @@
+<div id="dialog3" role="dialog" aria-labelledby="dialog3_label" aria-describedby="dialog3_desc" aria-modal="true" [ngClass]="{ hiddenDialog: isHidden }" (keydown)="dialogKeyDown($event)">
+    <div tabindex="0" #dialogContent>
+        <h2 id="dialog3_label" class="dialog_label">{{ title }}</h2>
+        <p id="dialog3_desc" class="dialog_desc">
+          {{ content }}
+        </p>
+    </div>
+    <div class="dialog_form_actions">
+      <button type="button" id="dialog3_close_btn" (click)="closeDialog()" #dialogButton>Schließen</button>
+    </div>
+</div>

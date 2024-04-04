@@ -88,6 +88,7 @@ export class ScatterComponent implements OnInit {
   @ViewChild('figureContainer') figureContainer:
     | ElementRef<HTMLElement>
     | undefined;
+  @ViewChild('summaryMenu') summaryMenu: ElementRef<HTMLElement> | undefined;
 
   private cleanData?: Record<number, Array<CleanData>>;
   private tickData: Array<Array<CleanData>> = [];
@@ -115,6 +116,7 @@ export class ScatterComponent implements OnInit {
   selectedSearchMenu: SEARCH_MENUS | null;
   searchMenuPlaceholder: string;
   currNumberOfMarks: number;
+  summaryIsHidden: boolean = true;
 
   constructor() {
     this.scatterId = IDGenerator.getId();
@@ -179,6 +181,12 @@ export class ScatterComponent implements OnInit {
       this.focusNextMenuItemByLetter(MENU_TYPES.BASE_MENU, evt.key, targetIdx);
     }
     evt.preventDefault();
+  }
+
+  focusSummaryMenu(): void {
+    if (this.summaryMenu?.nativeElement) {
+      this.summaryMenu.nativeElement.focus();
+    }
   }
 
   searchMenuKeyDown(evt: KeyboardEvent, targetIdx: number): void {
@@ -364,23 +372,25 @@ export class ScatterComponent implements OnInit {
 
   deleteMarksButtonClick(): void {
     this.markedData = {};
-    let notification = `${this.currNumberOfMarks} ${this.currNumberOfMarks === 1 ? 'Markierung wurde' : 'Markierungen wurden'} gelöscht.`;
-        this.currNumberOfMarks = 0;
-        const dots = this.svg?.selectAll('circle')?.nodes();
-        if (dots?.length) {
-          for (const dot of dots) {
-            if (dot) {
-              (dot as HTMLElement).classList.remove('marked');
-            }
-          }
+    let notification = `${this.currNumberOfMarks} ${
+      this.currNumberOfMarks === 1 ? 'Markierung wurde' : 'Markierungen wurden'
+    } gelöscht.`;
+    this.currNumberOfMarks = 0;
+    const dots = this.svg?.selectAll('circle')?.nodes();
+    if (dots?.length) {
+      for (const dot of dots) {
+        if (dot) {
+          (dot as HTMLElement).classList.remove('marked');
         }
-        this.closeDeleteMarksForm();
-        if (this.liveRegion?.nativeElement) {
-          this.liveRegion.nativeElement.innerHTML = '';
-          const descriptionTag = document.createElement('p');
-          descriptionTag.innerHTML = notification;
-          this.liveRegion.nativeElement.appendChild(descriptionTag);
-        }
+      }
+    }
+    this.closeDeleteMarksForm();
+    if (this.liveRegion?.nativeElement) {
+      this.liveRegion.nativeElement.innerHTML = '';
+      const descriptionTag = document.createElement('p');
+      descriptionTag.innerHTML = notification;
+      this.liveRegion.nativeElement.appendChild(descriptionTag);
+    }
   }
 
   cancelDeleteMarksButtonClick(): void {
@@ -589,13 +599,7 @@ export class ScatterComponent implements OnInit {
           }
           break;
         case 'MenuItemSummary':
-          if (this.liveRegion?.nativeElement) {
-            this.liveRegion.nativeElement.innerHTML = '';
-            const descriptionTag = document.createElement('p');
-            descriptionTag.innerText =
-              this.description ?? 'Keine Beschreibung verfügbar';
-            this.liveRegion.nativeElement.appendChild(descriptionTag);
-          }
+          this.summaryIsHidden = false;
           break;
         case 'MenuItemSonification':
           this.startSonification();
