@@ -22,11 +22,13 @@ enum SEARCH_MENU {
 })
 export class BarComponent implements OnInit {
   @Input()
+  title: string = '';
+  @Input()
+  labelKey: string = '';
+  @Input()
   data: Array<Record<string, string | number>> = [];
   @Input()
   yAxisKey: string = '';
-  @Input()
-  labelKey: string = '';
   @Input()
   margin: number = 50;
   @Input()
@@ -34,9 +36,7 @@ export class BarComponent implements OnInit {
   @Input()
   height: number = 400 - this.margin * 2;
   @Input()
-  title: string = 'Bar Chart';
-  @Input()
-  description: string = '';
+  summary: string = '';
   @Input()
   yAxisUnit: string = '';
   @Input()
@@ -151,15 +151,15 @@ export class BarComponent implements OnInit {
     if (evt.key === 'Enter' || evt.key === ' ') {
       switch (targetIdx) {
         case 0:
+          this.summaryIsHidden = false;
+          break;
+        case 1:
+          this.playSonification();
+          break;
+        case 2:
           if (this.cleanData?.length) {
             this.focusBar(this.cleanData[0].ID);
           }
-          break;
-        case 1:
-          this.summaryIsHidden = false;
-          break;
-        case 3:
-          this.playSonification();
           break;
         case 5:
           this.createCleanData();
@@ -809,7 +809,7 @@ export class BarComponent implements OnInit {
         if (this.showSearchform && this.searchFieldInput?.nativeElement) {
           this.searchFieldInput.nativeElement.focus();
         } else if (this.menuList?.nativeElement) {
-          this.menuList.nativeElement.querySelectorAll('li')[0].focus();
+          this.menuList.nativeElement.querySelectorAll('li')[2].focus();
         }
         break;
       case 'm':
