@@ -23,6 +23,8 @@ enum SEARCH_MENUS {
 })
 export class LineComponent implements OnInit {
   @Input()
+  title: string = '';
+  @Input()
   labelKey: string = '';
   @Input()
   margin: number = 50;
@@ -31,9 +33,7 @@ export class LineComponent implements OnInit {
   @Input()
   height: number = 400 - this.margin * 2;
   @Input()
-  chartTitle: string = 'Line Chart';
-  @Input()
-  description: string = '';
+  summary: string = '';
   @Input()
   xAxisKey: string = '';
   @Input()
@@ -42,8 +42,6 @@ export class LineComponent implements OnInit {
   yAxisLabel: string = '';
   @Input()
   xAxisLabel: string = '';
-  @Input()
-  summary: string = '';
   @Input()
   data: Array<Record<string, string | number>> = importData;
   @Input()
@@ -176,13 +174,13 @@ export class LineComponent implements OnInit {
     if (evt.key === 'Enter' || evt.key === ' ') {
       switch (targetIdx) {
         case 0:
-          this.focusLine(0);
-          break;
-        case 1:
           this.summaryIsHidden = false;
           break;
-        case 3:
+        case 1:
           this.startSonification();
+          break;
+        case 2:
+          this.focusLine(0);
           break;
         case 5:
           if (this.figureElement?.nativeElement)
@@ -325,8 +323,8 @@ export class LineComponent implements OnInit {
     } else if (evt.key === 'Escape') {
       if (this.menuList?.nativeElement) {
         const menuItems = this.menuList.nativeElement.querySelectorAll('li');
-        menuItems[2].setAttribute('tabindex', '0');
-        menuItems[2].focus();
+        menuItems[3].setAttribute('tabindex', '0');
+        menuItems[3].focus();
         this.searchMenuIsOpen = false;
       }
     } else if (evt.key === 'Enter' || evt.key === ' ') {
@@ -888,7 +886,7 @@ export class LineComponent implements OnInit {
             (evt.target as HTMLElement).removeAttribute('tabindex');
             const menuItems =
               this.menuList.nativeElement.querySelectorAll('li');
-            menuItems[0].focus();
+            menuItems[2].focus();
           }
         } else if (evt.key.toUpperCase() === 'M' && evt.shiftKey) {
           const lineData = this.cleanData[targetIdx];

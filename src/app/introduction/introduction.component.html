@@ -10,7 +10,7 @@
     <a href="/">Zurück</a>
 </ng-template>
 <ng-template [ngIf]="testId === '1'">
-    <div tabindex="0">In der nachfolgenden Visualisierung wird ein Balkendiagramm gezeigt. Um mit Balkendiagrammen zu interagieren, navigieren Sie zu der Schaltfläche "Visualisierungsinteraktionen". Wenn Sie die Schaltfläche aktivieren,
+    <div>In der nachfolgenden Visualisierung wird ein Balkendiagramm gezeigt. Um mit Balkendiagrammen zu interagieren, navigieren Sie zu der Schaltfläche "Visualisierungsinteraktionen". Wenn Sie die Schaltfläche aktivieren,
         öffnet sich eine Liste, die Ihnen mehrere Interaktionsmöglichkeiten bietet.
     </div>
     <app-bar title="Anteil der Pkw-Neuzulassungen in Österreich nach Automarke im Dezember 2023" [data]="[
@@ -36,14 +36,14 @@
     { Automarke: 'Nissan', 'Anteil an Neuzulassungen': 1.3 },
     { Automarke: 'Sonstige', 'Anteil an Neuzulassungen': 8.8 },
     ]" yAxisKey="Anteil an Neuzulassungen" labelKey="Automarke" yAxisUnit="Prozent"
-    description="In der Visualisierung werden die Anteile der Neuzulassungen nach Automarken in Prozent in Dezember 2023 angezeigt, wobei der Anteil in Prozent auf der y-Achse angezeigt wird. Die Marke Hyundai wurde mit 14.8 Prozent am häufigsten zugelassen, dicht gefolgt von VW mit 14.4 Prozent. Den dritten Platz teilen sich BMW und Skoda mit jeweils 8.8 Prozent. Die übrigen Automarken weisen alle einen Marktanteil von unter fünf Prozent auf."></app-bar>
+    summary="In der Visualisierung werden die Anteile der Neuzulassungen nach Automarken in Prozent in Dezember 2023 angezeigt, wobei der Anteil in Prozent auf der y-Achse angezeigt wird. Die Marke Hyundai wurde mit 14.8 Prozent am häufigsten zugelassen, dicht gefolgt von VW mit 14.4 Prozent. Den dritten Platz teilen sich BMW und Skoda mit jeweils 8.8 Prozent. Die übrigen Automarken weisen alle einen Marktanteil von unter fünf Prozent auf."></app-bar>
 </ng-template>
 
 <ng-template [ngIf]="testId === '2'">
     <div tabindex="0">In der nachfolgenden Visualisierung wird ein Liniendiagramm gezeigt. Um mit Liniendiagrammen zu interagieren, navigieren Sie zu der Schaltfläche "Visualisierungsinteraktionen". Wenn Sie die Schaltfläche aktivieren,
         öffnet sich eine Liste, die Ihnen mehrere Interaktionsmöglichkeiten bietet.
     </div>
-    <app-line chartTitle="Umsatz von Apple Inc. weltweit in den Geschäftsjahren von 2004 bis 2023 (in Milliarden US-Dollar)" [data]="[
+    <app-line title="Umsatz von Apple Inc. weltweit in den Geschäftsjahren von 2004 bis 2023 (in Milliarden US-Dollar)" [data]="[
     { date: '01-Jan-2004', Umsatz: 8.28  },
     { date: '01-Jan-2005', Umsatz: 13.93 },
     { date: '01-Jan-2006', Umsatz: 19.32 },
@@ -64,15 +64,15 @@
     { date: '01-Jan-2021', Umsatz: 365.82 },
     { date: '01-Jan-2022', Umsatz: 394.33 },
     { date: '01-Jan-2023', Umsatz: 383.29 },
-    ]" xAxisKey="date" [yAxisKeys]="['Umsatz']" xAxisLabel="Datum" yAxisLabel="Umsatz" description="" [yearlyDates]="true" yAxisUnit="Milliarden US-Dollar"
+    ]" xAxisKey="date" [yAxisKeys]="['Umsatz']" xAxisLabel="Datum" yAxisLabel="Umsatz" [yearlyDates]="true" yAxisUnit="Milliarden US-Dollar"
     summary="Die Visualisierung zeigt den Umsatz von Apple Inc. von 2004 bis 2023 in Milliarden US-Dollar, wobei die Zeit auf der x-Achse und der Umsatz auf der y-Achse dargestellt wird. Es ist ersichtlich, dass der Umsatz bis 2023 von 8.28 Milliarden US-Dollar auf 383.29 Milliarden US-Dollar anstieg. Bis 2015 stieg der Umsatz kontinuierlich, anschließend stieg der Umsatz insgesamt noch weiter, allerdings mit einigen Schwankungen nach unten."></app-line>
 </ng-template>
 <ng-template [ngIf]="testId === '3'">
     <div tabindex="0">In der nachfolgenden Visualisierung wird ein Punkt-Diagramm gezeigt. Um mit Punkt-Diagrammen zu interagieren, navigieren Sie zu der Schaltfläche "Visualisierungsinteraktionen". Wenn Sie die Schaltfläche aktivieren,
         öffnet sich eine Liste, die Ihnen mehrere Interaktionsmöglichkeiten bietet.
     </div>
-    <app-scatter chartTitle="BIP pro Kopf vs. Lebenserwartung, 2015" labelKey="Land" xAxisKey="BIP pro Kopf" yAxisKey="Lebenserwartung" [formatXAxisToInt]="true" [radius]="4" [data]="scatterData" [showLabel]="false" xAxisUnit="internationale Dollar" yAxisUnit="Jahre"
-    description="In der Visualisierung wird gezeigt, dass die durchschnittliche Lebenserwartung zumeist steigt, je höher das BIP pro Kopf des Landes ist. Das Land Swasiland ist das Land mit der niedrigsten Lebenserwartung (55 Jahre), das Land Hong-Kong ist das Land mit der höchsten Lebenserwartung (84.3 Jahre). Auf der y-Achse wird die Lebenserwartung in Jahre angezeigt, auf der x-Achse das BIP pro Kopf in internationale Dollar."></app-scatter>
+    <app-scatter title="BIP pro Kopf vs. Lebenserwartung, 2015" labelKey="Land" xAxisKey="BIP pro Kopf" yAxisKey="Lebenserwartung" [formatXAxisToInt]="true" [radius]="4" [data]="scatterData" [showLabel]="false" xAxisUnit="internationale Dollar" yAxisUnit="Jahre"
+    summary="In der Visualisierung wird gezeigt, dass die durchschnittliche Lebenserwartung zumeist steigt, je höher das BIP pro Kopf des Landes ist. Das Land Swasiland ist das Land mit der niedrigsten Lebenserwartung (55 Jahre), das Land Hong-Kong ist das Land mit der höchsten Lebenserwartung (84.3 Jahre). Auf der y-Achse wird die Lebenserwartung in Jahre angezeigt, auf der x-Achse das BIP pro Kopf in internationale Dollar."></app-scatter>
 </ng-template>
 <ng-template [ngIf]="!!testId">
     <div>

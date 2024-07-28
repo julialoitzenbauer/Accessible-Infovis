@@ -1,4 +1,4 @@
-<h2>{{ chartTitle }}</h2>
+<h2>{{ title }}</h2>
 <button
     [ngClass]="{hidden: hideMenu}"
     [id]="menuId + '_BUTTON'"
@@ -21,16 +21,16 @@
     [attr.aria-labelledby]="menuId + '_BUTTON'"
     [attr.aria-hidden]="!menuIsOpen"
     #menuList>
-    <li id="MenuItemNavigate" role="menuitem" (keydown)="menuItemKeyDown($event, 0)">Navigieren durch Daten</li>
-    <li id="MenuItemSummary" role="menuitem" (keydown)="menuItemKeyDown($event, 1)" #summaryMenu>Zusammenfassung</li>
-    <li id="MenuItemSearch" role="menuitem" aria-haspopup="true" [attr.aria-expanded]="searchMenuIsOpen" [attr.aria-controls]="menuId + '_SEARCH'" (keydown)="searchMenuKeyDown($event, 2)" #searchMenuButton>Suchen
+    <li id="MenuItemSummary" role="menuitem" (keydown)="menuItemKeyDown($event, 0)" #summaryMenu>Zusammenfassung</li>
+    <li id="MenuItemSonification" role="menuitem" (keydown)="menuItemKeyDown($event, 1)">Sonification</li>
+    <li id="MenuItemNavigate" role="menuitem" (keydown)="menuItemKeyDown($event, 2)">Navigieren durch Daten</li>
+    <li id="MenuItemSearch" role="menuitem" aria-haspopup="true" [attr.aria-expanded]="searchMenuIsOpen" [attr.aria-controls]="menuId + '_SEARCH'" (keydown)="searchMenuKeyDown($event, 3)" #searchMenuButton>Suchen
         <ul *ngIf="searchMenuIsOpen" [ngClass]="{open: menuIsOpen}" [id]="menuId + '_SEARCH'" #searchMenuList>
             <li id="SearchMenuX" role="menuitem" (keydown)="searchMenuItemKeyDown($event, 0)">Suchen nach {{ xAxisKey }}</li>
             <li id="SearchMenuY" role="menuitem" (keydown)="searchMenuItemKeyDown($event, 1)">Suchen nach {{ yAxisKey }}</li>
             <li id="SearchMenuLabel" role="menuitem" (keydown)="searchMenuItemKeyDown($event, 2)">Suchen nach Datenpunkt-Name</li>
         </ul>
     </li>
-    <li id="MenuItemSonification" role="menuitem" (keydown)="menuItemKeyDown($event, 3)">Sonification</li>
     <li id="MenuItemMarks" role="menuitem" aria-haspopup="true" [attr.aria-expanded]="markMenuIsOpen" [attr.aria-controls]="menuId + '_MARKS'" (keydown)="markMenuKeyDown($event, 4)" #markMenuButton>Markierungen</li>
     <ul *ngIf="markMenuIsOpen" [ngClass]="{open: menuIsOpen}" [id]="menuId + '_MARKS'" #markMenuList>
         <li role="menuitem" (keydown)="markMenuItemKeyDown($event, 0)">Gesetzte Markierungen löschen</li>
@@ -47,8 +47,8 @@
     <input class="button" type="submit" [value]="currNumberOfMarks + ' Markierungen löschen'" (keydown)="markFormButtonKeyDown($event)" (click)="deleteMarksButtonClick()" #deleteMarksButton>
     <input class="button" type="submit" value="Abbrechen" (keydown)="markFormButtonKeyDown($event)" (click)="cancelDeleteMarksButtonClick()" #cancelDeleteMarksButton>
 </form>
-<div #figureContainer aria-hidden="true" [attr.aria-label]="chartTitle + ', Drücken Sie Enter um mit der Visualisierung zu interagieren'" (keydown)="svgKeyDown($event)">
+<div #figureContainer aria-hidden="true" [attr.aria-label]="title + ', Drücken Sie Enter um mit der Visualisierung zu interagieren'" (keydown)="svgKeyDown($event)">
     <figure [id]="scatterId" id="" #figureElement style="position: relative">
     </figure>
 </div>
-<app-dialog dialogTitle="Zusammenfassung" [content]="description || ''" [isHidden]="summaryIsHidden" (hidden)="summaryIsHidden = $event; focusSummaryMenu()"></app-dialog>
+<app-dialog dialogTitle="Zusammenfassung" [content]="summary || ''" [isHidden]="summaryIsHidden" (hidden)="summaryIsHidden = $event; focusSummaryMenu()"></app-dialog>

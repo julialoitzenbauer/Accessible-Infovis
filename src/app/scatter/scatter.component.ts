@@ -30,6 +30,8 @@ enum MENU_TYPES {
 })
 export class ScatterComponent implements OnInit {
   @Input()
+  title: string = '';
+  @Input()
   labelKey!: string;
   @Input()
   xAxisKey!: string;
@@ -38,9 +40,7 @@ export class ScatterComponent implements OnInit {
   @Input()
   data!: Array<Record<string, number | string>>;
   @Input()
-  chartTitle!: string;
-  @Input()
-  description?: string;
+  summary?: string;
   @Input()
   margin: number = 50;
   @Input()
@@ -707,7 +707,7 @@ export class ScatterComponent implements OnInit {
 
   private initAria(): void {
     this.cleanData = this.createCleanData();
-    this.cleanDescription = this.description || '';
+    this.cleanDescription = this.summary || '';
     if (this.cleanDescription) this.cleanDescription += ', ';
     this.cleanDescription +=
       this.xAxisKey + ' (x-Axis) has a span from 0 to ' + this.maxX;
@@ -1007,7 +1007,7 @@ export class ScatterComponent implements OnInit {
           }
         } else if (this.menuList?.nativeElement) {
           const items = this.menuList.nativeElement.querySelectorAll('li');
-          items[0].focus();
+          items[2].focus();
         }
       }
     }
